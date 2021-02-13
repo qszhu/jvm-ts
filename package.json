@@ -1,0 +1,39 @@
+{
+  "name": "jvm-ts",
+  "private": true,
+  "version": "0.1.0",
+  "engines": {
+    "node": ">=10"
+  },
+  "bin": {
+    "java": "./dist/index.js"
+  },
+  "scripts": {
+    "dev": "node -r ts-node/register src/index.ts",
+    "test": "mocha -r ts-node/register src/**/*.spec.ts",
+    "watch-test": "nodemon --watch src --ext ts --exec npm test",
+    "build": "del dist && tsc",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "glob": "^7.1.6",
+    "jszip": "^3.6.0",
+    "yargs": "^16.2.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.14",
+    "@types/mocha": "^8.2.0",
+    "@types/node": "^14.14.16",
+    "@types/yargs": "^15.0.12",
+    "@typescript-eslint/eslint-plugin": "^4.11.0",
+    "@typescript-eslint/parser": "^4.11.0",
+    "chai": "^4.2.0",
+    "cpy-cli": "^3.1.1",
+    "del-cli": "^3.0.1",
+    "eslint": "^7.16.0",
+    "mocha": "^8.2.1",
+    "nodemon": "^2.0.6",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3"
+  }
+}

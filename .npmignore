@@ -1,0 +1,9 @@
+.vscode/
+lib/
+src/
+.editorconfig
+.eslintignore
+.eslintrc.json
+.nvmrc
+.prettierrc
+tsconfig.json
