@@ -29,3 +29,7 @@ methods count: 94
   <init>
   ...
 ```
+
+- [ ] static methods as factory methods
+- [ ] store stack frame variables as is
+- [ ] implement other AttributeInfo
