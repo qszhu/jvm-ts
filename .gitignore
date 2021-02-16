@@ -1,6 +1,2 @@
 node_modules/
 dist/
-
-todo.json
-.todo-config
-testdb.json

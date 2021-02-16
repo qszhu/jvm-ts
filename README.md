@@ -33,3 +33,6 @@ methods count: 94
 - [ ] static methods as factory methods
 - [ ] store stack frame variables as is
 - [ ] implement other AttributeInfo
+- [ ] modified utf8
+- [ ] cache file list in zip
+- [ ] iushr optimization

@@ -1,3 +1,5 @@
+import { Thread } from "."
+
 class Slot {
   constructor(public num = 0, public ref: any = undefined) {}
 }
@@ -99,6 +101,14 @@ class OperandStack {
     this._slots = new Array(maxSize).fill(null).map(() => new Slot())
   }
 
+  pushSlot(slot: Slot) {
+    this._slots[this._size++] = slot
+  }
+
+  popSlot() {
+    return this._slots[--this._size]
+  }
+
   pushInt(val: number) {
     this._slots[this._size++].num = val
   }
@@ -156,6 +166,7 @@ class OperandStack {
 export default class Frame {
   private _localVars: LocalVars
   private _operandStack: OperandStack
+  private _thread: Thread
 
   constructor(private maxLocals: number, private maxStack: number) {
     this._localVars = new LocalVars(maxLocals)
@@ -168,5 +179,13 @@ export default class Frame {
 
   get operandStack(): OperandStack {
     return this._operandStack
+  }
+
+  get thread(): Thread {
+    return this._thread
+  }
+
+  setNextPc(pc: number): void {
+    throw new Error('Method not implemented.')
   }
 }

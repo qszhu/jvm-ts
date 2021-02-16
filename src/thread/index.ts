@@ -26,6 +26,10 @@ export class Thread {
     this._stack = new Stack(1024)
   }
 
+  get pc(): number {
+    return this._pc
+  }
+
   pushFrame(frame: Frame): void {
     this._stack.push(frame)
   }
