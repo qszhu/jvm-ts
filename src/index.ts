@@ -16,6 +16,20 @@ console.log(argv)
 
 import ClassPath from './classPath'
 import ClassFile from './classFile'
+import { interpret } from './interpreter'
+import MemberInfo from './classFile/memberInfo'
+
+async function loadClass(className: string, classPath: ClassPath): Promise<ClassFile> {
+  const data = await classPath.readClass(className)
+  const cf = new ClassFile(data)
+  return cf
+}
+
+function getMainMethod(classFile: ClassFile): MemberInfo {
+  for (const method of classFile.methods) {
+    if (method.name === 'main' && method.descriptor === '([Ljava/lang/String;)V') return method
+  }
+}
 
 async function main() {
   const cp = new ClassPath(argv.Xjre as string, argv.cp as string)
@@ -25,8 +39,7 @@ async function main() {
   className = className.replace(/\./g, '/')
   console.log(className)
 
-  const data = await cp.readClass(className)
-  const cf = new ClassFile(data)
+  const cf = await loadClass(className, cp)
 
   console.log(`version: ${cf.majorVersion}.${cf.minorVersion}`)
   console.log(`constants count: ${cf.constantPool.size}`)
@@ -42,6 +55,10 @@ async function main() {
   for (const m of cf.methods) {
     console.log(`  ${m.name}`)
   }
+
+  const mainMethod = getMainMethod(cf)
+  if (mainMethod) interpret(mainMethod)
+  else console.error('Main method not found in class', argv._[0])
 }
 
 if (require.main === module) {

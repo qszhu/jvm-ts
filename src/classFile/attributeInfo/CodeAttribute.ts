@@ -36,6 +36,18 @@ export default class CodeAttribute {
     private _attributes: AttributeInfo[]
   ) {}
 
+  get maxLocals(): u2 {
+    return this._maxLocals
+  }
+
+  get maxStack(): u2 {
+    return this._maxStack
+  }
+
+  get code(): Buffer {
+    return this._code
+  }
+
   static fromReader(reader: ClassReader, cp: ConstantPool): CodeAttribute {
     const maxStack = reader.readU2()
     const maxLocals = reader.readU2()

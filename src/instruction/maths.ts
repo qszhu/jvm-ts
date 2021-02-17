@@ -1,6 +1,16 @@
 import { BytecodeReader, Instruction, NoOperandsInstruction } from '.'
 import Frame from '../thread/Frame'
 
+export class IAdd extends NoOperandsInstruction {
+  execute(frame: Frame): void {
+    const stack = frame.operandStack
+    const v2 = stack.popInt()
+    const v1 = stack.popInt()
+    const res = v1 + v2
+    stack.pushInt(res)
+  }
+}
+
 export class DRem extends NoOperandsInstruction {
   execute(frame: Frame): void {
     const stack = frame.operandStack
@@ -44,7 +54,7 @@ export class LRem extends NoOperandsInstruction {
 }
 
 export class IInc implements Instruction {
-  constructor(private _idx: number, private _const: number) {}
+  constructor(private _idx?: number, private _const?: number) {}
 
   fetchOperands(reader: BytecodeReader): void {
     this._idx = reader.readUint8()

@@ -1,4 +1,5 @@
 import { AttributeInfo, readAttributes } from '../attributeInfo'
+import CodeAttribute from '../attributeInfo/CodeAttribute'
 import ClassReader from '../ClassReader'
 import ConstantPool from '../ConstantPool'
 import { u2 } from '../types'
@@ -22,6 +23,12 @@ export default class MemberInfo {
 
   get descriptor(): string {
     return this._constantPool.getUtf8(this._descriptorIndex)
+  }
+
+  get codeAttribute(): CodeAttribute {
+    for (const attr of this._attributes) {
+      if (attr instanceof CodeAttribute) return attr
+    }
   }
 
   static listFromReader(reader: ClassReader, cp: ConstantPool): MemberInfo[] {

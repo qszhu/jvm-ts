@@ -30,9 +30,43 @@ methods count: 94
   ...
 ```
 
-- [ ] static methods as factory methods
-- [ ] store stack frame variables as is
-- [ ] implement other AttributeInfo
-- [ ] modified utf8
-- [ ] cache file list in zip
-- [ ] iushr optimization
+```bash
+$ tsjava --cp java jvmgo.book.ch05.GaussTest
+version: 52.0
+constants count: 28
+access flags: 0x21
+this class: jvmgo/book/ch05/GaussTest
+super class: java/lang/Object
+interfaces: 
+fields count: 0
+methods count: 2
+  <init>
+  main
+pc: 0 inst: IConst0
+pc: 1 inst: IStore1
+pc: 2 inst: IConst1
+pc: 3 inst: IStore2
+pc: 4 inst: ILoad2
+pc: 5 inst: BiPush
+pc: 7 inst: IfICmpGT
+pc: 10 inst: ILoad1
+pc: 11 inst: ILoad2
+pc: 12 inst: IAdd
+pc: 13 inst: IStore1
+pc: 14 inst: IInc
+pc: 17 inst: Goto
+...
+```
+
+- [ ] design: static methods as factory methods
+- [ ] design: store stack frame variables as is
+- [ ] implementation: AttributeInfo
+- [ ] implementation: modified utf8
+- [ ] implementation: instructions
+- [ ] optimization: cache file list in zip
+- [ ] optimization: iushr
+- [ ] optimization: return same instance for instructions
+- [ ] debug: instruction debug string
+
+### References
+* https://github.com/zxh0/jvmgo-book

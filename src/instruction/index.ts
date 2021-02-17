@@ -3,7 +3,11 @@ import Frame from '../thread/Frame'
 export class BytecodeReader {
   private _pc = 0
 
-  constructor(private _code: Buffer) {}
+  constructor(private _code?: Buffer) {}
+
+  get pc(): number {
+    return this._pc
+  }
 
   reset(code: Buffer, pc: number): void {
     this._code = code
@@ -63,7 +67,7 @@ export abstract class NoOperandsInstruction implements Instruction {
 }
 
 export abstract class BranchInstruction implements Instruction {
-  constructor(protected _offset: number) {}
+  constructor(protected _offset?: number) {}
 
   fetchOperands(reader: BytecodeReader): void {
     this._offset = reader.readInt16()
@@ -71,15 +75,14 @@ export abstract class BranchInstruction implements Instruction {
 
   protected branch(frame: Frame): void {
     const pc = frame.thread.pc
-    const nextPc = pc + this._offset
-    frame.setNextPc(nextPc)
+    frame.nextPc = pc + this._offset
   }
 
   abstract execute(frame: Frame): void
 }
 
 export abstract class Index8Instruction implements Instruction {
-  constructor(protected _index: number) {}
+  constructor(protected _index?: number) {}
 
   fetchOperands(reader: BytecodeReader): void {
     this._index = reader.readUint8()
@@ -89,7 +92,7 @@ export abstract class Index8Instruction implements Instruction {
 }
 
 export abstract class Index16Instruction implements Instruction {
-  constructor(protected _index: number) {}
+  constructor(protected _index?: number) {}
 
   fetchOperands(reader: BytecodeReader): void {
     this._index = reader.readUint16()

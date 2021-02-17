@@ -49,13 +49,13 @@ export default class ClassPath {
     }
 
     try {
-      const res = this._extClassPath.readClass(className)
+      const res = await this._extClassPath.readClass(className)
       return res
     } catch (e) {
       if (e.message !== ClassNotFoundErrorMsg) throw e
     }
 
-    const res = this._userClassPath.readClass(className)
+    const res = await this._userClassPath.readClass(className)
     return res
   }
 

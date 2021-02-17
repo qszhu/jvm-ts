@@ -92,7 +92,7 @@ export class LConst1 extends NoOperandsInstruction {
 }
 
 export class BiPush implements Instruction {
-  constructor(private _val: number) {}
+  constructor(private _val?: number) {}
 
   fetchOperands(reader: BytecodeReader): void {
     this._val = reader.readInt8()
@@ -104,7 +104,7 @@ export class BiPush implements Instruction {
 }
 
 export class SiPush implements Instruction {
-  constructor(private _val: number) {}
+  constructor(private _val?: number) {}
 
   fetchOperands(reader: BytecodeReader): void {
     this._val = reader.readInt16()

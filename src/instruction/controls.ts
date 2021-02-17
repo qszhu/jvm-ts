@@ -115,7 +115,31 @@ export class IfACmpNE extends BranchInstruction {
   }
 }
 
+export class IfNull extends BranchInstruction {
+  execute(frame: Frame): void {
+    const ref = frame.operandStack.popRef()
+    if (ref === null) this.branch(frame)
+  }
+}
+
+export class IfNonNull extends BranchInstruction {
+  execute(frame: Frame): void {
+    const ref = frame.operandStack.popRef()
+    if (ref !== null) this.branch(frame)
+  }
+}
+
 export class Goto extends BranchInstruction {
+  execute(frame: Frame): void {
+    this.branch(frame)
+  }
+}
+
+export class GotoW extends BranchInstruction {
+  fetchOperands(reader: BytecodeReader): void {
+    this._offset = reader.readInt32()
+  }
+
   execute(frame: Frame): void {
     this.branch(frame)
   }

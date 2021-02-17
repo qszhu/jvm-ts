@@ -22,12 +22,20 @@ class Stack<T> {
 }
 
 export class Thread {
-  constructor(private _pc = 0, private _stack: Stack<Frame>) {
+  constructor(private _pc = 0, private _stack?: Stack<Frame>) {
     this._stack = new Stack(1024)
   }
 
   get pc(): number {
     return this._pc
+  }
+
+  set pc(pc: number) {
+    this._pc = pc
+  }
+
+  newFrame(maxLocals: number, maxStack: number): Frame {
+    return new Frame(this, maxLocals, maxStack)
   }
 
   pushFrame(frame: Frame): void {

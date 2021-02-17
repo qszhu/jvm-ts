@@ -11,7 +11,7 @@ describe('frame', async () => {
   let frame: Frame
 
   beforeEach(async () => {
-    frame = new Frame(100, 100)
+    frame = new Frame(null, 100, 100)
   })
 
   describe('local vars', async () => {

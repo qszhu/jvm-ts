@@ -1,4 +1,4 @@
-import { Thread } from "."
+import { Thread } from '.'
 
 class Slot {
   constructor(public num = 0, public ref: any = undefined) {}
@@ -164,11 +164,12 @@ class OperandStack {
 }
 
 export default class Frame {
+  private _lower: Frame
   private _localVars: LocalVars
   private _operandStack: OperandStack
-  private _thread: Thread
+  private _nextPc = 0
 
-  constructor(private maxLocals: number, private maxStack: number) {
+  constructor(private _thread: Thread, maxLocals: number, maxStack: number) {
     this._localVars = new LocalVars(maxLocals)
     this._operandStack = new OperandStack(maxStack)
   }
@@ -185,7 +186,11 @@ export default class Frame {
     return this._thread
   }
 
-  setNextPc(pc: number): void {
-    throw new Error('Method not implemented.')
+  get nextPc(): number {
+    return this._nextPc
+  }
+
+  set nextPc(pc: number) {
+    this._nextPc = pc
   }
 }
