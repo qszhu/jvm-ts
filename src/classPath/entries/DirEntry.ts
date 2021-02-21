@@ -1,6 +1,5 @@
 import fs from 'fs'
 import path from 'path'
-import util from 'util'
 
 import Entry from './Entry'
 
@@ -11,9 +10,10 @@ export default class DirEntry implements Entry {
     this._absPath = path.resolve(pathStr)
   }
 
-  async readClass(className: string): Promise<Buffer> {
+  readClass(className: string): { data: Buffer; entry: Entry } {
     const fn = path.join(this._absPath, className)
-    return util.promisify(fs.readFile)(fn)
+    const data = fs.readFileSync(fn)
+    return { data, entry: this }
   }
 
   toString(): string {

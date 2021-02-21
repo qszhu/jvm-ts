@@ -1,5 +1,6 @@
 import { AttributeInfo, readAttributes } from '../attributeInfo'
 import CodeAttribute from '../attributeInfo/CodeAttribute'
+import ConstantValueAttribute from '../attributeInfo/ConstantValueAttribute'
 import ClassReader from '../ClassReader'
 import ConstantPool from '../ConstantPool'
 import { u2 } from '../types'
@@ -28,6 +29,12 @@ export default class MemberInfo {
   get codeAttribute(): CodeAttribute {
     for (const attr of this._attributes) {
       if (attr instanceof CodeAttribute) return attr
+    }
+  }
+
+  get constantValueAttribute(): ConstantValueAttribute {
+    for (const attr of this._attributes) {
+      if (attr instanceof ConstantValueAttribute) return attr
     }
   }
 

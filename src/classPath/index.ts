@@ -37,25 +37,25 @@ export default class ClassPath {
     this._userClassPath = newEntry(cp)
   }
 
-  async readClass(className: string): Promise<Buffer> {
+  readClass(className: string): { data: Buffer; entry: Entry } {
     if (className.includes('.')) className = className.replace(/\./g, '/')
     className = `${className}.class`
 
     try {
-      const res = await this._bootClassPath.readClass(className)
+      const res = this._bootClassPath.readClass(className)
       return res
     } catch (e) {
       if (e.message !== ClassNotFoundErrorMsg) throw e
     }
 
     try {
-      const res = await this._extClassPath.readClass(className)
+      const res = this._extClassPath.readClass(className)
       return res
     } catch (e) {
       if (e.message !== ClassNotFoundErrorMsg) throw e
     }
 
-    const res = await this._userClassPath.readClass(className)
+    const res = this._userClassPath.readClass(className)
     return res
   }
 

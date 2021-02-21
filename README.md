@@ -67,6 +67,7 @@ pc: 17 inst: Goto
 - [ ] optimization: iushr
 - [ ] optimization: return same instance for instructions
 - [ ] debug: instruction debug string
+- [ ] define descriptor type as enum
 
 ### References
 * https://github.com/zxh0/jvmgo-book

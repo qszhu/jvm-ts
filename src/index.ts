@@ -19,8 +19,8 @@ import ClassFile from './classFile'
 import { interpret } from './interpreter'
 import MemberInfo from './classFile/memberInfo'
 
-async function loadClass(className: string, classPath: ClassPath): Promise<ClassFile> {
-  const data = await classPath.readClass(className)
+function loadClass(className: string, classPath: ClassPath): ClassFile {
+  const { data } = classPath.readClass(className)
   const cf = new ClassFile(data)
   return cf
 }
@@ -39,7 +39,7 @@ async function main() {
   className = className.replace(/\./g, '/')
   console.log(className)
 
-  const cf = await loadClass(className, cp)
+  const cf = loadClass(className, cp)
 
   console.log(`version: ${cf.majorVersion}.${cf.minorVersion}`)
   console.log(`constants count: ${cf.constantPool.size}`)
