@@ -58,16 +58,5 @@ pc: 17 inst: Goto
 ...
 ```
 
-- [ ] design: static methods as factory methods
-- [ ] design: store stack frame variables as is
-- [ ] implementation: AttributeInfo
-- [ ] implementation: modified utf8
-- [ ] implementation: instructions
-- [ ] optimization: cache file list in zip
-- [ ] optimization: iushr
-- [ ] optimization: return same instance for instructions
-- [ ] debug: instruction debug string
-- [ ] define descriptor type as enum
-
 ### References
 * https://github.com/zxh0/jvmgo-book

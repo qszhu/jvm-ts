@@ -1,4 +1,4 @@
-import { BytecodeReader, Instruction, NoOperandsInstruction } from '.'
+import { BytecodeReader, Index16Instruction, Index8Instruction, Instruction, NoOperandsInstruction } from '.'
 import Frame from '../thread/Frame'
 
 export class AConstNull extends NoOperandsInstruction {
@@ -112,5 +112,27 @@ export class SiPush implements Instruction {
 
   execute(frame: Frame): void {
     frame.operandStack.pushInt(this._val)
+  }
+}
+
+function ldc(frame: Frame, idx: number) {
+  //
+}
+
+export class Ldc extends Index8Instruction {
+  execute(frame: Frame): void {
+    ldc(frame, this._index)
+  }
+}
+
+export class LdcW extends Index16Instruction {
+  execute(frame: Frame): void {
+    ldc(frame, this._index)
+  }
+}
+
+export class Ldc2W extends Index16Instruction {
+  execute(frame: Frame): void {
+    //
   }
 }

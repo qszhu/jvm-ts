@@ -321,7 +321,7 @@ export class ConstantPool {
     }
   }
 
-  get class() {
+  get class(): Class {
     return this._class
   }
 
@@ -477,11 +477,19 @@ function lookupField(c: Class, name: string, descriptor: string): Field {
 }
 // ------
 
-class Obj {
+export class Obj {
   private _fields: Slots
 
   constructor(private _class: Class) {
     this._fields = new Slots(_class.instanceSlotCount)
+  }
+
+  get fields(): Slots {
+    return this._fields
+  }
+
+  isInstanceOf(other: Class): boolean {
+    return other.isAssignableFrom(this._class)
   }
 }
 
@@ -600,6 +608,38 @@ class Class {
 
   isAccessibleTo(other: Class): boolean {
     return this.isPublic || this.packageName === other.packageName
+  }
+
+  isAssignableFrom(other: Class): boolean {
+    const [s, t] = [other, this]
+    if (s === t) return true
+    if (t.isInterface) return s.isSubClassOf(t)
+    return s.implements(t)
+  }
+
+  isSubClassOf(other: Class): boolean {
+    for (let c = this.superClass; c; c = c.superClass) {
+      if (c === other) return true
+    }
+    return false
+  }
+
+  isSubInterfaceOf(iface: Class): boolean {
+    for (const superInterface of this.interfaces) {
+      if (superInterface === iface || superInterface.isSubInterfaceOf(iface)) return true
+    }
+    return false
+  }
+
+  implements(iface: Class): boolean {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    let c: Class = this
+    for (; c; c = c.superClass) {
+      for (const i of c.interfaces) {
+        if (i === iface || i.isSubInterfaceOf(iface)) return true
+      }
+    }
+    return false
   }
 
   get packageName(): string {

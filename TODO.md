@@ -1,0 +1,14 @@
+- [ ] design: static methods as factory methods
+- [ ] design: store stack frame variables as is
+- [ ] design: define descriptor type as enum
+- [ ] design: define exceptions
+- [ ] design: define `<init>`
+- [ ] design: bad `const cp = frame.method.class.constantPool`
+- [ ] design: DRY `putstatic/putfield`, `getstatic/getfield`
+- [ ] implementation: AttributeInfo
+- [ ] implementation: modified utf8
+- [ ] implementation: instructions
+- [ ] optimization: cache file list in zip
+- [ ] optimization: iushr
+- [ ] optimization: return same instance for instructions
+- [ ] debug: instruction debug string
