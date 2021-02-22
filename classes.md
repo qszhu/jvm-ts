@@ -9,9 +9,9 @@ classDiagram
   Classpath *-- Entry
 
   class Entry {
+    <<interface>>
     +ReadClass(name) []byte
   }
-  <<interface>> Entry
 
   class DirEntry
   Entry <|.. DirEntry
@@ -54,8 +54,9 @@ classDiagram
   }
   ClassFile "1" *-- "1" ClassReader
 
-  class ConstantInfo
-  <<interface>> ConstantInfo
+  class ConstantInfo {
+    <<interface>>
+  }
 
   class ConstantPool {
     +getConstantInfo(index) ConstantInfo
@@ -74,8 +75,9 @@ classDiagram
   ClassFile "1" *-- "n" MemberInfo
   MemberInfo "1" *-- "n" AttributeInfo
 
-  class AttributeInfo
-  <<interface>>AttributeInfo
+  class AttributeInfo {
+    <<interface>>
+  }
   ClassFile "1" *-- "n" AttributeInfo
 ```
 
@@ -83,8 +85,9 @@ classDiagram
 
 ```mermaid
 classDiagram
-  class ConstantInfo
-  <<interface>> ConstantInfo
+  class ConstantInfo {
+    <<interface>>
+  }
 
   class ConstantIntegerInfo {
     +Value int32
@@ -154,8 +157,9 @@ classDiagram
 
 ```mermaid
 classDiagram
-  class AttributeInfo
-  <<interface>>AttributeInfo
+  class AttributeInfo {
+    <<interface>>
+  }
 
   class CodeAttribute {
     +MaxStack uint
@@ -178,8 +182,9 @@ classDiagram
   }
   AttributeInfo <|.. ConstantValueAttribute
 
-  class MarkerAttribute
-  <<abstract>> MarkerAttribute
+  class MarkerAttribute {
+    <<abstract>>
+  }
   AttributeInfo <|.. MarkerAttribute
 
   class DeprecatedAttribute
