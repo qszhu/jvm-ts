@@ -1,3 +1,4 @@
+import { Method } from '../heap'
 import Frame from './Frame'
 
 class Stack<T> {
@@ -34,8 +35,8 @@ export class Thread {
     this._pc = pc
   }
 
-  newFrame(maxLocals: number, maxStack: number): Frame {
-    return new Frame(this, maxLocals, maxStack)
+  newFrame(method: Method): Frame {
+    return new Frame(this, method)
   }
 
   pushFrame(frame: Frame): void {

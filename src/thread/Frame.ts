@@ -79,13 +79,9 @@ export default class Frame {
   private _operandStack: OperandStack
   private _nextPc = 0
 
-  constructor(private _thread: Thread, maxLocals: number, maxStack: number) {
-    this._localVars = new Slots(maxLocals)
-    this._operandStack = new OperandStack(maxStack)
-  }
-
-  get method(): Method {
-    throw new Error('not implemented')
+  constructor(private _thread: Thread, private _method: Method) {
+    this._localVars = new Slots(this._method.maxLocals)
+    this._operandStack = new OperandStack(this._method.maxStack)
   }
 
   get localVars(): Slots {
@@ -98,6 +94,10 @@ export default class Frame {
 
   get thread(): Thread {
     return this._thread
+  }
+
+  get method(): Method {
+    return this._method
   }
 
   get nextPc(): number {

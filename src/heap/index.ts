@@ -9,8 +9,8 @@ import ConstantInterfaceMethodRefInfo from '../classFile/constantInfo/ConstantIn
 import ConstantLongInfo from '../classFile/constantInfo/ConstantLongInfo'
 import ConstantMethodRefInfo from '../classFile/constantInfo/ConstantMethodRefInfo'
 import ConstantStringInfo from '../classFile/constantInfo/ConstantStringInfo'
-import cfConstantPool from '../classFile/ConstantPool'
-import MemberInfo from '../classFile/memberInfo'
+import ConstantPool from '../classFile/ConstantPool'
+import MemberInfo from '../classFile/MemberInfo'
 import ClassPath from '../classPath'
 import { Slots } from '../thread/Slots'
 
@@ -39,9 +39,41 @@ abstract class ClassMember {
   protected _accessFlags: number
   protected _name: string
   protected _descriptor: string
+  protected _class: Class
 
-  get class(): Class {
-    return this._class
+  constructor(klass: Class, memberInfo: MemberInfo) {
+    this._class = klass
+    this._accessFlags = memberInfo.accessFlags
+    this._name = memberInfo.name
+    this._descriptor = memberInfo.descriptor
+  }
+
+  protected hasAccessFlag(f: AccessFlag) {
+    return (this._accessFlags & f) !== 0
+  }
+
+  get isPublic(): boolean {
+    return this.hasAccessFlag(AccessFlag.PUBLIC)
+  }
+
+  get isPrivate() {
+    return this.hasAccessFlag(AccessFlag.PRIVATE)
+  }
+
+  get isProtected() {
+    return this.hasAccessFlag(AccessFlag.PROTECTED)
+  }
+
+  get isStatic() {
+    return this.hasAccessFlag(AccessFlag.STATIC)
+  }
+
+  get isFinal() {
+    return this.hasAccessFlag(AccessFlag.FINAL)
+  }
+
+  get isSynthetic() {
+    return this.hasAccessFlag(AccessFlag.SYNTHETIC)
   }
 
   get name(): string {
@@ -52,14 +84,16 @@ abstract class ClassMember {
     return this._descriptor
   }
 
-  constructor(protected _class: Class, memberInfo: MemberInfo) {
-    this._accessFlags = memberInfo.accessFlags
-    this._name = memberInfo.name
-    this._descriptor = memberInfo.descriptor
+  get class(): Class {
+    return this._class
   }
 
-  protected hasAccessFlag(f: AccessFlag) {
-    return (this._accessFlags & f) !== 0
+  isAccessibleTo(d: Class) {
+    if (this.isPublic) return true
+    const c = this._class
+    if (this.isProtected) return d === c || d.isSubClassOf(c) || c.packageName == d.packageName
+    if (!this.isPrivate) return c.packageName === d.packageName
+    return d === c
   }
 }
 
@@ -67,8 +101,8 @@ class Field extends ClassMember {
   private _constValueIndex: number
   private _slotId: number
 
-  constructor(private cls: Class, field: MemberInfo) {
-    super(cls, field)
+  constructor(klass: Class, field: MemberInfo) {
+    super(klass, field)
     const valAttr = field.constantValueAttribute
     if (valAttr) this._constValueIndex = valAttr.constantValueIndex
   }
@@ -93,36 +127,12 @@ class Field extends ClassMember {
     return this._slotId
   }
 
-  get isPublic() {
-    return this.hasAccessFlag(AccessFlag.PUBLIC)
-  }
-
-  get isPrivate() {
-    return this.hasAccessFlag(AccessFlag.PRIVATE)
-  }
-
-  get isProtected() {
-    return this.hasAccessFlag(AccessFlag.PROTECTED)
-  }
-
-  get isStatic() {
-    return this.hasAccessFlag(AccessFlag.STATIC)
-  }
-
-  get isFinal() {
-    return this.hasAccessFlag(AccessFlag.FINAL)
-  }
-
   get isVolatile() {
     return this.hasAccessFlag(AccessFlag.VOLATILE)
   }
 
   get isTransient() {
     return this.hasAccessFlag(AccessFlag.TRANSIENT)
-  }
-
-  get isSynthetic() {
-    return this.hasAccessFlag(AccessFlag.SYNTHETIC)
   }
 
   get isEnum() {
@@ -132,14 +142,6 @@ class Field extends ClassMember {
   get isLongOrDouble() {
     return this._descriptor === 'J' || this._descriptor === 'D'
   }
-
-  isAccessibleTo(d: Class) {
-    if (this.isPublic) return true
-    const c = this._class
-    if (this.isProtected) return d === c || d.isSubClassOf(c) || c.packageName == d.packageName
-    if (!this.isPrivate) return c.packageName === d.packageName
-    return d === c
-  }
 }
 
 export class Method extends ClassMember {
@@ -147,8 +149,8 @@ export class Method extends ClassMember {
   private _maxLocals: number
   private _code: Buffer
 
-  constructor(cls: Class, method: MemberInfo) {
-    super(cls, method)
+  constructor(klass: Class, method: MemberInfo) {
+    super(klass, method)
     if (method.codeAttribute) {
       const codeAttr = method.codeAttribute
       this._maxStack = codeAttr.maxStack
@@ -157,32 +159,12 @@ export class Method extends ClassMember {
     }
   }
 
-  static newMethods(cls: Class, methods: MemberInfo[]): Method[] {
+  static newMethods(klass: Class, methods: MemberInfo[]): Method[] {
     const res = new Array(methods.length).fill(null)
     for (let i = 0; i < res.length; i++) {
-      res[i] = new Method(cls, methods[i])
+      res[i] = new Method(klass, methods[i])
     }
     return res
-  }
-
-  get isPublic(): boolean {
-    return this.hasAccessFlag(AccessFlag.PUBLIC)
-  }
-
-  get isPrivate(): boolean {
-    return this.hasAccessFlag(AccessFlag.PRIVATE)
-  }
-
-  get isProtected(): boolean {
-    return this.hasAccessFlag(AccessFlag.PROTECTED)
-  }
-
-  get isStatic(): boolean {
-    return this.hasAccessFlag(AccessFlag.STATIC)
-  }
-
-  get isFinal(): boolean {
-    return this.hasAccessFlag(AccessFlag.FINAL)
   }
 
   get isSynchronized(): boolean {
@@ -212,19 +194,35 @@ export class Method extends ClassMember {
   get isSynthetic(): boolean {
     return this.hasAccessFlag(AccessFlag.SYNTHETIC)
   }
+
+  get maxLocals(): number {
+    return this._maxLocals
+  }
+
+  get maxStack(): number {
+    return this._maxStack
+  }
+
+  get code(): Buffer {
+    return this._code
+  }
 }
 
 class SymRef {
-  protected _cp: ConstantPool
+  protected _cp: RuntimeConstantPool
   protected _className: string
   protected _class: Class
+
+  constructor(cp: RuntimeConstantPool) {
+    this._cp = cp
+  }
 
   get resolvedClass(): Class {
     if (!this._class) this.resolveClassRef()
     return this._class
   }
 
-  resolveClassRef(): void {
+  private resolveClassRef(): void {
     const d = this._cp.class
     const c = d.loader.loadClass(this._className)
     if (!c.isAccessibleTo(d)) throw new Error('java.lang.IllegalAccessError')
@@ -233,9 +231,8 @@ class SymRef {
 }
 
 export class ClassRef extends SymRef {
-  constructor(cp: ConstantPool, classInfo: ConstantClassInfo) {
-    super()
-    this._cp = cp
+  constructor(cp: RuntimeConstantPool, classInfo: ConstantClassInfo) {
+    super(cp)
     this._className = classInfo.name
   }
 }
@@ -244,6 +241,12 @@ class MemberRef extends SymRef {
   private _name: string
   private _descriptor: string
 
+  constructor(cp: RuntimeConstantPool, refInfo: BaseConstantMemberRefInfo) {
+    super(cp)
+    this._className = refInfo.className
+    ;[this._name, this._descriptor] = refInfo.nameAndDescriptor
+  }
+
   get name() {
     return this._name
   }
@@ -251,19 +254,12 @@ class MemberRef extends SymRef {
   get descriptor() {
     return this._descriptor
   }
-
-  constructor(cp: ConstantPool, refInfo: BaseConstantMemberRefInfo) {
-    super()
-    this._cp = cp
-    this._className = refInfo.className
-    ;[this._name, this._descriptor] = refInfo.nameAndDescriptor
-  }
 }
 
 export class FieldRef extends MemberRef {
   private _field: Field
 
-  constructor(cp: ConstantPool, refInfo: ConstantFieldRefInfo) {
+  constructor(cp: RuntimeConstantPool, refInfo: ConstantFieldRefInfo) {
     super(cp, refInfo)
   }
 
@@ -272,7 +268,7 @@ export class FieldRef extends MemberRef {
     return this._field
   }
 
-  resolveFieldRef(): void {
+  private resolveFieldRef(): void {
     const d = this._cp.class
     const c = this.resolvedClass
     const field = lookupField(c, this.name, this.descriptor)
@@ -285,25 +281,43 @@ export class FieldRef extends MemberRef {
 export class MethodRef extends MemberRef {
   private _method: Method
 
-  constructor(cp: ConstantPool, refInfo: ConstantMethodRefInfo) {
+  constructor(cp: RuntimeConstantPool, refInfo: ConstantMethodRefInfo) {
     super(cp, refInfo)
+  }
+
+  get resolvedMethod(): Method {
+    if (!this._method) this.resolveMethodRef()
+    return this._method
+  }
+
+  private resolveMethodRef(): void {
+    throw new Error('not implemented')
   }
 }
 
 class InterfaceMethodRef extends MemberRef {
   private _method: Method
 
-  constructor(cp: ConstantPool, refInfo: ConstantInterfaceMethodRefInfo) {
+  constructor(cp: RuntimeConstantPool, refInfo: ConstantInterfaceMethodRefInfo) {
     super(cp, refInfo)
+  }
+
+  get resolvedInterfaceMethod(): Method {
+    if (!this._method) this.resolveInterfaceMethod()
+    return this._method
+  }
+
+  private resolveInterfaceMethod(): void {
+    throw new Error('not implemented')
   }
 }
 
-class Constant {}
+export class RuntimeConstantPool {
+  private _class: Class
+  private _consts: any[] // use ConstantInfo?
 
-export class ConstantPool {
-  private _consts: Constant[] // use ConstantInfo?
-
-  constructor(private _class: Class, cp: cfConstantPool) {
+  constructor(klass: Class, cp: ConstantPool) {
+    this._class = klass
     this._consts = new Array(cp.size).fill(null)
     for (let i = 0; i < this._consts.length; i++) {
       const cpInfo = cp.getConstantInfo(i)
@@ -325,7 +339,7 @@ export class ConstantPool {
     return this._class
   }
 
-  getConstant(idx: number): Constant {
+  getConstant(idx: number): any {
     const res = this._consts[idx]
     if (res) return res
     throw new Error(`No constants at index ${idx}`)
@@ -333,16 +347,17 @@ export class ConstantPool {
 }
 
 class ClassLoader {
+  private _classpath: ClassPath
   private _classMap: Map<string, Class>
 
-  constructor(private _cp: ClassPath) {
+  constructor(classPath: ClassPath) {
+    this._classpath = classPath
     this._classMap = new Map()
   }
 
   loadClass(name: string): Class {
     if (this._classMap.has(name)) return this._classMap.get(name)
-    const res = this.loadNonArrayClass(name)
-    return res
+    return this.loadNonArrayClass(name)
   }
 
   loadNonArrayClass(name: string): Class {
@@ -354,8 +369,7 @@ class ClassLoader {
   }
 
   readClass(name: string) {
-    const { data, entry } = this._cp.readClass(name)
-    return { data, entry }
+    return this._classpath.readClass(name)
   }
 
   defineClass(data: Buffer) {
@@ -381,12 +395,7 @@ function resolveSuperClass(cls: Class): void {
 }
 
 function resolveInterfaces(cls: Class): void {
-  const interfaceCount = cls.interfaceNames.length
-  const interfaces = new Array(interfaceCount).fill(null)
-  for (let i = 0; i < cls.interfaceNames.length; i++) {
-    interfaces[i] = cls.loader.loadClass(cls.interfaceNames[i])
-  }
-  cls.interfaces = interfaces
+  cls.interfaces = cls.interfaceNames.map(ifaceName => cls.loader.loadClass(ifaceName))
 }
 
 function link(cls: Class): void {
@@ -439,7 +448,7 @@ function initStaticFinalVar(cls: Class, field: Field) {
   if (cpIdx <= 0) return
 
   const cp = cls.constantPool
-  const aConst = cp.getConstant(cpIdx)
+  const aConst = cp.getConstant(cpIdx) // constant type?
 
   const sVars = cls.staticVars
   const slotId = field.slotId
@@ -498,7 +507,7 @@ class Class {
   private _name: string
   private _superClassName: string
   private _interfaceNames: string[]
-  private _constantPool: ConstantPool
+  private _constantPool: RuntimeConstantPool
   private _fields: Field[]
   private _methods: Method[]
   private _loader: ClassLoader
@@ -513,7 +522,7 @@ class Class {
     this._name = cf.className
     this._superClassName = cf.superClassName
     this._interfaceNames = cf.interfaceNames
-    this._constantPool = new ConstantPool(this, cf.constantPool)
+    this._constantPool = new RuntimeConstantPool(this, cf.constantPool)
     this._fields = Field.newFields(this, cf.fields)
     this._methods = Method.newMethods(this, cf.methods)
   }
@@ -530,7 +539,7 @@ class Class {
     return this._interfaceNames.slice()
   }
 
-  get constantPool(): ConstantPool {
+  get constantPool(): RuntimeConstantPool {
     return this._constantPool
   }
 

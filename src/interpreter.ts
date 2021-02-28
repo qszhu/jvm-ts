@@ -1,4 +1,4 @@
-import MemberInfo from './classFile/memberInfo'
+import MemberInfo from './classFile/MemberInfo'
 import { BytecodeReader } from './instruction'
 import { newInstruction } from './instruction/factory'
 import { Thread } from './thread'

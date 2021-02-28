@@ -2,7 +2,7 @@ import { AttributeInfo, readAttributes } from './attributeInfo'
 import { u2 } from './types'
 import ClassReader from './ClassReader'
 import ConstantPool from './ConstantPool'
-import MemberInfo from './memberInfo'
+import MemberInfo from './MemberInfo'
 
 export default class ClassFile {
   private _reader: ClassReader

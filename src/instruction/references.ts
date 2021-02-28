@@ -1,10 +1,10 @@
 import { Index16Instruction } from '.'
-import { ClassRef, ConstantPool, FieldRef, Obj } from '../heap'
+import { ClassRef, RuntimeConstantPool, FieldRef, Obj } from '../heap'
 import Frame from '../thread/Frame'
 
 export class New extends Index16Instruction {
   execute(frame: Frame): void {
-    const cp: ConstantPool = frame.method.class.constantPool
+    const cp: RuntimeConstantPool = frame.method.class.constantPool
     const classRef = cp.getConstant(this._index) as ClassRef
     const cls = classRef.resolvedClass
     if (cls.isInterface || cls.isAbstract) throw new Error('java.lang.InstantiationError')

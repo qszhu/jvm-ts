@@ -116,7 +116,10 @@ export class SiPush implements Instruction {
 }
 
 function ldc(frame: Frame, idx: number) {
-  //
+  const stack = frame.operandStack
+  const cp = frame.method.class.constantPool
+  const c = cp.getConstant(idx)
+  throw new Error('not implemented')
 }
 
 export class Ldc extends Index8Instruction {

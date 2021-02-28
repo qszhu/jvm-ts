@@ -17,7 +17,7 @@ console.log(argv)
 import ClassPath from './classPath'
 import ClassFile from './classFile'
 import { interpret } from './interpreter'
-import MemberInfo from './classFile/memberInfo'
+import MemberInfo from './classFile/MemberInfo'
 
 function loadClass(className: string, classPath: ClassPath): ClassFile {
   const { data } = classPath.readClass(className)
