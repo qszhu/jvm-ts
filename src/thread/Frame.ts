@@ -1,6 +1,15 @@
 import { Thread } from '.'
-import { Method } from '../heap'
-import { doubleFromSlot, doubleToSlot, floatFromSlot, floatToSlot, longFromSlot, longToSlot, Slot, Slots } from './Slots'
+import Method from '../class/ClassMember/Method'
+import {
+  doubleFromSlot,
+  doubleToSlot,
+  floatFromSlot,
+  floatToSlot,
+  longFromSlot,
+  longToSlot,
+  Slot,
+  Slots,
+} from './Slots'
 
 class OperandStack {
   private _slots: Slot[]
@@ -10,6 +19,16 @@ class OperandStack {
     if (maxSize <= 0) return
     this._slots = new Array(maxSize).fill(null).map(() => new Slot())
   }
+
+  /*
+  push<T>(val: T) {
+    this._slots[this._size++].ref = val
+  }
+
+  pop<T>(): T {
+    return this._slots[--this._size].ref
+  }
+  */
 
   pushSlot(slot: Slot) {
     this._slots[this._size++] = slot
@@ -66,9 +85,9 @@ class OperandStack {
   }
 
   popRef(): any {
-    const i = this._size
-    const res = this._slots[i].ref
-    this._slots[i] = null
+    this._size--
+    const res = this._slots[this._size].ref
+    this._slots[this._size] = new Slot()
     return res
   }
 }

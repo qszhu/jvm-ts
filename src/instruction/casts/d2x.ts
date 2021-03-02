@@ -1,5 +1,5 @@
-import { NoOperandsInstruction } from '.'
-import Frame from '../thread/Frame'
+import { NoOperandsInstruction } from '..'
+import Frame from '../../thread/Frame'
 
 export class D2F extends NoOperandsInstruction {
   execute(frame: Frame): void {

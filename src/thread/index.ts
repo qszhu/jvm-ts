@@ -1,4 +1,4 @@
-import { Method } from '../heap'
+import Method from '../class/ClassMember/Method'
 import Frame from './Frame'
 
 class Stack<T> {

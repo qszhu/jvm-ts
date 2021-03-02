@@ -1,18 +1,14 @@
-import MemberInfo from './classFile/MemberInfo'
+import Method from './class/ClassMember/Method'
 import { BytecodeReader } from './instruction'
 import { newInstruction } from './instruction/factory'
 import { Thread } from './thread'
 
-export function interpret(methodInfo: MemberInfo): void {
-  const codeAttr = methodInfo.codeAttribute
-  const maxLocals = codeAttr.maxLocals
-  const maxStack = codeAttr.maxStack
-  const byteCode = codeAttr.code
+export function interpret(method: Method): void {
   const thread = new Thread()
-  const frame = thread.newFrame(maxLocals, maxStack)
+  const frame = thread.newFrame(method)
   thread.pushFrame(frame)
   try {
-    loop(thread, byteCode)
+    loop(thread, method.code)
   } catch (e) {
     console.log('LocalVars:', frame.localVars)
     console.log('OperandStack:', frame.operandStack)

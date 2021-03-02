@@ -1,5 +1,6 @@
 - [ ] design: static methods as factory methods
 - [ ] design: store stack frame variables as is
+- [ ] design: generic types for slot/stack/instructions
 - [ ] design: define descriptor type as enum
 - [ ] design: define exceptions
 - [ ] design: define `<init>`

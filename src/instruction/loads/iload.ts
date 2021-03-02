@@ -1,5 +1,5 @@
-import { Index8Instruction, NoOperandsInstruction } from '.'
-import Frame from '../thread/Frame'
+import { Index8Instruction, NoOperandsInstruction } from '..'
+import Frame from '../../thread/Frame'
 
 function iLoad(frame: Frame, idx: number) {
   const val = frame.localVars.getInt(idx)
