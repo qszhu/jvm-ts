@@ -2,11 +2,13 @@ import ClassMember from '.'
 import Class from '..'
 import MemberInfo from '../../classFile/MemberInfo'
 import AccessFlag from '../AccessFlag'
+import MethodDescriptorParser from './MethodDescriptor'
 
 export default class Method extends ClassMember {
   private _maxStack: number
   private _maxLocals: number
   private _code: Buffer
+  private _argSlotCount: number
 
   constructor(klass: Class, method: MemberInfo) {
     super(klass, method)
@@ -16,6 +18,17 @@ export default class Method extends ClassMember {
       this._maxLocals = codeAttr.maxLocals
       this._code = codeAttr.code
     }
+    this.calcArgSlotCount()
+  }
+
+  private calcArgSlotCount() {
+    this._argSlotCount = 0
+    const parsedDescriptor = MethodDescriptorParser.parseMethodDescriptor(this._descriptor)
+    for (const paramType of parsedDescriptor.parameterTypes) {
+      this._argSlotCount++
+      if (paramType === 'J' || paramType === 'D') this._argSlotCount++
+    }
+    if (!this.isStatic) this._argSlotCount++
   }
 
   static newMethods(klass: Class, methods: MemberInfo[]): Method[] {
@@ -64,5 +77,9 @@ export default class Method extends ClassMember {
 
   get code(): Buffer {
     return this._code
+  }
+
+  get argSlotCount(): number {
+    return this._argSlotCount
   }
 }

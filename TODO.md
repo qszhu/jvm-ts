@@ -12,4 +12,5 @@
 - [ ] optimization: cache file list in zip
 - [ ] optimization: iushr
 - [ ] optimization: return same instance for instructions
+- [ ] optimization: vtable in invokevirtual
 - [ ] debug: instruction debug string

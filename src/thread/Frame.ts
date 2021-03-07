@@ -1,23 +1,24 @@
 import { Thread } from '.'
 import Method from '../class/ClassMember/Method'
 import {
-  doubleFromSlot,
-  doubleToSlot,
+  doubleFromSlots,
+  doubleToSlots,
   floatFromSlot,
   floatToSlot,
-  longFromSlot,
-  longToSlot,
+  longFromSlots,
+  longToSlots,
   Slot,
   Slots,
 } from './Slots'
 
-class OperandStack {
+export class OperandStack {
   private _slots: Slot[]
   private _size = 0
 
-  constructor(private maxSize: number) {
-    if (maxSize <= 0) return
-    this._slots = new Array(maxSize).fill(null).map(() => new Slot())
+  constructor(maxSize: number) {
+    if (!maxSize) return
+    // maxSize + 1?
+    this._slots = new Array(maxSize + 1).fill(null).map(() => new Slot())
   }
 
   /*
@@ -30,15 +31,15 @@ class OperandStack {
   }
   */
 
-  pushSlot(slot: Slot) {
+  pushSlot(slot: Slot): void {
     this._slots[this._size++] = slot
   }
 
-  popSlot() {
+  popSlot(): Slot {
     return this._slots[--this._size]
   }
 
-  pushInt(val: number) {
+  pushInt(val: number): void {
     this._slots[this._size++].num = val
   }
 
@@ -46,20 +47,20 @@ class OperandStack {
     return this._slots[--this._size].num
   }
 
-  pushLong(val: bigint) {
+  pushLong(val: bigint): void {
     const i = this._size
-    longToSlot(this._slots[i], this._slots[i + 1], val)
+    longToSlots(this._slots[i], this._slots[i + 1], val)
     this._size += 2
   }
 
   popLong(): bigint {
     const i = this._size - 2
-    const res = longFromSlot(this._slots[i], this._slots[i + 1])
-    this._size -= 2
+    const res = longFromSlots(this._slots[i], this._slots[i + 1])
+    this._size = i
     return res
   }
 
-  pushFloat(val: number) {
+  pushFloat(val: number): void {
     floatToSlot(this._slots[this._size++], val)
   }
 
@@ -67,20 +68,20 @@ class OperandStack {
     return floatFromSlot(this._slots[--this._size])
   }
 
-  pushDouble(val: number) {
+  pushDouble(val: number): void {
     const i = this._size
-    doubleToSlot(this._slots[i], this._slots[i + 1], val)
+    doubleToSlots(this._slots[i], this._slots[i + 1], val)
     this._size += 2
   }
 
   popDouble(): number {
     const i = this._size - 2
-    const res = doubleFromSlot(this._slots[i], this._slots[i + 1])
-    this._size -= 2
+    const res = doubleFromSlots(this._slots[i], this._slots[i + 1])
+    this._size = i
     return res
   }
 
-  pushRef(ref: any) {
+  pushRef(ref: any): void {
     this._slots[this._size++].ref = ref
   }
 
@@ -89,6 +90,10 @@ class OperandStack {
     const res = this._slots[this._size].ref
     this._slots[this._size] = new Slot()
     return res
+  }
+
+  getRefFromTop(n: number): any {
+    return this._slots[this._size - 1 - n].ref
   }
 }
 
@@ -125,5 +130,9 @@ export default class Frame {
 
   set nextPc(pc: number) {
     this._nextPc = pc
+  }
+
+  revertNextPc(): void {
+    this._nextPc = this._thread.pc
   }
 }

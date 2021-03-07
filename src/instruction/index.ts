@@ -1,3 +1,6 @@
+import Class from '../class'
+import Method from '../class/ClassMember/Method'
+import { Thread } from '../thread'
 import Frame from '../thread/Frame'
 
 export class BytecodeReader {
@@ -99,4 +102,49 @@ export abstract class Index16Instruction implements Instruction {
   }
 
   abstract execute(frame: Frame): void
+}
+
+export function invokeMethod(invokerFrame: Frame, method: Method): void {
+  const thread = invokerFrame.thread
+  const newFrame = thread.newFrame(method)
+  thread.pushFrame(newFrame)
+
+  const argSlotCount = method.argSlotCount
+  if (argSlotCount > 0) {
+    for (let i = argSlotCount - 1; i >= 0; i--) {
+      const slot = invokerFrame.operandStack.popSlot()
+      newFrame.localVars.setSlot(i, slot)
+    }
+  }
+
+  if (method.isNative) {
+    if (method.name === 'registerNatives') {
+      thread.popFrame()
+    } else {
+      throw new Error(`native method: ${method.class.name}.${method.name}${method.descriptor}`)
+    }
+  }
+}
+
+export function initClass(thread: Thread, klass: Class): void {
+  klass.startInit()
+  scheduleClinit(thread, klass)
+  initSuperClass(thread, klass)
+}
+
+function scheduleClinit(thread: Thread, klass: Class): void {
+  const clinit = klass.clinitMethod
+  if (clinit) {
+    const newFrame = thread.newFrame(clinit)
+    thread.pushFrame(newFrame)
+  }
+}
+
+function initSuperClass(thread: Thread, klass: Class): void {
+  if (!klass.isInterface) {
+    const superClass = klass.superClass
+    if (superClass && !superClass.hasInitStarted) {
+      initClass(thread, superClass)
+    }
+  }
 }

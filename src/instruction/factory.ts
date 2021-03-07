@@ -21,6 +21,7 @@ import { Goto, GotoW } from './controls/goto'
 import { IfEq, IfGE, IfGT, IfLE, IfLT, IfNE } from './controls/if'
 import { IfACmpEq, IfACmpNE, IfNonNull, IfNull } from './controls/if_acmp'
 import { IfICmpEq, IfICmpGE, IfICmpGT, IfICmpLE, IfICmpLT, IfICmpNE } from './controls/if_icmp'
+import { AReturn, DReturn, FReturn, IReturn, LReturn, Return } from './controls/return'
 import { LookupSwitch, TableSwitch } from './controls/switch'
 import { ALoad, ALoad0, ALoad1, ALoad2, ALoad3 } from './loads/aload'
 import { DLoad, DLoad0, DLoad1, DLoad2, DLoad3 } from './loads/dload'
@@ -37,7 +38,7 @@ import { DSub, FSub, ISub, LSub } from './maths/sub'
 import { Nop } from './nop'
 import { GetField, PutField } from './refs/field'
 import { CheckCast, InstanceOf } from './refs/instance'
-import { InvokeSpecial, InvokeVirtual } from './refs/invoke'
+import { InvokeInterface, InvokeSpecial, InvokeStatic, InvokeVirtual } from './refs/invoke'
 import { New } from './refs/new'
 import { GetStatic, PutStatic } from './refs/static'
 import { Dup, Dup2, Dup2X1, Dup2X2, DupX1, DupX2 } from './stacks/dup'
@@ -379,12 +380,18 @@ export function newInstruction(opcode: number): Instruction {
       return new TableSwitch()
     case 0xab:
       return new LookupSwitch()
-    // 0xac: IReturn
-    // 0xad: LReturn
-    // 0xae: FReturn
-    // 0xaf: DReturn
-    // 0xb0: AReturn
-    // 0xb1: _Return
+    case 0xac:
+      return new IReturn()
+    case 0xad:
+      return new LReturn()
+    case 0xae:
+      return new FReturn()
+    case 0xaf:
+      return new DReturn()
+    case 0xb0:
+      return new AReturn()
+    case 0xb1:
+      return new Return()
     case 0xb2:
       return new GetStatic()
     case 0xb3:
@@ -397,8 +404,10 @@ export function newInstruction(opcode: number): Instruction {
       return new InvokeVirtual()
     case 0xb7:
       return new InvokeSpecial()
-    // 0xb8: InvokeStatic
-    // 0xb9: InvokeInterface
+    case 0xb8:
+      return new InvokeStatic()
+    case 0xb9:
+      return new InvokeInterface()
     // 0xba: InvokeDynamic
     case 0xbb:
       return new New()

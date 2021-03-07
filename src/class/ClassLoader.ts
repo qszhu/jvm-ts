@@ -4,10 +4,12 @@ import ClassPath from '../classPath'
 export default class ClassLoader {
   private _classpath: ClassPath
   private _classMap: Map<string, Class>
+  private _verbose: boolean
 
-  constructor(classPath: ClassPath) {
+  constructor(classPath: ClassPath, verbose: boolean) {
     this._classpath = classPath
     this._classMap = new Map()
+    this._verbose = verbose
   }
 
   loadClass(name: string): Class {
@@ -19,7 +21,9 @@ export default class ClassLoader {
     const { data, entry } = this.readClass(name)
     const cls = this.defineClass(data)
     cls.link()
-    console.log(`Loaded ${name} from ${entry}`)
+    if (this._verbose) {
+      console.log(`[Loaded ${name} from ${entry}]`)
+    }
     return cls
   }
 

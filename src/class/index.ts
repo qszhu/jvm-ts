@@ -47,8 +47,8 @@ class ClassRef extends SymRef {
 }
 
 abstract class MemberRef extends SymRef {
-  private _name: string
-  private _descriptor: string
+  protected _name: string
+  protected _descriptor: string
 
   constructor(cp: RuntimeConstantPool, refInfo: BaseConstantMemberRefInfo) {
     super(cp)
@@ -100,7 +100,16 @@ class MethodRef extends MemberRef {
   }
 
   private resolveMethodRef(): void {
-    throw new Error('not implemented')
+    const c = this.resolvedClass
+    if (c.isInterface) throw new Error('java.lang.IncompatibleClassChangeError')
+
+    const method = c.lookupMethod(this._name, this._descriptor)
+    if (!method) throw new Error('java.lang.NoSuchmethodError')
+
+    const d = this._cp.class
+    if (!method.isAccessibleTo(d)) throw new Error('java.lang.IllegalAccessError')
+
+    this._method = method
   }
 }
 
@@ -112,12 +121,21 @@ class InterfaceMethodRef extends MemberRef {
   }
 
   get resolvedInterfaceMethod(): Method {
-    if (!this._method) this.resolveInterfaceMethod()
+    if (!this._method) this.resolveInterfaceMethodRef()
     return this._method
   }
 
-  private resolveInterfaceMethod(): void {
-    throw new Error('not implemented')
+  private resolveInterfaceMethodRef(): void {
+    const c = this.resolvedClass
+    if (!c.isInterface) throw new Error('java.lang.IncompatibleClassChangeError')
+
+    const method = c.lookupInterfaceMethod(this._name, this._descriptor)
+    if (!method) throw new Error('java.lang.NoSuchmethodError')
+
+    const d = this._cp.class
+    if (!method.isAccessibleTo(d)) throw new Error('java.lang.IllegalAccessError')
+
+    this._method = method
   }
 }
 
@@ -201,6 +219,7 @@ export default class Class {
   private _instanceSlotCount: number
   private _staticSlotCount: number
   private _staticVars: Slots
+  private _initStarted: boolean
 
   constructor(cf: ClassFile) {
     this._accessFlags = cf.accessFlags
@@ -210,6 +229,7 @@ export default class Class {
     this._constantPool = new RuntimeConstantPool(this, cf.constantPool)
     this._fields = Field.newFields(this, cf.fields)
     this._methods = Method.newMethods(this, cf.methods)
+    this._initStarted = false
   }
 
   get name(): string {
@@ -228,12 +248,24 @@ export default class Class {
     return this._loader
   }
 
+  get superClass(): Class {
+    return this._superClass
+  }
+
   get instanceSlotCount(): number {
     return this._instanceSlotCount
   }
 
   get staticVars(): Slots {
     return this._staticVars
+  }
+
+  get hasInitStarted(): boolean {
+    return this._initStarted
+  }
+
+  startInit(): void {
+    this._initStarted = true
   }
 
   private hasAccessFlag(f: AccessFlag) {
@@ -290,6 +322,10 @@ export default class Class {
     return false
   }
 
+  isSuperClassOf(other: Class): boolean {
+    return other.isSubClassOf(this)
+  }
+
   isSubInterfaceOf(iface: Class): boolean {
     for (const superInterface of this._interfaces) {
       if (superInterface === iface || superInterface.isSubInterfaceOf(iface)) return true
@@ -316,6 +352,10 @@ export default class Class {
 
   get mainMethod(): Method {
     return this.getStaticMethod('main', '([Ljava/lang/String;)V')
+  }
+
+  get clinitMethod(): Method {
+    return this.getStaticMethod('<clinit>', '()V')
   }
 
   private getStaticMethod(name: string, descriptor: string): Method {
@@ -428,5 +468,36 @@ export default class Class {
       if (field) return field
     }
     if (this._superClass) return this._superClass.lookupField(name, descriptor)
+  }
+
+  lookupMethod(name: string, descriptor: string): Method {
+    let method = Class.lookupMethodInClass(this, name, descriptor)
+    if (!method) method = Class.lookupMethodInInterfaces(this._interfaces, name, descriptor)
+    return method
+  }
+
+  lookupInterfaceMethod(name: string, descriptor: string): Method {
+    for (const method of this._methods) {
+      if (method.name === name && method.descriptor === descriptor) return method
+    }
+    return Class.lookupMethodInInterfaces(this._interfaces, name, descriptor)
+  }
+
+  static lookupMethodInClass(klass: Class, name: string, descriptor: string): Method {
+    for (let c = klass; c; c = c._superClass) {
+      for (const method of c._methods) {
+        if (method.name === name && method.descriptor === descriptor) return method
+      }
+    }
+  }
+
+  static lookupMethodInInterfaces(ifaces: Class[], name: string, descriptor: string): Method {
+    for (const iface of ifaces) {
+      for (const method of iface._methods) {
+        if (method.name === name && method.descriptor === descriptor) return method
+      }
+      const method = Class.lookupMethodInInterfaces(iface._interfaces, name, descriptor)
+      if (method) return method
+    }
   }
 }

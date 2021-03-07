@@ -10,11 +10,9 @@ export default class Obj {
     this._fields = new Slots(klass.instanceSlotCount)
   }
 
-  /*
   get class(): Class {
     return this._class
   }
-  */
 
   get fields(): Slots {
     return this._fields

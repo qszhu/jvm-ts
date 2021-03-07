@@ -20,6 +20,10 @@ class Stack<T> {
     if (this._data.length === 0) throw new Error('stack is empty')
     return this._data[this._data.length - 1]
   }
+
+  get isEmpty(): boolean {
+    return this._data.length === 0
+  }
 }
 
 export class Thread {
@@ -49,5 +53,13 @@ export class Thread {
 
   currentFrame(): Frame {
     return this._stack.peek()
+  }
+
+  get topFrame(): Frame {
+    return this._stack.peek()
+  }
+
+  get isStackEmpty(): boolean {
+    return this._stack.isEmpty
   }
 }
