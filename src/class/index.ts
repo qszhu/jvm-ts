@@ -205,6 +205,28 @@ export class RuntimeConstantPool {
   }
 }
 
+const primitiveTypes = new Map<string, string>([
+  ['void', 'V'],
+  ['boolean', 'Z'],
+  ['byte', 'B'],
+  ['short', 'S'],
+  ['int', 'I'],
+  ['long', 'J'],
+  ['char', 'C'],
+  ['float', 'F'],
+  ['double', 'D']
+])
+
+function getArrayClassName(name: string): string {
+  return `[${toDescriptor(name)}`
+}
+
+function toDescriptor(name: string): string {
+  if (name.startsWith('[')) return name
+  if (primitiveTypes.has(name)) return primitiveTypes.get(name)
+  return `L${name};`
+}
+
 export default class Class {
   private _accessFlags: number
   private _name: string
@@ -221,15 +243,31 @@ export default class Class {
   private _staticVars: Slots
   private _initStarted: boolean
 
-  constructor(cf: ClassFile) {
-    this._accessFlags = cf.accessFlags
-    this._name = cf.className
-    this._superClassName = cf.superClassName
-    this._interfaceNames = cf.interfaceNames
-    this._constantPool = new RuntimeConstantPool(this, cf.constantPool)
-    this._fields = Field.newFields(this, cf.fields)
-    this._methods = Method.newMethods(this, cf.methods)
-    this._initStarted = false
+  static newClass(cf: ClassFile): Class {
+    const klass = new Class()
+    klass._accessFlags = cf.accessFlags
+    klass._name = cf.className
+    klass._superClassName = cf.superClassName
+    klass._interfaceNames = cf.interfaceNames
+    klass._constantPool = new RuntimeConstantPool(klass, cf.constantPool)
+    klass._fields = Field.newFields(klass, cf.fields)
+    klass._methods = Method.newMethods(klass, cf.methods)
+    klass._initStarted = false
+    return klass
+  }
+
+  static newArrayClass(name: string, loader: ClassLoader): Class {
+    const klass = new Class()
+    klass._accessFlags = AccessFlag.PUBLIC
+    klass._name = name
+    klass._loader = loader
+    klass._initStarted = true
+    klass._superClass = loader.loadClass('java/lang/Object')
+    klass._interfaces = [
+      loader.loadClass('java/lang/Cloneable'),
+      loader.loadClass('java/io/Serializable')
+    ]
+    return klass
   }
 
   get name(): string {
@@ -365,12 +403,39 @@ export default class Class {
   }
 
   newObject(): Obj {
-    return new Obj(this)
+    return Obj.newObject(this)
+  }
+
+  get isArray(): boolean {
+    return this._name.startsWith('[')
+  }
+
+  newArray(count: number): Obj {
+    if (!this.isArray) throw new Error(`Not array class: ${this.name}`)
+    switch (this.name) {
+      case '[Z':
+      case '[B':
+      case '[C':
+      case '[S':
+      case '[I':
+      case '[F':
+      case '[D':
+        return Obj.newArray(this, new Array<number>(count))
+      case '[J':
+        return Obj.newArray(this, new Array<bigint>(count))
+      default:
+        return Obj.newArray(this, new Array<Obj>(count))
+    }
+  }
+
+  get arrayClass(): Class {
+    const arrayClassName = getArrayClassName(this._name)
+    return this._loader.loadClass(arrayClassName)
   }
 
   static parse(data: Buffer): Class {
     const cf = new ClassFile(data)
-    return new Class(cf)
+    return Class.newClass(cf)
   }
 
   resolveSuperClass(): void {

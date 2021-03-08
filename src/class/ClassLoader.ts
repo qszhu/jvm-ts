@@ -14,10 +14,17 @@ export default class ClassLoader {
 
   loadClass(name: string): Class {
     if (this._classMap.has(name)) return this._classMap.get(name)
+    if (name[0].startsWith('[')) return this.loadArrayClass(name)
     return this.loadNonArrayClass(name)
   }
 
-  loadNonArrayClass(name: string): Class {
+  private loadArrayClass(name: string): Class {
+    const klass = Class.newArrayClass(name, this)
+    this._classMap.set(name, klass)
+    return klass
+  }
+
+  private loadNonArrayClass(name: string): Class {
     const { data, entry } = this.readClass(name)
     const cls = this.defineClass(data)
     cls.link()
