@@ -1,5 +1,6 @@
 import Class from '../class'
 import Method from '../class/ClassMember/Method'
+import Obj from '../class/Obj'
 import { Thread } from '../thread'
 import Frame from '../thread/Frame'
 
@@ -147,4 +148,12 @@ function initSuperClass(thread: Thread, klass: Class): void {
       initClass(thread, superClass)
     }
   }
+}
+
+export function checkNotNil(ref: Obj): void {
+  if (!ref) throw new Error('java.lang.NullPointerException')
+}
+
+export function checkIndex(arrLen: number, idx: number): void {
+  if (idx < 0 || idx >= arrLen) throw new Error('ArrayIndexOutOfBoundsException')
 }

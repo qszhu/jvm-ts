@@ -6,6 +6,7 @@
 - [ ] design: define `<init>`
 - [ ] design: bad `const cp = frame.method.class.constantPool`
 - [ ] design: DRY `putstatic/putfield`, `getstatic/getfield`
+- [ ] design: Slot stores Obj directly
 - [ ] implementation: AttributeInfo
 - [ ] implementation: modified utf8
 - [ ] implementation: instructions

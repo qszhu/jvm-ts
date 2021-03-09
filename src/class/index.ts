@@ -214,7 +214,7 @@ const primitiveTypes = new Map<string, string>([
   ['long', 'J'],
   ['char', 'C'],
   ['float', 'F'],
-  ['double', 'D']
+  ['double', 'D'],
 ])
 
 function getArrayClassName(name: string): string {
@@ -225,6 +225,23 @@ function toDescriptor(name: string): string {
   if (name.startsWith('[')) return name
   if (primitiveTypes.has(name)) return primitiveTypes.get(name)
   return `L${name};`
+}
+
+function getComponentClassName(name: string): string {
+  if (name[0] == '[') {
+    const componentTypeDescriptor = name.slice(1)
+    return toClassName(componentTypeDescriptor)
+  }
+  throw new Error(`Not array: ${name}`)
+}
+
+function toClassName(descriptor: string): string {
+  if (descriptor[0] === '[') return descriptor
+  if (descriptor[0] === 'L') return descriptor.slice(1, descriptor.length - 1)
+  for (const [className, d] of primitiveTypes.entries()) {
+    if (d === descriptor) return className
+  }
+  throw new Error(`Invalid descriptor: ${descriptor}`)
 }
 
 export default class Class {
@@ -265,7 +282,7 @@ export default class Class {
     klass._superClass = loader.loadClass('java/lang/Object')
     klass._interfaces = [
       loader.loadClass('java/lang/Cloneable'),
-      loader.loadClass('java/io/Serializable')
+      loader.loadClass('java/io/Serializable'),
     ]
     return klass
   }
@@ -349,8 +366,28 @@ export default class Class {
   isAssignableFrom(other: Class): boolean {
     const [s, t] = [other, this]
     if (s === t) return true
-    if (t.isInterface) return s.isSubClassOf(t)
-    return s.implements(t)
+    if (!s.isArray) {
+      if (!s.isInterface) return t.isInterface ? s.implements(t) : s.isSubClassOf(t)
+      else return t.isInterface ? t.isSuperInterfaceOf(s) : t.isJlObject
+    } else {
+      if (!t.isArray) return t.isInterface ? t.isJlCloneable || t.isJioSerializable : t.isJlObject
+      else {
+        const [sc, tc] = [s.componentClass, t.componentClass]
+        return sc === tc || tc.isAssignableFrom(sc)
+      }
+    }
+  }
+
+  get isJlObject(): boolean {
+    return this._name === 'java/lang/Object'
+  }
+
+  get isJlCloneable(): boolean {
+    return this._name === 'java/lang/Cloneable'
+  }
+
+  get isJioSerializable(): boolean {
+    return this._name === 'java/io/Serializable'
   }
 
   isSubClassOf(other: Class): boolean {
@@ -369,6 +406,10 @@ export default class Class {
       if (superInterface === iface || superInterface.isSubInterfaceOf(iface)) return true
     }
     return false
+  }
+
+  isSuperInterfaceOf(iface: Class): boolean {
+    return iface.isSubInterfaceOf(this)
   }
 
   implements(iface: Class): boolean {
@@ -431,6 +472,11 @@ export default class Class {
   get arrayClass(): Class {
     const arrayClassName = getArrayClassName(this._name)
     return this._loader.loadClass(arrayClassName)
+  }
+
+  get componentClass(): Class {
+    const componentClassName = getComponentClassName(this._name)
+    return this._loader.loadClass(componentClassName)
   }
 
   static parse(data: Buffer): Class {

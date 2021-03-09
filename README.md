@@ -58,5 +58,41 @@ pc: 17 inst: Goto
 ...
 ```
 
+```bash
+$ tsjava --cp java jvmgo.book.ch07.FibonacciTest
+832040n
+```
+
+```bash
+$ tsjava --cp java jvmgo.book.ch08.BubbleSortTest --verbose
+[Loaded java/lang/Object from /Library/Java/JavaVirtualMachines/jdk1.8.0_271.jdk/Contents/Home/jre/lib/rt.jar]
+[Loaded jvmgo/book/ch08/BubbleSortTest from /Users/qinsi/dev/jvm-ts/java]
+[Loaded java/lang/Cloneable from /Library/Java/JavaVirtualMachines/jdk1.8.0_271.jdk/Contents/Home/jre/lib/rt.jar]
+[Loaded java/io/Serializable from /Library/Java/JavaVirtualMachines/jdk1.8.0_271.jdk/Contents/Home/jre/lib/rt.jar]
+[Loaded java/lang/System from /Library/Java/JavaVirtualMachines/jdk1.8.0_271.jdk/Contents/Home/jre/lib/rt.jar]
+[Loaded java/lang/AutoCloseable from /Library/Java/JavaVirtualMachines/jdk1.8.0_271.jdk/Contents/Home/jre/lib/rt.jar]
+[Loaded java/io/Closeable from /Library/Java/JavaVirtualMachines/jdk1.8.0_271.jdk/Contents/Home/jre/lib/rt.jar]
+[Loaded java/io/Flushable from /Library/Java/JavaVirtualMachines/jdk1.8.0_271.jdk/Contents/Home/jre/lib/rt.jar]
+[Loaded java/io/OutputStream from /Library/Java/JavaVirtualMachines/jdk1.8.0_271.jdk/Contents/Home/jre/lib/rt.jar]
+[Loaded java/io/FilterOutputStream from /Library/Java/JavaVirtualMachines/jdk1.8.0_271.jdk/Contents/Home/jre/lib/rt.jar]
+[Loaded java/lang/Appendable from /Library/Java/JavaVirtualMachines/jdk1.8.0_271.jdk/Contents/Home/jre/lib/rt.jar]
+[Loaded java/io/PrintStream from /Library/Java/JavaVirtualMachines/jdk1.8.0_271.jdk/Contents/Home/jre/lib/rt.jar]
+9
+10
+11
+22
+24
+36
+36
+56
+65
+77
+78
+84
+92
+95
+97
+```
+
 ### References
 * https://github.com/zxh0/jvmgo-book

@@ -28,6 +28,7 @@ import { DLoad, DLoad0, DLoad1, DLoad2, DLoad3 } from './loads/dload'
 import { FLoad, FLoad0, FLoad1, FLoad2, FLoad3 } from './loads/fload'
 import { ILoad, ILoad0, ILoad1, ILoad2, ILoad3 } from './loads/iload'
 import { LLoad, LLoad0, LLoad1, LLoad2, LLoad3 } from './loads/lload'
+import { AALoad, BALoad, CALoad, DALoad, FALoad, IALoad, LALoad, SALoad } from './loads/xaload'
 import { DAdd, FAdd, IAdd, LAdd } from './maths/add'
 import { DDiv, FDiv, IDiv, LDiv } from './maths/div'
 import { IInc } from './maths/inc'
@@ -36,6 +37,7 @@ import { DNeg, FNeg, INeg, LNeg } from './maths/neg'
 import { DRem, FRem, IRem, LRem } from './maths/rem'
 import { DSub, FSub, ISub, LSub } from './maths/sub'
 import { Nop } from './nop'
+import { ANewArray, ArrayLength, MultiANewArray, NewArray } from './refs/array'
 import { GetField, PutField } from './refs/field'
 import { CheckCast, InstanceOf } from './refs/instance'
 import { InvokeInterface, InvokeSpecial, InvokeStatic, InvokeVirtual } from './refs/invoke'
@@ -49,6 +51,16 @@ import { DStore, DStore0, DStore1, DStore2, DStore3 } from './stores/dstore'
 import { FStore, FStore0, FStore1, FStore2, FStore3 } from './stores/fstore'
 import { IStore, IStore0, IStore1, IStore2, IStore3 } from './stores/istore'
 import { LStore, LStore0, LStore1, LStore2, LStore3 } from './stores/lstore'
+import {
+  AAStore,
+  BAStore,
+  CAStore,
+  DAStore,
+  FAStore,
+  IAStore,
+  LAStore,
+  SAStore,
+} from './stores/xastore'
 import { Wide } from './wide'
 
 // put in here in a separate file to break circular dependency
@@ -146,14 +158,22 @@ export function newInstruction(opcode: number): Instruction {
       return new ALoad2()
     case 0x2d:
       return new ALoad3()
-    // 0x2e: IALoad
-    // 0x2f: LALoad
-    // 0x30: FALoad
-    // 0x31: DALoad
-    // 0x32: AALoad
-    // 0x33: BALoad
-    // 0x34: CALoad
-    // 0x35: SALoad
+    case 0x2e:
+      return new IALoad()
+    case 0x2f:
+      return new LALoad()
+    case 0x30:
+      return new FALoad()
+    case 0x31:
+      return new DALoad()
+    case 0x32:
+      return new AALoad()
+    case 0x33:
+      return new BALoad()
+    case 0x34:
+      return new CALoad()
+    case 0x35:
+      return new SALoad()
     case 0x36:
       return new IStore()
     case 0x37:
@@ -204,14 +224,22 @@ export function newInstruction(opcode: number): Instruction {
       return new AStore2()
     case 0x4e:
       return new AStore3()
-    // 0x4f: IAStore
-    // 0x50: LAStore
-    // 0x51: FAStore
-    // 0x52: DAStore
-    // 0x53: AAStore
-    // 0x54: BAStore
-    // 0x55: CAStore
-    // 0x56: SAStore
+    case 0x4f:
+      return new IAStore()
+    case 0x50:
+      return new LAStore()
+    case 0x51:
+      return new FAStore()
+    case 0x52:
+      return new DAStore()
+    case 0x53:
+      return new AAStore()
+    case 0x54:
+      return new BAStore()
+    case 0x55:
+      return new CAStore()
+    case 0x56:
+      return new SAStore()
     case 0x57:
       return new Pop()
     case 0x58:
@@ -411,9 +439,12 @@ export function newInstruction(opcode: number): Instruction {
     // 0xba: InvokeDynamic
     case 0xbb:
       return new New()
-    // 0xbc: NewArray
-    // 0xbd: ANewArray
-    // 0xbe: ArrayLength
+    case 0xbc:
+      return new NewArray()
+    case 0xbd:
+      return new ANewArray()
+    case 0xbe:
+      return new ArrayLength()
     // 0xbf: AThrow
     case 0xc0:
       return new CheckCast()
@@ -423,7 +454,8 @@ export function newInstruction(opcode: number): Instruction {
     // 0xc3: MonitorExit
     case 0xc4:
       return new Wide()
-    // 0xc5: MultiANewArray
+    case 0xc5:
+      return new MultiANewArray()
     case 0xc6:
       return new IfNull()
     case 0xc7:
