@@ -7,17 +7,20 @@ import {
   LongConstant,
   StringConstant,
 } from '../../class'
+import { jString } from '../../class/StringPool'
 import Frame from '../../thread/Frame'
 
 function ldc(frame: Frame, idx: number) {
   const stack = frame.operandStack
-  const cp = frame.method.class.constantPool
-  const c = cp.getConstant(idx)
+  const klass = frame.method.class
+  const c = klass.constantPool.getConstant(idx)
   if (c instanceof IntegerConstant) {
     stack.pushInt(c.data)
   } else if (c instanceof FloatConstant) {
     stack.pushFloat(c.data)
   } else if (c instanceof StringConstant) {
+    const internedStr = jString(klass.loader, c.data)
+    stack.pushRef(internedStr)
   } else if (c instanceof ClassConstant) {
   } else {
     throw new Error('ldc not implemented')

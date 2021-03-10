@@ -16,7 +16,7 @@ export function floatFromSlot(slot: Slot): number {
 
 export function longToSlots(slot1: Slot, slot2: Slot, val: bigint): void {
   const buf = Buffer.alloc(8)
-  buf.writeBigInt64BE(val)
+  buf.writeBigUInt64BE(val)
   slot1.num = buf.readInt32BE()
   slot2.num = buf.readInt32BE(4)
 }
@@ -25,7 +25,7 @@ export function longFromSlots(slot1: Slot, slot2: Slot): bigint {
   const buf = Buffer.alloc(8)
   buf.writeInt32BE(slot1.num)
   buf.writeInt32BE(slot2.num, 4)
-  return buf.readBigInt64BE()
+  return buf.readBigUInt64BE()
 }
 
 export function doubleToSlots(slot1: Slot, slot2: Slot, val: number): void {

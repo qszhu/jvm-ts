@@ -2,8 +2,7 @@ import Class from '.'
 import { Slots } from '../thread/Slots'
 
 export default class Obj {
-  private _class: Class
-  private _data: any
+  constructor(private _class?: Class, private _data?: any) {}
 
   static newObject(klass: Class): Obj {
     const obj = new Obj()
@@ -60,10 +59,23 @@ export default class Obj {
   }
 
   get arrayLength(): number {
+    if (!Array.isArray(this._data)) throw new Error('not array')
     return this._data.length
   }
 
   isInstanceOf(other: Class): boolean {
     return other.isAssignableFrom(this._class)
+  }
+
+  setRefVar(name: string, descriptor: string, ref: Obj): void {
+    const field = Class.getField(this._class, name, descriptor, false)
+    const slots = this._data as Slots
+    slots.setRef(field.slotId, ref)
+  }
+
+  getRefVar(name: string, descriptor: string): Obj {
+    const field = Class.getField(this._class, name, descriptor, false)
+    const slots = this._data as Slots
+    return slots.getRef(field.slotId)
   }
 }

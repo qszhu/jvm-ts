@@ -17,6 +17,7 @@ export class OperandStack {
 
   constructor(maxSize: number) {
     if (!maxSize) return
+    // this._slots = new Array(maxSize).fill(null).map(() => new Slot())
     // maxSize + 1?
     this._slots = new Array(maxSize + 1).fill(null).map(() => new Slot())
   }

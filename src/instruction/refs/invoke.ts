@@ -1,6 +1,7 @@
 import { BytecodeReader, Index16Instruction, initClass, Instruction, invokeMethod } from '..'
 import Class, { InterfaceMethodRefConstant, MethodRefConstant } from '../../class'
 import Obj from '../../class/Obj'
+import { jsString } from '../../class/StringPool'
 import Frame, { OperandStack } from '../../thread/Frame'
 
 export class InvokeStatic extends Index16Instruction {
@@ -96,6 +97,11 @@ function println(stack: OperandStack, descriptor: string) {
       break
     case '(D)V':
       console.log(stack.popDouble())
+      break
+    case '(Ljava/lang/String;)V':
+      const jStr = stack.popRef()
+      const str = jsString(jStr)
+      console.log(str)
       break
     default:
       throw new Error(`println: ${descriptor}`)

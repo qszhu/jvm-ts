@@ -14,7 +14,7 @@ export default class ClassLoader {
 
   loadClass(name: string): Class {
     if (this._classMap.has(name)) return this._classMap.get(name)
-    if (name[0].startsWith('[')) return this.loadArrayClass(name)
+    if (name.startsWith('[')) return this.loadArrayClass(name)
     return this.loadNonArrayClass(name)
   }
 

@@ -135,7 +135,7 @@ export function initClass(thread: Thread, klass: Class): void {
 
 function scheduleClinit(thread: Thread, klass: Class): void {
   const clinit = klass.clinitMethod
-  if (clinit) {
+  if (clinit && clinit.class === klass) {
     const newFrame = thread.newFrame(clinit)
     thread.pushFrame(newFrame)
   }

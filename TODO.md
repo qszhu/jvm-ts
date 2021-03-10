@@ -7,6 +7,8 @@
 - [ ] design: bad `const cp = frame.method.class.constantPool`
 - [ ] design: DRY `putstatic/putfield`, `getstatic/getfield`
 - [ ] design: Slot stores Obj directly
+- [ ] design: other string encoding
+- [ ] design: move out class loading functions from Class class
 - [ ] implementation: AttributeInfo
 - [ ] implementation: modified utf8
 - [ ] implementation: instructions

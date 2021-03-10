@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 import yargs from 'yargs'
+import ClassLoader from './class/ClassLoader'
+import ClassPath from './classPath'
+import { interpret } from './interpreter'
 
 const argv = yargs(process.argv.slice(2))
   .usage('Usage: $0 [--options] class [args...]')
@@ -22,13 +25,9 @@ const argv = yargs(process.argv.slice(2))
 
 console.log(argv)
 
-import ClassPath from './classPath'
-import ClassLoader from './class/ClassLoader'
-import { interpret } from './interpreter'
-
 async function main() {
   const cp = new ClassPath(argv.Xjre as string, argv.cp as string)
-  console.log(cp.toString())
+  // console.log(cp.toString())
 
   const verboseClass = argv['verbose:class'] as boolean
   const verboseInst = argv['verbose:inst'] as boolean
@@ -37,12 +36,12 @@ async function main() {
 
   let className: string = argv._[0] as string
   className = className.replace(/\./g, '/')
-  console.log(className)
+  // console.log(className)
 
   const mainClass = classLoader.loadClass(className)
   const mainMethod = mainClass.mainMethod
 
-  if (mainMethod) interpret(mainMethod, verboseInst)
+  if (mainMethod) interpret(mainMethod, verboseInst, argv._ as string[])
   else console.error('Main method not found in class', argv._[0])
 }
 

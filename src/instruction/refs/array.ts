@@ -59,13 +59,14 @@ export class NewArray implements Instruction { // can use Index8Instruction
 
 export class ANewArray extends Index16Instruction {
   execute(frame: Frame): void {
+    const cp = frame.method.class.constantPool
+    const classRef = (cp.getConstant(this._index) as ClassConstant).data
+    const componentClass = classRef.resolvedClass
+
     const stack = frame.operandStack
     const count = stack.popInt()
     if (count < 0) throw new Error('java.lang.NegativeArraySizeException')
 
-    const cp = frame.method.class.constantPool
-    const classRef = (cp.getConstant(this._index) as ClassConstant).data
-    const componentClass = classRef.resolvedClass
     const arrClass = componentClass.arrayClass
     const arr = arrClass.newArray(count)
     stack.pushRef(arr)

@@ -94,5 +94,13 @@ $ tsjava --cp java jvmgo.book.ch08.BubbleSortTest --verbose
 97
 ```
 
+```bash
+$ tsjava --cp java jvmgo.book.ch08.PrintArgs foo bar 你好，世界！
+jvmgo.book.ch08.PrintArgs
+foo
+bar
+你好，世界！
+```
+
 ### References
 * https://github.com/zxh0/jvmgo-book

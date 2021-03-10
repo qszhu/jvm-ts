@@ -5,13 +5,13 @@ import Frame from '../../thread/Frame'
 export class AAStore extends NoOperandsInstruction {
   execute(frame: Frame): void {
     const stack = frame.operandStack
-    const val = stack.popRef()
+    const ref = stack.popRef()
     const idx = stack.popInt()
     const arrRef = stack.popRef() as Obj
     checkNotNil(arrRef)
     const refs = arrRef.refs
     checkIndex(refs.length, idx)
-    refs[idx] = val
+    refs[idx] = ref
   }
 }
 

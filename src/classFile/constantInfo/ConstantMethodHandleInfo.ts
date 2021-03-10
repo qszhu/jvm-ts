@@ -13,6 +13,6 @@ export default class ConstantMethodHandleInfo {
   }
 
   static fromReader(reader: ClassReader): ConstantMethodHandleInfo {
-    return new ConstantMethodHandleInfo(reader.readU1(), reader.readU1())
+    return new ConstantMethodHandleInfo(reader.readU1(), reader.readU2())
   }
 }

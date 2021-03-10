@@ -81,6 +81,6 @@ export function readConstantInfo(reader: ClassReader, cp: ConstantPool): Constan
     case ConstantType.InvokeDynamic:
       return ConstantInvokeDynamicInfo.fromReader(reader)
     default:
-      throw new Error('java.lang.ClassFormatError: constant pool tag')
+      throw new Error(`java.lang.ClassFormatError: constant pool tag ${tag}`)
   }
 }

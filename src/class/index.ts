@@ -16,6 +16,7 @@ import ClassLoader from './ClassLoader'
 import Field from './ClassMember/Field'
 import Method from './ClassMember/Method'
 import Obj from './Obj'
+import { jString } from './StringPool'
 
 abstract class SymRef {
   protected _cp: RuntimeConstantPool
@@ -228,16 +229,16 @@ function toDescriptor(name: string): string {
 }
 
 function getComponentClassName(name: string): string {
-  if (name[0] == '[') {
-    const componentTypeDescriptor = name.slice(1)
+  if (name.startsWith('[')) {
+    const componentTypeDescriptor = name.substring(1)
     return toClassName(componentTypeDescriptor)
   }
   throw new Error(`Not array: ${name}`)
 }
 
 function toClassName(descriptor: string): string {
-  if (descriptor[0] === '[') return descriptor
-  if (descriptor[0] === 'L') return descriptor.slice(1, descriptor.length - 1)
+  if (descriptor.startsWith('[')) return descriptor
+  if (descriptor.startsWith('L')) return descriptor.substring(1, descriptor.length - 1)
   for (const [className, d] of primitiveTypes.entries()) {
     if (d === descriptor) return className
   }
@@ -430,16 +431,27 @@ export default class Class {
   }
 
   get mainMethod(): Method {
-    return this.getStaticMethod('main', '([Ljava/lang/String;)V')
+    return Class.getMethod(this, 'main', '([Ljava/lang/String;)V', true)
   }
 
   get clinitMethod(): Method {
-    return this.getStaticMethod('<clinit>', '()V')
+    return Class.getMethod(this, '<clinit>', '()V', true)
   }
 
-  private getStaticMethod(name: string, descriptor: string): Method {
-    for (const method of this._methods) {
-      if (method.isStatic && method.name === name && method.descriptor === descriptor) return method
+  static getMethod(klass: Class, name: string, descriptor: string, isStatic: boolean): Method {
+    for (let c = klass; c; c = c.superClass) {
+      for (const method of c._methods) {
+        if (method.name === name && method.descriptor === descriptor && method.isStatic === isStatic) return method
+      }
+    }
+  }
+
+  static getField(klass: Class, name: string, descriptor: string, isStatic: boolean): Field {
+    for (let c = klass; c; c = c.superClass) {
+      for (const field of c._fields) {
+        if (field.name === name && field.descriptor === descriptor && field.isStatic === isStatic)
+          return field
+      }
     }
   }
 
@@ -461,11 +473,11 @@ export default class Class {
       case '[I':
       case '[F':
       case '[D':
-        return Obj.newArray(this, new Array<number>(count))
+        return Obj.newArray(this, new Array<number>(count).fill(0))
       case '[J':
-        return Obj.newArray(this, new Array<bigint>(count))
+        return Obj.newArray(this, new Array<bigint>(count).fill(BigInt(0)))
       default:
-        return Obj.newArray(this, new Array<Obj>(count))
+        return Obj.newArray(this, new Array<Obj>(count).fill(null))
     }
   }
 
@@ -566,7 +578,10 @@ export default class Class {
         sVars.setDouble(slotId, (aConst as DoubleConstant).data)
         break
       case 'Ljava/lang/String;':
-        throw new Error('string const not implemented')
+        const str = (aConst as StringConstant).data
+        const jStr = jString(this.loader, str)
+        sVars.setRef(slotId, jStr)
+        break
     }
   }
 
