@@ -1,3 +1,4 @@
+import { accessFlagsToString } from '../class/AccessFlag'
 import { AttributeInfo, readAttributes } from './attributeInfo'
 import CodeAttribute from './attributeInfo/CodeAttribute'
 import ConstantValueAttribute from './attributeInfo/ConstantValueAttribute'
@@ -52,14 +53,12 @@ export default class MemberInfo {
   }
 
   toString(): string {
-    const res: string[] = []
-    res.push(`access flags: ${this._accessFlags}`)
-    res.push(`name: {${this._nameIndex}}${this.name}`)
-    res.push(`descriptor: {${this._descriptorIndex}}${this.descriptor}`)
-    res.push('attributes:')
-    for (const attr of this._attributes) {
-      res.push(attr.toString())
-    }
-    return res.join('\n')
+    return `
+access flags: ${accessFlagsToString(this._accessFlags)}
+name: {${this._nameIndex}}${this.name}
+descriptor: {${this._descriptorIndex}}${this.descriptor}
+attributes:
+${this._attributes.map((a) => a.toString()).join('\n')}
+`
   }
 }

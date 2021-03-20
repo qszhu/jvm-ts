@@ -1,7 +1,8 @@
+import { AttributeInfo, readAttributes } from '.'
+import { codeToString } from '../../classViewer'
 import ClassReader from '../ClassReader'
 import ConstantPool from '../ConstantPool'
 import { u2 } from '../types'
-import { AttributeInfo, readAttributes } from '.'
 
 class ExceptionTableEntry {
   constructor(
@@ -59,19 +60,15 @@ export default class CodeAttribute {
   }
 
   toString(): string {
-    const res: string[] = []
-    res.push(`max stack: ${this.maxStack}`)
-    res.push(`max locals: ${this.maxLocals}`)
-    res.push('code:')
-    res.push(this.code.toString('hex'))
-    res.push('exception table:')
-    for (const entry of this._exceptionTable) {
-      res.push(entry.toString())
-    }
-    res.push('attributes:')
-    for (const attr of this._attributes) {
-      res.push(attr.toString())
-    }
-    return res.join('\n')
+    return `
+max stack: ${this.maxStack}
+max locals: ${this.maxLocals}
+code:
+${codeToString(this.code)}
+exception table:
+${this._exceptionTable.map((e) => e.toString()).join('\n')}
+attributes:
+${this._attributes.map((a) => a.toString()).join('\n')}
+`
   }
 }

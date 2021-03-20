@@ -38,11 +38,9 @@ export default class LocalVariableTableAttribute {
   }
 
   toString(): string {
-    const res: string[] = []
-    res.push('LocalVariableTable')
-    for (const entry of this._table) {
-      res.push(entry.toString())
-    }
-    return res.join('\n')
+    return `
+LocalVariableTable:
+${this._table.map((e) => e.toString()).join('\n')}
+`
   }
 }

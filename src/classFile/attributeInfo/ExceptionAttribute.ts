@@ -13,11 +13,9 @@ export default class ExceptionsAttribute {
   }
 
   toString(): string {
-    const res: string[] = []
-    res.push('Exceptions')
-    for (const entry of this._exceptionIdxTable) {
-      res.push(`{${entry}}`)
-    }
-    return res.join('\n')
+    return `
+Exceptions:
+${this._exceptionIdxTable.map((e) => e.toString()).join('\n')}
+`
   }
 }

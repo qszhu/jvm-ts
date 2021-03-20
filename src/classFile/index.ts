@@ -1,3 +1,4 @@
+import { accessFlagsToString } from '../class/AccessFlag'
 import { AttributeInfo, readAttributes } from './attributeInfo'
 import ClassReader from './ClassReader'
 import ConstantPool from './ConstantPool'
@@ -92,28 +93,29 @@ export default class ClassFile {
   }
 
   toString(): string {
-    const res: string[] = []
-    res.push(`magic: ${this._magic}`)
-    res.push(`minor version: ${this.minorVersion}`)
-    res.push(`major version: ${this.majorVersion}`)
-    res.push('constant pool:')
-    res.push(this.constantPool.toString())
-    res.push(`access flags: ${this.accessFlags}`)
-    res.push(`this class: {${this._thisClass}}${this.className}`)
-    res.push(`super class: {${this._superClass}}${this.superClassName}`)
-    res.push('interfaces:')
-    for (let i = 0; i < this.interfaceNames.length; i++) {
-      res.push(`{${this._interfaces[i]}}${this.interfaceNames[i]}`)
-    }
-    res.push('fields:')
-    for (const field of this.fields) {
-      res.push(field.toString())
-    }
-    res.push('methods:')
-    for (const method of this.methods) {
-      res.push(method.toString())
-    }
-    res.push('attributes:')
-    return res.join('\n')
+    return `
+magic: ${this._magic}
+minor version: ${this._minorVersion}
+major version: ${this._majorVersion}
+
+constant pool:
+${this._constantPool.toString()}
+
+access flags: ${accessFlagsToString(this._accessFlags)}
+this class: {${this._thisClass}}${this.className}
+super class: {${this._superClass}}${this.superClassName}
+
+interfaces:
+${this._interfaces.map((iface, idx) => `{${iface}}${this.interfaceNames[idx]}`).join('\n')}
+
+fields:
+${this._fields.map((f) => f.toString()).join('\n')}
+
+methods:
+${this._methods.map((m) => m.toString()).join('\n')}
+
+attributes:
+${this._attributes.map((a) => a.toString()).join('\n')}
+`
   }
 }

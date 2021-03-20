@@ -26,11 +26,9 @@ export default class LineNumberTableAttribute {
   }
 
   toString(): string {
-    const res: string[] = []
-    res.push('LineNumberTable:')
-    for (const entry of this._table) {
-      res.push(entry.toString())
-    }
-    return res.join('\n')
+    return `
+LineNumberTable:
+${this._table.map((e) => e.toString()).join('\n')}
+`
   }
 }
