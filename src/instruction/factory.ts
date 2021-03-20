@@ -43,6 +43,7 @@ import { CheckCast, InstanceOf } from './refs/instance'
 import { InvokeInterface, InvokeSpecial, InvokeStatic, InvokeVirtual } from './refs/invoke'
 import { New } from './refs/new'
 import { GetStatic, PutStatic } from './refs/static'
+import { InvokeNative } from './reserved/invokenative'
 import { Dup, Dup2, Dup2X1, Dup2X2, DupX1, DupX2 } from './stacks/dup'
 import { Pop, Pop2 } from './stacks/pop'
 import { Swap } from './stacks/swap'
@@ -464,7 +465,8 @@ export function newInstruction(opcode: number): Instruction {
       return new GotoW()
     // 0xc9: JSRW
     // 0xca: Breakpoint
-    // 0xfe: ImpDep1
+    case 0xfe:
+      return new InvokeNative()
     // 0xff: ImpDep2
     default:
       throw new Error(`Unsupported opcode: 0x${opcode.toString(16)}`)

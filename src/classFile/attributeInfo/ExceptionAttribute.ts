@@ -11,4 +11,13 @@ export default class ExceptionsAttribute {
   static fromReader(reader: ClassReader): ExceptionsAttribute {
     return new ExceptionsAttribute(reader.readU2List())
   }
+
+  toString(): string {
+    const res: string[] = []
+    res.push('Exceptions')
+    for (const entry of this._exceptionIdxTable) {
+      res.push(`{${entry}}`)
+    }
+    return res.join('\n')
+  }
 }

@@ -18,4 +18,8 @@ export default class UnparsedAttribute {
   static fromReader(name: string, length: number, reader: ClassReader): UnparsedAttribute {
     return new UnparsedAttribute(name, length, reader.readBytes(length))
   }
+
+  toString(): string {
+    return `skipped: ${this._name} ${this._length} ${this._info.toString('hex')}`
+  }
 }

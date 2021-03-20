@@ -10,4 +10,8 @@ export default class ConstantFloatInfo {
   static fromReader(reader: ClassReader): ConstantFloatInfo {
     return new ConstantFloatInfo(reader.readFloat())
   }
+
+  toString(): string {
+    return `Float: ${this.val}`
+  }
 }

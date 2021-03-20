@@ -12,4 +12,8 @@ export default class ConstantStringInfo {
   static fromReader(reader: ClassReader, cp: ConstantPool): ConstantStringInfo {
     return new ConstantStringInfo(cp, reader.readU2())
   }
+
+  toString(): string {
+    return `String: {${this._stringIdx}}${this.string}`
+  }
 }

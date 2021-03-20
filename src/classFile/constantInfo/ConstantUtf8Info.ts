@@ -12,4 +12,8 @@ export default class ConstantUtf8Info {
     const bytes = reader.readBytes(len)
     return new ConstantUtf8Info(bytes.toString('utf-8'))
   }
+
+  toString(): string {
+    return `Utf8: ${this.str}`
+  }
 }

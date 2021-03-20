@@ -12,7 +12,7 @@ import ConstantStringInfo from '../classFile/constantInfo/ConstantStringInfo'
 import ConstantPool from '../classFile/ConstantPool'
 import { Slots } from '../thread/Slots'
 import AccessFlag from './AccessFlag'
-import ClassLoader from './ClassLoader'
+import ClassLoader, { primitiveTypes } from './ClassLoader'
 import Field from './ClassMember/Field'
 import Method from './ClassMember/Method'
 import Obj from './Obj'
@@ -206,18 +206,6 @@ export class RuntimeConstantPool {
   }
 }
 
-const primitiveTypes = new Map<string, string>([
-  ['void', 'V'],
-  ['boolean', 'Z'],
-  ['byte', 'B'],
-  ['short', 'S'],
-  ['int', 'I'],
-  ['long', 'J'],
-  ['char', 'C'],
-  ['float', 'F'],
-  ['double', 'D'],
-])
-
 function getArrayClassName(name: string): string {
   return `[${toDescriptor(name)}`
 }
@@ -260,6 +248,7 @@ export default class Class {
   private _staticSlotCount: number
   private _staticVars: Slots
   private _initStarted: boolean
+  private _jClass: Obj
 
   static newClass(cf: ClassFile): Class {
     const klass = new Class()
@@ -285,6 +274,17 @@ export default class Class {
       loader.loadClass('java/lang/Cloneable'),
       loader.loadClass('java/io/Serializable'),
     ]
+    return klass
+  }
+
+  static newPrimitiveClass(name: string, loader: ClassLoader, jClass: Obj): Class {
+    const klass = new Class()
+    klass._accessFlags = AccessFlag.PUBLIC
+    klass._name = name
+    klass._loader = loader
+    klass._initStarted = true
+    klass._jClass = jClass
+    klass._jClass.extra = klass
     return klass
   }
 
@@ -318,6 +318,18 @@ export default class Class {
 
   get hasInitStarted(): boolean {
     return this._initStarted
+  }
+
+  get jClass(): Obj {
+    return this._jClass
+  }
+
+  set jClass(klass: Obj) {
+    this._jClass = klass
+  }
+
+  get javaName(): string {
+    return this._name.replace(/\//g, '.')
   }
 
   startInit(): void {
@@ -441,7 +453,12 @@ export default class Class {
   static getMethod(klass: Class, name: string, descriptor: string, isStatic: boolean): Method {
     for (let c = klass; c; c = c.superClass) {
       for (const method of c._methods) {
-        if (method.name === name && method.descriptor === descriptor && method.isStatic === isStatic) return method
+        if (
+          method.name === name &&
+          method.descriptor === descriptor &&
+          method.isStatic === isStatic
+        )
+          return method
       }
     }
   }

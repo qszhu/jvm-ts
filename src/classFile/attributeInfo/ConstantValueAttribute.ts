@@ -11,4 +11,8 @@ export default class ConstantValueAttribute {
   static fromReader(reader: ClassReader): ConstantValueAttribute {
     return new ConstantValueAttribute(reader.readU2())
   }
+
+  toString(): string {
+    return `ConstantValue: {${this._constValIdx}}`
+  }
 }

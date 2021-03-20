@@ -2,6 +2,8 @@ import Class from '.'
 import { Slots } from '../thread/Slots'
 
 export default class Obj {
+  private _extra: any
+
   constructor(private _class?: Class, private _data?: any) {}
 
   static newObject(klass: Class): Obj {
@@ -61,6 +63,14 @@ export default class Obj {
   get arrayLength(): number {
     if (!Array.isArray(this._data)) throw new Error('not array')
     return this._data.length
+  }
+
+  get extra(): any {
+    return this._extra
+  }
+
+  set extra(e: any) {
+    this._extra = e
   }
 
   isInstanceOf(other: Class): boolean {

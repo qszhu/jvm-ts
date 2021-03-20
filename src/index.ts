@@ -32,7 +32,7 @@ async function main() {
   const verboseClass = argv['verbose:class'] as boolean
   const verboseInst = argv['verbose:inst'] as boolean
 
-  const classLoader = new ClassLoader(cp, verboseClass)
+  const classLoader = ClassLoader.newClassLoader(cp, verboseClass)
 
   let className: string = argv._[0] as string
   className = className.replace(/\./g, '/')

@@ -117,14 +117,6 @@ export function invokeMethod(invokerFrame: Frame, method: Method): void {
       newFrame.localVars.setSlot(i, slot)
     }
   }
-
-  if (method.isNative) {
-    if (method.name === 'registerNatives') {
-      thread.popFrame()
-    } else {
-      throw new Error(`native method: ${method.class.name}.${method.name}${method.descriptor}`)
-    }
-  }
 }
 
 export function initClass(thread: Thread, klass: Class): void {

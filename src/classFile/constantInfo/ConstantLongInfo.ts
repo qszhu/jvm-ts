@@ -10,4 +10,8 @@ export default class ConstantLongInfo {
   static fromReader(reader: ClassReader): ConstantLongInfo {
     return new ConstantLongInfo(reader.readLong())
   }
+
+  toString(): string {
+    return `Long: ${this.val}`
+  }
 }

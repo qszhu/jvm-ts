@@ -17,9 +17,9 @@ export class OperandStack {
 
   constructor(maxSize: number) {
     if (!maxSize) return
-    // this._slots = new Array(maxSize).fill(null).map(() => new Slot())
+    this._slots = new Array(maxSize).fill(null).map(() => new Slot())
     // maxSize + 1?
-    this._slots = new Array(maxSize + 1).fill(null).map(() => new Slot())
+    // this._slots = new Array(maxSize + 1).fill(null).map(() => new Slot())
   }
 
   /*
@@ -46,6 +46,14 @@ export class OperandStack {
 
   popInt(): number {
     return this._slots[--this._size].num
+  }
+
+  pushBoolean(val: boolean): void {
+    this.pushInt(val ? 1 : 0)
+  }
+
+  popBoolean(): boolean {
+    return Boolean(this.popInt())
   }
 
   pushLong(val: bigint): void {

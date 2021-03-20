@@ -12,4 +12,8 @@ export default class ConstantClassInfo {
   static fromReader(reader: ClassReader, cp: ConstantPool): ConstantClassInfo {
     return new ConstantClassInfo(cp, reader.readU2())
   }
+
+  toString(): string {
+    return `Class: {${this._nameIdx}}${this.name}`
+  }
 }

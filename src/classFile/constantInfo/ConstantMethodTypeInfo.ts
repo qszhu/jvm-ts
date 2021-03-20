@@ -11,4 +11,8 @@ export default class ConstantMethodTypeInfo {
   static fromReader(reader: ClassReader): ConstantMethodTypeInfo {
     return new ConstantMethodTypeInfo(reader.readU2())
   }
+
+  toString(): string {
+    return `MethodType: {${this.descriptorIndex}}`
+  }
 }

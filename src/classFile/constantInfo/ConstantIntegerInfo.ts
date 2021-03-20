@@ -10,4 +10,8 @@ export default class ConstantIntegerInfo {
   static fromReader(reader: ClassReader): ConstantIntegerInfo {
     return new ConstantIntegerInfo(reader.readU4())
   }
+
+  toString(): string {
+    return `Integer: ${this.val}`
+  }
 }

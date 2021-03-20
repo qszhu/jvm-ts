@@ -1,11 +1,12 @@
 import { AttributeInfo, readAttributes } from './attributeInfo'
-import { u2 } from './types'
 import ClassReader from './ClassReader'
 import ConstantPool from './ConstantPool'
 import MemberInfo from './MemberInfo'
+import { u2, u4 } from './types'
 
 export default class ClassFile {
   private _reader: ClassReader
+  private _magic: u4
   private _minorVersion: u2
   private _majorVersion: u2
   private _constantPool: ConstantPool
@@ -33,14 +34,6 @@ export default class ClassFile {
     return this._accessFlags
   }
 
-  get fields(): MemberInfo[] {
-    return this._fields
-  }
-
-  get methods(): MemberInfo[] {
-    return this._methods
-  }
-
   get className(): string {
     return this._constantPool.getClassName(this._thisClass)
   }
@@ -52,6 +45,14 @@ export default class ClassFile {
 
   get interfaceNames(): string[] {
     return this._interfaces.map((idx) => this._constantPool.getClassName(idx))
+  }
+
+  get fields(): MemberInfo[] {
+    return this._fields
+  }
+
+  get methods(): MemberInfo[] {
+    return this._methods
   }
 
   constructor(data: Buffer) {
@@ -75,8 +76,8 @@ export default class ClassFile {
   }
 
   private readAndCheckMagic() {
-    const magic = this._reader.readU4()
-    if (magic !== 0xcafebabe) throw new Error('java.lang.ClassFormatError: magic')
+    this._magic = this._reader.readU4()
+    if (this._magic !== 0xcafebabe) throw new Error('java.lang.ClassFormatError: magic')
   }
 
   private readAndCheckVersion() {
@@ -88,5 +89,31 @@ export default class ClassFile {
     throw new Error(
       `java.lang.UnsupportedClassVersionError: major ${this._majorVersion} minor ${this._minorVersion}`
     )
+  }
+
+  toString(): string {
+    const res: string[] = []
+    res.push(`magic: ${this._magic}`)
+    res.push(`minor version: ${this.minorVersion}`)
+    res.push(`major version: ${this.majorVersion}`)
+    res.push('constant pool:')
+    res.push(this.constantPool.toString())
+    res.push(`access flags: ${this.accessFlags}`)
+    res.push(`this class: {${this._thisClass}}${this.className}`)
+    res.push(`super class: {${this._superClass}}${this.superClassName}`)
+    res.push('interfaces:')
+    for (let i = 0; i < this.interfaceNames.length; i++) {
+      res.push(`{${this._interfaces[i]}}${this.interfaceNames[i]}`)
+    }
+    res.push('fields:')
+    for (const field of this.fields) {
+      res.push(field.toString())
+    }
+    res.push('methods:')
+    for (const method of this.methods) {
+      res.push(method.toString())
+    }
+    res.push('attributes:')
+    return res.join('\n')
   }
 }

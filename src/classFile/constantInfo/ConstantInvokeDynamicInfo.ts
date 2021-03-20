@@ -16,4 +16,8 @@ export default class ConstantInvokeDynamicInfo {
   static fromReader(reader: ClassReader): ConstantInvokeDynamicInfo {
     return new ConstantInvokeDynamicInfo(reader.readU2(), reader.readU2())
   }
+
+  toString(): string {
+    return `InvokeDynamic: {${this.bootstrapMethodAttrIndex}} {${this.nameAndTypeIndex}}`
+  }
 }

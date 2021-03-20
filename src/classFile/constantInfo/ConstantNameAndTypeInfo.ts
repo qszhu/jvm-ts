@@ -15,4 +15,8 @@ export default class ConstantNameAndTypeInfo {
   static fromReader(reader: ClassReader): ConstantNameAndTypeInfo {
     return new ConstantNameAndTypeInfo(reader.readU2(), reader.readU2())
   }
+
+  toString(): string {
+    return `NameAndType: {${this.nameIndex}} {${this.descriptorIndex}}`
+  }
 }

@@ -1,3 +1,5 @@
+import Obj from "../class/Obj"
+
 export class Slot {
   constructor(public num = 0, public ref: any = undefined) {}
 }
@@ -90,5 +92,9 @@ export class Slots {
 
   setSlot(idx: number, slot: Slot): void {
     this._data[idx] = slot
+  }
+
+  getThis(): Obj {
+    return this.getRef(0)
   }
 }

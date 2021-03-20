@@ -57,4 +57,21 @@ export default class CodeAttribute {
     const attributes = readAttributes(reader, cp)
     return new CodeAttribute(cp, maxStack, maxLocals, code, exceptionTable, attributes)
   }
+
+  toString(): string {
+    const res: string[] = []
+    res.push(`max stack: ${this.maxStack}`)
+    res.push(`max locals: ${this.maxLocals}`)
+    res.push('code:')
+    res.push(this.code.toString('hex'))
+    res.push('exception table:')
+    for (const entry of this._exceptionTable) {
+      res.push(entry.toString())
+    }
+    res.push('attributes:')
+    for (const attr of this._attributes) {
+      res.push(attr.toString())
+    }
+    return res.join('\n')
+  }
 }

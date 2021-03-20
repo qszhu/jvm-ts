@@ -49,4 +49,8 @@ export default class ConstantPool {
     }
     this._infos = res
   }
+
+  toString(): string {
+    return this._infos.map((info, idx) => `{${idx}}: ${info ? info.toString() : info}`).join('\n')
+  }
 }

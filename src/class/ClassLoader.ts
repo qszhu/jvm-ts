@@ -1,21 +1,68 @@
 import Class from '.'
 import ClassPath from '../classPath'
 
+export const primitiveTypes = new Map<string, string>([
+  ['void', 'V'],
+  ['boolean', 'Z'],
+  ['byte', 'B'],
+  ['short', 'S'],
+  ['int', 'I'],
+  ['long', 'J'],
+  ['char', 'C'],
+  ['float', 'F'],
+  ['double', 'D'],
+])
+
 export default class ClassLoader {
   private _classpath: ClassPath
   private _classMap: Map<string, Class>
   private _verbose: boolean
 
-  constructor(classPath: ClassPath, verbose: boolean) {
+  private constructor(classPath: ClassPath, verbose: boolean) {
     this._classpath = classPath
     this._classMap = new Map()
     this._verbose = verbose
   }
 
+  static newClassLoader(cp: ClassPath, verbose: boolean): ClassLoader {
+    const loader = new ClassLoader(cp, verbose)
+    loader.loadBasicClasses()
+    loader.loadPrimitiveClasses()
+    return loader
+  }
+
+  private loadBasicClasses() {
+    const jlClassClass = this.loadClass('java/lang/Class')
+    for (const klass of this._classMap.values()) {
+      if (!klass.jClass) {
+        klass.jClass = jlClassClass.newObject()
+        klass.jClass.extra = klass
+      }
+    }
+  }
+
+  private loadPrimitiveClasses() {
+    for (const primitiveType of primitiveTypes.keys()) {
+      const jClass = this._classMap.get('java/lang/Class').newObject()
+      const klass = Class.newPrimitiveClass(primitiveType, this, jClass)
+      this._classMap.set(primitiveType, klass)
+    }
+  }
+
   loadClass(name: string): Class {
     if (this._classMap.has(name)) return this._classMap.get(name)
-    if (name.startsWith('[')) return this.loadArrayClass(name)
-    return this.loadNonArrayClass(name)
+
+    let klass: Class
+    if (name.startsWith('[')) klass = this.loadArrayClass(name)
+    else klass = this.loadNonArrayClass(name)
+
+    if (this._classMap.has('java/lang/Class')) {
+      const jlClassClass = this._classMap.get('java/lang/Class')
+      klass.jClass = jlClassClass.newObject()
+      klass.jClass.extra = klass
+    }
+
+    return klass
   }
 
   private loadArrayClass(name: string): Class {

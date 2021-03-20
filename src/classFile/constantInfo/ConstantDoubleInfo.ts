@@ -10,4 +10,8 @@ export default class ConstantDoubleInfo {
   static fromReader(reader: ClassReader): ConstantDoubleInfo {
     return new ConstantDoubleInfo(reader.readDouble())
   }
+
+  toString(): string {
+    return `Double: ${this.val}`
+  }
 }

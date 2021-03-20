@@ -12,6 +12,10 @@ class LineNumberTableEntry {
     const len = reader.readU2()
     return new Array(len).fill(null).map(() => LineNumberTableEntry.fromReader(reader))
   }
+
+  toString(): string {
+    return `pc: #${this._startPc} line: ${this._lineNumber}`
+  }
 }
 
 export default class LineNumberTableAttribute {
@@ -19,5 +23,14 @@ export default class LineNumberTableAttribute {
 
   static fromReader(reader: ClassReader): LineNumberTableAttribute {
     return new LineNumberTableAttribute(LineNumberTableEntry.listFromReader(reader))
+  }
+
+  toString(): string {
+    const res: string[] = []
+    res.push('LineNumberTable:')
+    for (const entry of this._table) {
+      res.push(entry.toString())
+    }
+    return res.join('\n')
   }
 }

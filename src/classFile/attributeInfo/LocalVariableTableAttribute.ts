@@ -24,6 +24,10 @@ class LocalVariableTableEntry {
     const len = reader.readU2()
     return new Array(len).fill(null).map(() => LocalVariableTableEntry.fromReader(reader))
   }
+
+  toString(): string {
+    return `#${this._startPc} ${this._length} {${this._nameIdx}} {${this._descriptorIdx}} {${this._idx}}`
+  }
 }
 
 export default class LocalVariableTableAttribute {
@@ -31,5 +35,14 @@ export default class LocalVariableTableAttribute {
 
   static fromReader(reader: ClassReader): LocalVariableTableAttribute {
     return new LocalVariableTableAttribute(LocalVariableTableEntry.listFromReader(reader))
+  }
+
+  toString(): string {
+    const res: string[] = []
+    res.push('LocalVariableTable')
+    for (const entry of this._table) {
+      res.push(entry.toString())
+    }
+    return res.join('\n')
   }
 }

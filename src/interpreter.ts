@@ -72,5 +72,5 @@ function logInstruction(frame: Frame, inst: Instruction) {
   const className = method.class.name
   const methodName = method.name
   const pc = frame.thread.pc
-  console.log(`${className}.${methodName} #${pc} ${inst}`)
+  console.log(`${className}.${methodName} #${pc} ${inst.constructor.name}`)
 }

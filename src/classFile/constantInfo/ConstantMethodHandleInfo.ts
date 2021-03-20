@@ -15,4 +15,8 @@ export default class ConstantMethodHandleInfo {
   static fromReader(reader: ClassReader): ConstantMethodHandleInfo {
     return new ConstantMethodHandleInfo(reader.readU1(), reader.readU2())
   }
+
+  toString(): string {
+    return `MethodHandle: {${this.referenceKind}} {${this.referenceIndex}}`
+  }
 }

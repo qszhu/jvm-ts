@@ -22,6 +22,9 @@ function ldc(frame: Frame, idx: number) {
     const internedStr = jString(klass.loader, c.data)
     stack.pushRef(internedStr)
   } else if (c instanceof ClassConstant) {
+    const classRef = c.data
+    const classObj = classRef.resolvedClass.jClass
+    stack.pushRef(classObj)
   } else {
     throw new Error('ldc not implemented')
   }

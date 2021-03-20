@@ -12,4 +12,8 @@ export default class SourceFileAttribute {
   static fromReader(reader: ClassReader, cp: ConstantPool): SourceFileAttribute {
     return new SourceFileAttribute(cp, reader.readU2())
   }
+
+  toString(): string {
+    return `SourceFile: {${this._srcFileIdx}}${this.fileName}`
+  }
 }
