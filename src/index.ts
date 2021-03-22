@@ -18,6 +18,8 @@ const argv = yargs(process.argv.slice(2))
   .describe('verbose:class', 'enable verbose output')
   .describe('verbose:inst', 'enable verbose output')
 
+  .alias('d', 'debug')
+
   .help('?')
   .alias('?', 'help')
 
@@ -31,6 +33,7 @@ async function main() {
 
   const verboseClass = argv['verbose:class'] as boolean
   const verboseInst = argv['verbose:inst'] as boolean
+  const debug = argv['debug'] as boolean
 
   const classLoader = ClassLoader.newClassLoader(cp, verboseClass)
 
@@ -41,7 +44,7 @@ async function main() {
   const mainClass = classLoader.loadClass(className)
   const mainMethod = mainClass.mainMethod
 
-  if (mainMethod) interpret(mainMethod, verboseInst, argv._ as string[])
+  if (mainMethod) await interpret(mainMethod, verboseInst, argv._ as string[], debug)
   else console.error('Main method not found in class', argv._[0])
 }
 

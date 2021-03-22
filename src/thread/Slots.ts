@@ -2,6 +2,10 @@ import Obj from "../class/Obj"
 
 export class Slot {
   constructor(public num = 0, public ref: any = undefined) {}
+  toString(): string {
+    if (this.ref === void 0) return `${this.num}`
+    return this.ref.toString()
+  }
 }
 
 export function floatToSlot(slot: Slot, val: number): void {
@@ -44,6 +48,10 @@ export function doubleFromSlots(slot1: Slot, slot2: Slot): number {
 
 export class Slots {
   private _data: Slot[]
+
+  toString(): string {
+    return this._data.map((d, i) => `${i} ${d.toString()}`).join('\n')
+  }
 
   constructor(maxSize: number) {
     if (!maxSize) return

@@ -6,15 +6,17 @@ import { BytecodeReader, Instruction } from './instruction'
 import { newInstruction } from './instruction/factory'
 import { Thread } from './thread'
 import Frame from './thread/Frame'
+import prompt from 'prompt'
 
-export function interpret(method: Method, logInst: boolean, args: string[]): void {
+export async function interpret(method: Method, logInst: boolean, args: string[], debug = false): Promise<void> {
+  prompt.start()
   const thread = new Thread()
   const frame = thread.newFrame(method)
   thread.pushFrame(frame)
   try {
     const jArgs = createArgsArray(method.class.loader, args)
     frame.localVars.setRef(0, jArgs)
-    loop(thread, logInst)
+    await loop(thread, logInst, debug)
   } catch (e) {
     catchErr(thread)
     throw e
@@ -31,7 +33,7 @@ function createArgsArray(loader: ClassLoader, args: string[]): Obj {
   return argsArr
 }
 
-function loop(thread: Thread, logInst: boolean): void {
+async function loop(thread: Thread, logInst: boolean, debug: boolean): Promise<void> {
   const reader = new BytecodeReader()
   while (true) {
     const frame = thread.currentFrame()
@@ -44,13 +46,17 @@ function loop(thread: Thread, logInst: boolean): void {
     inst.fetchOperands(reader)
     frame.nextPc = reader.pc
 
-    if (logInst) {
+    if (logInst || debug) {
       logInstruction(frame, inst)
     }
 
     inst.execute(frame)
 
     if (thread.isStackEmpty) break
+
+    if (debug) {
+      await prompt.get(['>'])
+    }
   }
 }
 
@@ -72,5 +78,6 @@ function logInstruction(frame: Frame, inst: Instruction) {
   const className = method.class.name
   const methodName = method.name
   const pc = frame.thread.pc
+  console.log(frame.toString())
   console.log(`${className}.${methodName} #${pc} ${inst.constructor.name}`)
 }

@@ -15,6 +15,18 @@ export class OperandStack {
   private _slots: Slot[]
   private _size = 0
 
+  toString(): string {
+    return `
+Operand stack:
+size: ${this._size}
+${this._slots
+  .map((slot, idx) => `${idx}: ${slot.toString()}`)
+  .slice(0, this._size)
+  .reverse()
+  .join('\n')}
+`
+  }
+
   constructor(maxSize: number) {
     if (!maxSize) return
     this._slots = new Array(maxSize).fill(null).map(() => new Slot())
@@ -143,5 +155,15 @@ export default class Frame {
 
   revertNextPc(): void {
     this._nextPc = this._thread.pc
+  }
+
+  toString(): string {
+    return `
+Frame:
+
+Local vars:
+${this._localVars.toString()}
+${this._operandStack.toString()}
+`
   }
 }
