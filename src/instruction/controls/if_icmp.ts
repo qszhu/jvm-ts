@@ -8,6 +8,10 @@ export class IfICmpEq extends BranchInstruction {
     const v1 = stack.popInt()
     if (v1 === v2) this.branch(frame)
   }
+
+  toString(): string {
+    return `jump ${this._offset} if int a == int b`
+  }
 }
 
 export class IfICmpNE extends BranchInstruction {
@@ -16,6 +20,10 @@ export class IfICmpNE extends BranchInstruction {
     const v2 = stack.popInt()
     const v1 = stack.popInt()
     if (v1 !== v2) this.branch(frame)
+  }
+
+  toString(): string {
+    return `jump ${this._offset} if int a != int b`
   }
 }
 
@@ -26,6 +34,10 @@ export class IfICmpLT extends BranchInstruction {
     const v1 = stack.popInt()
     if (v1 < v2) this.branch(frame)
   }
+
+  toString(): string {
+    return `jump ${this._offset} if int a < int b`
+  }
 }
 
 export class IfICmpLE extends BranchInstruction {
@@ -34,6 +46,10 @@ export class IfICmpLE extends BranchInstruction {
     const v2 = stack.popInt()
     const v1 = stack.popInt()
     if (v1 <= v2) this.branch(frame)
+  }
+
+  toString(): string {
+    return `jump ${this._offset} if int a <= int b`
   }
 }
 
@@ -44,6 +60,10 @@ export class IfICmpGT extends BranchInstruction {
     const v1 = stack.popInt()
     if (v1 > v2) this.branch(frame)
   }
+
+  toString(): string {
+    return `jump ${this._offset} if int a > int b`
+  }
 }
 
 export class IfICmpGE extends BranchInstruction {
@@ -52,5 +72,9 @@ export class IfICmpGE extends BranchInstruction {
     const v2 = stack.popInt()
     const v1 = stack.popInt()
     if (v1 >= v2) this.branch(frame)
+  }
+
+  toString(): string {
+    return `jump ${this._offset} if int a >= int b`
   }
 }

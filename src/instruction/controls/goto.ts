@@ -5,6 +5,10 @@ export class Goto extends BranchInstruction {
   execute(frame: Frame): void {
     this.branch(frame)
   }
+
+  toString(): string {
+    return `jump ${this._offset}`
+  }
 }
 
 export class GotoW extends BranchInstruction {
@@ -14,5 +18,9 @@ export class GotoW extends BranchInstruction {
 
   execute(frame: Frame): void {
     this.branch(frame)
+  }
+
+  toString(): string {
+    return `jump ${this._offset}`
   }
 }

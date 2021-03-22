@@ -59,6 +59,10 @@ export class PutField extends Index16Instruction {
         break
     }
   }
+
+  toString(): string {
+    return `set a's field at {${this._index}} with value b`
+  }
 }
 
 export class GetField extends Index16Instruction {
@@ -97,5 +101,9 @@ export class GetField extends Index16Instruction {
         stack.pushRef(slots.getRef(slotId))
         break
     }
+  }
+
+  toString(): string {
+    return `push a's field at {${this._index}}`
   }
 }

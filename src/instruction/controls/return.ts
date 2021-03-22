@@ -5,6 +5,10 @@ export class Return extends NoOperandsInstruction {
   execute(frame: Frame): void {
     frame.thread.popFrame()
   }
+
+  toString(): string {
+    return 'return'
+  }
 }
 
 export class AReturn extends NoOperandsInstruction {
@@ -14,6 +18,10 @@ export class AReturn extends NoOperandsInstruction {
     const invokerFrame = thread.topFrame
     const ref = currentFrame.operandStack.popRef()
     invokerFrame.operandStack.pushRef(ref)
+  }
+
+  toString(): string {
+    return 'return object'
   }
 }
 
@@ -25,6 +33,10 @@ export class DReturn extends NoOperandsInstruction {
     const retVal = currentFrame.operandStack.popDouble()
     invokerFrame.operandStack.pushDouble(retVal)
   }
+
+  toString(): string {
+    return 'return double'
+  }
 }
 
 export class FReturn extends NoOperandsInstruction {
@@ -34,6 +46,10 @@ export class FReturn extends NoOperandsInstruction {
     const invokerFrame = thread.topFrame
     const retVal = currentFrame.operandStack.popFloat()
     invokerFrame.operandStack.pushFloat(retVal)
+  }
+
+  toString(): string {
+    return 'return float'
   }
 }
 
@@ -45,6 +61,10 @@ export class IReturn extends NoOperandsInstruction {
     const retVal = currentFrame.operandStack.popInt()
     invokerFrame.operandStack.pushInt(retVal)
   }
+
+  toString(): string {
+    return 'return int'
+  }
 }
 
 export class LReturn extends NoOperandsInstruction {
@@ -54,5 +74,9 @@ export class LReturn extends NoOperandsInstruction {
     const invokerFrame = thread.topFrame
     const retVal = currentFrame.operandStack.popLong()
     invokerFrame.operandStack.pushLong(retVal)
+  }
+
+  toString(): string {
+    return 'return long'
   }
 }

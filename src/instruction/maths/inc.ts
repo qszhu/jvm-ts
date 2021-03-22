@@ -15,4 +15,8 @@ export class IInc implements Instruction {
     val += this._const
     vars.setInt(this._idx, val)
   }
+
+  toString(): string {
+    return `inc int at var ${this._idx} by ${this._const}`
+  }
 }

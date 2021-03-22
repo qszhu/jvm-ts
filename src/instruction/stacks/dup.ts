@@ -8,6 +8,10 @@ export class Dup extends NoOperandsInstruction {
     stack.pushSlot(slot)
     stack.pushSlot(slot)
   }
+
+  toString(): string {
+    return 'duplicate top [a] -> [a, a]'
+  }
 }
 
 export class DupX1 extends NoOperandsInstruction {
@@ -18,6 +22,10 @@ export class DupX1 extends NoOperandsInstruction {
     stack.pushSlot(slot1)
     stack.pushSlot(slot2)
     stack.pushSlot(slot1)
+  }
+
+  toString(): string {
+    return 'duplicate top skip 1 [a, b] -> [b, a, b]'
   }
 }
 
@@ -32,6 +40,10 @@ export class DupX2 extends NoOperandsInstruction {
     stack.pushSlot(slot2)
     stack.pushSlot(slot1)
   }
+
+  toString(): string {
+    return 'duplicate top skip 2 [a, b, c] -> [c, a, b, c]'
+  }
 }
 
 export class Dup2 extends NoOperandsInstruction {
@@ -43,6 +55,10 @@ export class Dup2 extends NoOperandsInstruction {
     stack.pushSlot(slot1)
     stack.pushSlot(slot2)
     stack.pushSlot(slot1)
+  }
+
+  toString(): string {
+    return 'duplicate top 2 [a, b] -> [a, b, a, b]'
   }
 }
 
@@ -57,6 +73,10 @@ export class Dup2X1 extends NoOperandsInstruction {
     stack.pushSlot(slot3)
     stack.pushSlot(slot2)
     stack.pushSlot(slot1)
+  }
+
+  toString(): string {
+    return 'duplicate top 2 skip 1 [a, b, c] -> [b, c, a, b, c]'
   }
 }
 
@@ -73,5 +93,9 @@ export class Dup2X2 extends NoOperandsInstruction {
     stack.pushSlot(slot3)
     stack.pushSlot(slot2)
     stack.pushSlot(slot1)
+  }
+
+  toString(): string {
+    return 'duplicate top 2 skip 2 [a, b, c, d] -> [c, d, a, b, c, d]'
   }
 }

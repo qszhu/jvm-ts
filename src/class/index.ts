@@ -250,6 +250,10 @@ export default class Class {
   private _initStarted: boolean
   private _jClass: Obj
 
+  toString(): string {
+    return this._name
+  }
+
   static newClass(cf: ClassFile): Class {
     const klass = new Class()
     klass._accessFlags = cf.accessFlags

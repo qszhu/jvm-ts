@@ -11,6 +11,10 @@ export class BiPush implements Instruction {
   execute(frame: Frame): void {
     frame.operandStack.pushInt(this._val)
   }
+
+  toString(): string {
+    return `push int ${this._val}`
+  }
 }
 
 export class SiPush implements Instruction {
@@ -22,5 +26,9 @@ export class SiPush implements Instruction {
 
   execute(frame: Frame): void {
     frame.operandStack.pushInt(this._val)
+  }
+
+  toString(): string {
+    return `push int ${this._val}`
   }
 }

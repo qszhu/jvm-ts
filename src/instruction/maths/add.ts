@@ -9,6 +9,10 @@ export class DAdd extends NoOperandsInstruction {
     const res = v1 + v2
     stack.pushDouble(res)
   }
+
+  toString(): string {
+    return 'double a + double b'
+  }
 }
 
 export class FAdd extends NoOperandsInstruction {
@@ -18,6 +22,10 @@ export class FAdd extends NoOperandsInstruction {
     const v1 = stack.popFloat()
     const res = v1 + v2
     stack.pushFloat(res)
+  }
+
+  toString(): string {
+    return 'float a + float b'
   }
 }
 
@@ -29,6 +37,10 @@ export class IAdd extends NoOperandsInstruction {
     const res = v1 + v2
     stack.pushInt(res)
   }
+
+  toString(): string {
+    return 'int a + int b'
+  }
 }
 
 export class LAdd extends NoOperandsInstruction {
@@ -38,5 +50,9 @@ export class LAdd extends NoOperandsInstruction {
     const v1 = stack.popLong()
     const res = v1 + v2
     stack.pushLong(res)
+  }
+
+  toString(): string {
+    return 'long a + long b'
   }
 }

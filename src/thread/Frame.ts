@@ -12,7 +12,7 @@ import {
 } from './Slots'
 
 export class OperandStack {
-  private _slots: Slot[]
+  private _slots: Slot[] = []
   private _size = 0
 
   toString(): string {

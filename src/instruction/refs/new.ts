@@ -18,4 +18,8 @@ export class New extends Index16Instruction {
     const ref = klass.newObject()
     frame.operandStack.pushRef(ref)
   }
+
+  toString(): string {
+    return `push new object of class at {${this._index}}`
+  }
 }

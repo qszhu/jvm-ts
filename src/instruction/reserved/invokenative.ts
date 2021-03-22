@@ -22,4 +22,8 @@ export class InvokeNative extends NoOperandsInstruction {
     }
     nativeMethod(frame)
   }
+
+  toString(): string {
+    return 'invoke native method'
+  }
 }

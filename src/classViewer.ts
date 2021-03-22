@@ -46,8 +46,8 @@ const instLen = [
   0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 2, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 2, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0,
   0, 2, 2, 2, 2, 2, 2, 2,
@@ -76,7 +76,7 @@ export function codeToString(code: Buffer): string {
 }
 
 async function main() {
-  const data = fs.readFileSync('java/jvmgo/book/ch09/GetClassTest.class')
+  const data = fs.readFileSync('java/jvmgo/book/ch06/MyObject.class')
   const classFile = new ClassFile(data)
   console.log(classFile.toString())
 }

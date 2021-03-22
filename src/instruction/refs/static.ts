@@ -49,6 +49,10 @@ export class PutStatic extends Index16Instruction {
         break
     }
   }
+
+  toString(): string {
+    return `pop to static field value at {${this._index}}`
+  }
 }
 
 export class GetStatic extends Index16Instruction {
@@ -94,5 +98,9 @@ export class GetStatic extends Index16Instruction {
         stack.pushRef(slots.getRef(slotId))
         break
     }
+  }
+
+  toString(): string {
+    return `push static field value at {${this._index}}`
   }
 }

@@ -22,6 +22,10 @@ export class InvokeStatic extends Index16Instruction {
 
     invokeMethod(frame, resolvedMethod)
   }
+
+  toString(): string {
+    return `invoke static method at {${this._index}}`
+  }
 }
 
 export class InvokeSpecial extends Index16Instruction {
@@ -69,6 +73,10 @@ export class InvokeSpecial extends Index16Instruction {
       throw new Error('java.lang.AbstractMethodError')
 
     invokeMethod(frame, methodToBeInvoked)
+  }
+
+  toString(): string {
+    return `invoke special method at {${this._index}}`
   }
 }
 
@@ -146,6 +154,10 @@ export class InvokeVirtual extends Index16Instruction {
 
     invokeMethod(frame, methodToBeInvoked)
   }
+
+  toString(): string {
+    return `invoke virtual method at {${this._index}}`
+  }
 }
 
 export class InvokeInterface implements Instruction {
@@ -181,5 +193,9 @@ export class InvokeInterface implements Instruction {
     if (!methodToBeInvoked.isPublic) throw new Error('java.lang.IllegalAccessError')
 
     invokeMethod(frame, methodToBeInvoked)
+  }
+
+  toString(): string {
+    return `invoke interface method at {${this._index}}`
   }
 }

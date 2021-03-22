@@ -19,6 +19,10 @@ export class InstanceOf extends Index16Instruction {
     const { stack, res } = instanceOf(frame, this._index)
     stack.pushInt(res ? 1 : 0)
   }
+
+  toString(): string {
+    return `push whether a is instanceof class at {${this._index}}`
+  }
 }
 
 export class CheckCast extends Index16Instruction {
@@ -26,5 +30,9 @@ export class CheckCast extends Index16Instruction {
     const { stack, ref, res } = instanceOf(frame, this._index)
     stack.pushRef(ref)
     if (!res) throw new Error('java.lang.ClassCastException')
+  }
+
+  toString(): string {
+    return `check whether a is instanceof class at {${this._index}}`
   }
 }

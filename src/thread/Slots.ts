@@ -4,6 +4,7 @@ export class Slot {
   constructor(public num = 0, public ref: any = undefined) {}
   toString(): string {
     if (this.ref === void 0) return `${this.num}`
+    if (this.ref === null) return 'null'
     return this.ref.toString()
   }
 }
@@ -47,7 +48,7 @@ export function doubleFromSlots(slot1: Slot, slot2: Slot): number {
 }
 
 export class Slots {
-  private _data: Slot[]
+  private _data: Slot[] = []
 
   toString(): string {
     return this._data.map((d, i) => `${i} ${d.toString()}`).join('\n')

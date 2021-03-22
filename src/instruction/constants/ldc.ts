@@ -34,11 +34,19 @@ export class Ldc extends Index8Instruction {
   execute(frame: Frame): void {
     ldc(frame, this._index)
   }
+
+  toString(): string {
+    return `push constant at {${this._index}}`
+  }
 }
 
 export class LdcW extends Index16Instruction {
   execute(frame: Frame): void {
     ldc(frame, this._index)
+  }
+
+  toString(): string {
+    return `push constant at {${this._index}}`
   }
 }
 
@@ -54,5 +62,9 @@ export class Ldc2W extends Index16Instruction {
     } else {
       throw new Error('java.lang.ClassFormatError')
     }
+  }
+
+  toString(): string {
+    return `push constant at {${this._index}}`
   }
 }
