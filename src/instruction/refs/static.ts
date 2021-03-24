@@ -14,6 +14,7 @@ export class PutStatic extends Index16Instruction {
     if (!klass.hasInitStarted) {
       frame.revertNextPc()
       initClass(frame.thread, klass)
+      return
     }
 
     if (!field.isStatic) throw new Error('java.lang.IncompatibleClassChangeError')
@@ -65,6 +66,7 @@ export class GetStatic extends Index16Instruction {
     if (!klass.hasInitStarted) {
       frame.revertNextPc()
       initClass(frame.thread, klass)
+      return
     }
 
     if (!field.isStatic) throw new Error('java.lang.IncompatibleClassChangeError')

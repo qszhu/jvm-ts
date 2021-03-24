@@ -22,7 +22,6 @@ size: ${this._size}
 ${this._slots
   .map((slot, idx) => `${idx}: ${slot.toString()}`)
   .slice(0, this._size)
-  .reverse()
   .join('\n')}
 `
   }
@@ -30,8 +29,6 @@ ${this._slots
   constructor(maxSize: number) {
     if (!maxSize) return
     this._slots = new Array(maxSize).fill(null).map(() => new Slot())
-    // maxSize + 1?
-    // this._slots = new Array(maxSize + 1).fill(null).map(() => new Slot())
   }
 
   /*

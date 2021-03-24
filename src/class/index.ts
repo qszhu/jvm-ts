@@ -11,7 +11,7 @@ import ConstantMethodRefInfo from '../classFile/constantInfo/ConstantMethodRefIn
 import ConstantStringInfo from '../classFile/constantInfo/ConstantStringInfo'
 import ConstantPool from '../classFile/ConstantPool'
 import { Slots } from '../thread/Slots'
-import AccessFlag from './AccessFlag'
+import AccessFlag, { accessFlagsToString } from './AccessFlag'
 import ClassLoader, { primitiveTypes } from './ClassLoader'
 import Field from './ClassMember/Field'
 import Method from './ClassMember/Method'
@@ -251,7 +251,7 @@ export default class Class {
   private _jClass: Obj
 
   toString(): string {
-    return this._name
+    return `${accessFlagsToString(this._accessFlags)} ${this._name} extends ${this._superClass.name} implements ${this._interfaces.map(iface => iface.name).join(', ')}`
   }
 
   static newClass(cf: ClassFile): Class {
