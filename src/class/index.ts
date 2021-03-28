@@ -45,6 +45,10 @@ class ClassRef extends SymRef {
     super(cp)
     this._className = classInfo.name
   }
+
+  toString(): string {
+    return `Class: ${this._className}`
+  }
 }
 
 abstract class MemberRef extends SymRef {
@@ -86,6 +90,10 @@ class FieldRef extends MemberRef {
     if (!field.isAccessibleTo(d)) throw new Error('java.lang.IllegalAccessError')
     this._field = field
   }
+
+  toString(): string {
+    return `Field: ${this._className}.${this._name}:${this._descriptor}`
+  }
 }
 
 class MethodRef extends MemberRef {
@@ -111,6 +119,10 @@ class MethodRef extends MemberRef {
     if (!method.isAccessibleTo(d)) throw new Error('java.lang.IllegalAccessError')
 
     this._method = method
+  }
+
+  toString(): string {
+    return `Method: ${this._className}.${this._name}:${this._descriptor}`
   }
 }
 
@@ -138,6 +150,10 @@ class InterfaceMethodRef extends MemberRef {
 
     this._method = method
   }
+
+  toString(): string {
+    return `InterfaceMethod: ${this._className}.${this._name}:${this._descriptor}`
+  }
 }
 
 abstract class Constant<T> {
@@ -145,6 +161,10 @@ abstract class Constant<T> {
 
   get data(): T {
     return this._data
+  }
+
+  toString(): string {
+    return this._data.toString()
   }
 }
 
@@ -204,6 +224,10 @@ export class RuntimeConstantPool {
     if (res) return res
     throw new Error(`No constants at index ${idx}`)
   }
+
+  toString(): string {
+    return this._consts.map((c, i) => `{${i}}: ${c}`).join('\n')
+  }
 }
 
 function getArrayClassName(name: string): string {
@@ -245,13 +269,13 @@ export default class Class {
   private _superClass: Class
   private _interfaces: Class[]
   private _instanceSlotCount: number
-  private _staticSlotCount: number
-  private _staticVars: Slots
+  private _staticSlotCount = 0
+  private _staticVars: Slots = new Slots(0)
   private _initStarted: boolean
   private _jClass: Obj
 
   toString(): string {
-    return `${accessFlagsToString(this._accessFlags)} ${this._name} extends ${this._superClass.name} implements ${this._interfaces.map(iface => iface.name).join(', ')}`
+    return `${accessFlagsToString(this._accessFlags)} ${this._name}`
   }
 
   static newClass(cf: ClassFile): Class {

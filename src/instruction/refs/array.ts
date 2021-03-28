@@ -55,6 +55,10 @@ export class NewArray implements Instruction { // can use Index8Instruction
     const arr = arrClass.newArray(count)
     stack.pushRef(arr)
   }
+
+  toString(): string {
+    return `push new ${AType[this._atype]} array size a`
+  }
 }
 
 export class ANewArray extends Index16Instruction {
@@ -71,6 +75,10 @@ export class ANewArray extends Index16Instruction {
     const arr = arrClass.newArray(count)
     stack.pushRef(arr)
   }
+
+  toString(): string {
+    return `push new array of type {${this._index}} size a`
+  }
 }
 
 export class ArrayLength extends NoOperandsInstruction {
@@ -80,6 +88,10 @@ export class ArrayLength extends NoOperandsInstruction {
     if (!arrRef) throw new Error('java.lang.NullPointerException')
     const arrLen = (arrRef as Obj).arrayLength
     stack.pushInt(arrLen)
+  }
+
+  toString(): string {
+    return `push array length of a`
   }
 }
 
@@ -99,6 +111,10 @@ export class MultiANewArray implements Instruction {
     const counts = popAndCheckCounts(stack, this._dims)
     const arr = newMultiDimensionalArray(counts, arrClass)
     stack.pushRef(arr)
+  }
+
+  toString(): string {
+    return `push new ${this._dims} dimensional array of type {${this._idx}} size a`
   }
 }
 

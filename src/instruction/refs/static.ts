@@ -71,11 +71,8 @@ export class GetStatic extends Index16Instruction {
 
     if (!field.isStatic) throw new Error('java.lang.IncompatibleClassChangeError')
 
-    const {
-      descriptor,
-      slotId,
-      class: { staticVars: slots },
-    } = field
+    const { descriptor, slotId } = field
+    const slots = klass.staticVars
     const stack = frame.operandStack
 
     switch (descriptor[0]) {

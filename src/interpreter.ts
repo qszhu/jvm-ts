@@ -1,3 +1,4 @@
+import prompt from 'prompt'
 import ClassLoader from './class/ClassLoader'
 import Method from './class/ClassMember/Method'
 import Obj from './class/Obj'
@@ -6,9 +7,13 @@ import { BytecodeReader, Instruction } from './instruction'
 import { newInstruction } from './instruction/factory'
 import { Thread } from './thread'
 import Frame from './thread/Frame'
-import prompt from 'prompt'
 
-export async function interpret(method: Method, logInst: boolean, args: string[], debug = false): Promise<void> {
+export async function interpret(
+  method: Method,
+  logInst: boolean,
+  args: string[],
+  debug = false
+): Promise<void> {
   prompt.start()
   const thread = new Thread()
   const frame = thread.newFrame(method)
@@ -35,6 +40,7 @@ function createArgsArray(loader: ClassLoader, args: string[]): Obj {
 
 async function loop(thread: Thread, logInst: boolean, debug: boolean): Promise<void> {
   const reader = new BytecodeReader()
+  let klass = null
   while (true) {
     const frame = thread.currentFrame()
     const pc = (thread.pc = frame.nextPc)
@@ -55,9 +61,55 @@ async function loop(thread: Thread, logInst: boolean, debug: boolean): Promise<v
     if (thread.isStackEmpty) break
 
     if (debug) {
-      await prompt.get(['>'])
+      if (!klass) klass = frame.method.class.name
+      // if (klass === frame.method.class.name)
+      let cmd
+      do {
+        cmd = (await prompt.get(['>']))['>'] as string
+      } while (exec(cmd, frame))
     }
   }
+}
+
+function printString(obj: any) {
+  const codes = obj._data[0]._data._data[0].ref._data
+  console.log(String.fromCharCode(...codes))
+}
+
+function printConst(c: any) {
+  console.log(c.toString())
+}
+
+function printMethod(frame: Frame) {
+  const {
+    method: {
+      class: { name: className },
+      name: methodName,
+      descriptor: methodDescriptor,
+    },
+  } = frame
+  console.log(`${className}.${methodName}${methodDescriptor}`)
+}
+
+function printStatics(frame: Frame) {
+  const klass = frame.method.class
+  console.log(klass.name)
+  console.log(frame.method.class.staticVars.toString())
+}
+
+function exec(cmd: string, frame: Frame): boolean {
+  if (!cmd) return false
+  const [fun, arg] = cmd.split(' ')
+  if (fun === 'string') {
+    printString(frame.localVars.getRef(Number(arg)))
+  } else if (fun === 'const') {
+    printConst(frame.method.class.constantPool.getConstant(Number(arg)))
+  } else if (fun === 'method') {
+    printMethod(frame)
+  } else if (fun === 'statics') {
+    printStatics(frame)
+  }
+  return true
 }
 
 function catchErr(thread: Thread) {
@@ -78,6 +130,10 @@ function logInstruction(frame: Frame, inst: Instruction) {
   const className = method.class.name
   const methodName = method.name
   const pc = frame.thread.pc
+  console.log('================================================================================')
   console.log(frame.toString())
-  console.log(`${className}.${methodName} #${pc} ${inst.constructor.name}: ${inst.toString()}`)
+  console.log(
+    `next inst: ${className}.${methodName} #${pc} ${inst.constructor.name}: ${inst.toString()}`
+  )
+  console.log('================================================================================')
 }

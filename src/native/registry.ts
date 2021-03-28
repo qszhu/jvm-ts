@@ -18,7 +18,7 @@ export function register(
 }
 
 const emptyNativeMethod: NativeMethod = (): void => {
-  // do nothing
+  console.log('do nothing')
 }
 
 export function findNativeMethod(

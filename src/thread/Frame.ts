@@ -16,9 +16,7 @@ export class OperandStack {
   private _size = 0
 
   toString(): string {
-    return `
-Operand stack:
-size: ${this._size}
+    return `size: ${this._size}
 ${this._slots
   .map((slot, idx) => `${idx}: ${slot.toString()}`)
   .slice(0, this._size)
@@ -158,8 +156,12 @@ export default class Frame {
     return `
 Frame:
 
+Class: ${this.method.class.toString()}
+
 Local vars:
 ${this._localVars.toString()}
+
+Operand stack:
 ${this._operandStack.toString()}
 `
   }

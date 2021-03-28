@@ -16,8 +16,9 @@ export class InvokeNative extends NoOperandsInstruction {
       },
     } = frame
     const nativeMethod = findNativeMethod(className, methodName, methodDescriptor)
+    const methodInfo = `${className}.${methodName}${methodDescriptor}`
+    console.log('native method', methodInfo)
     if (!nativeMethod) {
-      const methodInfo = `${className}.${methodName}${methodDescriptor}`
       throw new Error(`java.lang.UnsatisfiedLinkError: ${methodInfo}`)
     }
     nativeMethod(frame)

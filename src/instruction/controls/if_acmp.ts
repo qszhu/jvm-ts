@@ -8,6 +8,10 @@ export class IfACmpEq extends BranchInstruction {
     const ref1 = stack.popRef()
     if (ref1 === ref2) this.branch(frame)
   }
+
+  toString(): string {
+    return `jump ${this._offset} if object a == object b`
+  }
 }
 
 export class IfACmpNE extends BranchInstruction {
@@ -17,6 +21,10 @@ export class IfACmpNE extends BranchInstruction {
     const ref1 = stack.popRef()
     if (ref1 !== ref2) this.branch(frame)
   }
+
+  toString(): string {
+    return `jump ${this._offset} if object a != object b`
+  }
 }
 
 export class IfNull extends BranchInstruction {
@@ -24,11 +32,19 @@ export class IfNull extends BranchInstruction {
     const ref = frame.operandStack.popRef()
     if (ref === null) this.branch(frame)
   }
+
+  toString(): string {
+    return `jump ${this._offset} if object a is null`
+  }
 }
 
 export class IfNonNull extends BranchInstruction {
   execute(frame: Frame): void {
     const ref = frame.operandStack.popRef()
     if (ref !== null) this.branch(frame)
+  }
+
+  toString(): string {
+    return `jump ${this._offset} if object a is not null`
   }
 }
