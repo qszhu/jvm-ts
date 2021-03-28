@@ -1,4 +1,5 @@
 import prompt from 'prompt'
+import Breakpoints, { MethodBreakpoint, stepBreakpoint } from './Breakpoint'
 import ClassLoader from './class/ClassLoader'
 import Method from './class/ClassMember/Method'
 import Obj from './class/Obj'
@@ -38,9 +39,11 @@ function createArgsArray(loader: ClassLoader, args: string[]): Obj {
   return argsArr
 }
 
+const userBreakpoints = new Breakpoints()
+let debuggerBreakpoint = stepBreakpoint
+
 async function loop(thread: Thread, logInst: boolean, debug: boolean): Promise<void> {
   const reader = new BytecodeReader()
-  let klass = null
   while (true) {
     const frame = thread.currentFrame()
     const pc = (thread.pc = frame.nextPc)
@@ -52,22 +55,24 @@ async function loop(thread: Thread, logInst: boolean, debug: boolean): Promise<v
     inst.fetchOperands(reader)
     frame.nextPc = reader.pc
 
-    if (logInst || debug) {
+    if (logInst) {
       logInstruction(frame, inst)
+    }
+
+    if (debug) {
+      logFrame(frame, inst)
+
+      if (debuggerBreakpoint.shouldBreak(frame) || userBreakpoints.shouldBreak(frame)) {
+        let cmd
+        do {
+          cmd = (await prompt.get(['>']))['>'] as string
+        } while (exec(cmd, frame))
+      }
     }
 
     inst.execute(frame)
 
     if (thread.isStackEmpty) break
-
-    if (debug) {
-      if (!klass) klass = frame.method.class.name
-      // if (klass === frame.method.class.name)
-      let cmd
-      do {
-        cmd = (await prompt.get(['>']))['>'] as string
-      } while (exec(cmd, frame))
-    }
   }
 }
 
@@ -99,6 +104,8 @@ function printStatics(frame: Frame) {
 
 function exec(cmd: string, frame: Frame): boolean {
   if (!cmd) return false
+
+  debuggerBreakpoint = stepBreakpoint
   const [fun, arg] = cmd.split(' ')
   if (fun === 'string') {
     printString(frame.localVars.getRef(Number(arg)))
@@ -108,6 +115,11 @@ function exec(cmd: string, frame: Frame): boolean {
     printMethod(frame)
   } else if (fun === 'statics') {
     printStatics(frame)
+  } else if (fun === 'step') {
+    if (arg === 'over') {
+      debuggerBreakpoint = new MethodBreakpoint(frame.method)
+    }
+    return false
   }
   return true
 }
@@ -126,6 +138,14 @@ function logFrames(thread: Thread) {
 }
 
 function logInstruction(frame: Frame, inst: Instruction) {
+  const method = frame.method
+  const className = method.class.name
+  const methodName = method.name
+  const pc = frame.thread.pc
+  console.log(`${className}.${methodName} #${pc} ${inst.constructor.name}: ${inst.toString()}`)
+}
+
+function logFrame(frame: Frame, inst: Instruction) {
   const method = frame.method
   const className = method.class.name
   const methodName = method.name
