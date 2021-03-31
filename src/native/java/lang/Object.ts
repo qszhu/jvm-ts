@@ -13,5 +13,4 @@ function getClass(frame: Frame) {
   const thiz = frame.localVars.getThis()
   const klass = thiz.class.jClass
   frame.operandStack.pushRef(klass)
-  console.log('Object#getClass', klass.toString())
 }

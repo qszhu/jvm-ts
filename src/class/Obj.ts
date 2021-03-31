@@ -7,8 +7,16 @@ export default class Obj {
   constructor(private _class?: Class, private _data?: any) {}
 
   toString(): string {
-    return `class: ${this._class.toString()}`
-    // return `(class: ${this._class.toString()} data: ${this._data.toString()} extra: ${this._extra ? this._extra : '' })`
+    return `object: ${this._class.toString()}`
+    /*
+    return `(
+class: ${this._class.toString()}
+data:
+${this._data.toString()}
+extra:
+${this._extra ? this._extra : '' })
+`
+*/
   }
 
   static newObject(klass: Class): Obj {

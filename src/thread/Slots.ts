@@ -2,6 +2,7 @@ import Obj from "../class/Obj"
 
 export class Slot {
   constructor(public num = 0, public ref: any = undefined) {}
+
   toString(): string {
     if (this.ref === void 0) return `${this.num}`
     if (this.ref === null) return 'null'
@@ -38,12 +39,12 @@ export function longFromSlots(slot1: Slot, slot2: Slot): bigint {
 export function doubleToSlots(slot1: Slot, slot2: Slot, val: number): void {
   const buf = Buffer.alloc(8)
   buf.writeDoubleBE(val)
-  longToSlots(slot1, slot2, buf.readBigInt64BE())
+  longToSlots(slot1, slot2, buf.readBigUInt64BE())
 }
 
 export function doubleFromSlots(slot1: Slot, slot2: Slot): number {
   const buf = Buffer.alloc(8)
-  buf.writeBigInt64BE(longFromSlots(slot1, slot2))
+  buf.writeBigUInt64BE(longFromSlots(slot1, slot2))
   return buf.readDoubleBE()
 }
 
@@ -96,7 +97,7 @@ export class Slots {
   }
 
   getRef(idx: number): any {
-    return this._data[idx].ref
+    return this._data[idx].ref || null
   }
 
   setSlot(idx: number, slot: Slot): void {

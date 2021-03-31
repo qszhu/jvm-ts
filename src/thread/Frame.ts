@@ -24,6 +24,10 @@ ${this._slots
 `
   }
 
+  get size(): number {
+    return this._size
+  }
+
   constructor(maxSize: number) {
     if (!maxSize) return
     this._slots = new Array(maxSize).fill(null).map(() => new Slot())
@@ -156,7 +160,7 @@ export default class Frame {
     return `
 Frame:
 
-Class: ${this.method.class.toString()}
+Method: ${this.method.class.name}.${this.method.name}${this.method.descriptor}
 
 Local vars:
 ${this._localVars.toString()}

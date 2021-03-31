@@ -92,7 +92,7 @@ class FieldRef extends MemberRef {
   }
 
   toString(): string {
-    return `Field: ${this._className}.${this._name}:${this._descriptor}`
+    return `FieldRef: ${this._className}.${this._name}:${this._descriptor}`
   }
 }
 
@@ -263,8 +263,8 @@ export default class Class {
   private _superClassName: string
   private _interfaceNames: string[]
   private _constantPool: RuntimeConstantPool
-  private _fields: Field[]
-  private _methods: Method[]
+  private _fields: Field[] = []
+  private _methods: Method[] = []
   private _loader: ClassLoader
   private _superClass: Class
   private _interfaces: Class[]
@@ -305,12 +305,13 @@ export default class Class {
     return klass
   }
 
-  static newPrimitiveClass(name: string, loader: ClassLoader, jClass: Obj): Class {
+  static newPrimitiveClass(className: string, loader: ClassLoader, jClass: Obj): Class {
     const klass = new Class()
     klass._accessFlags = AccessFlag.PUBLIC
-    klass._name = name
+    klass._name = className
     klass._loader = loader
     klass._initStarted = true
+
     klass._jClass = jClass
     klass._jClass.extra = klass
     return klass
@@ -342,6 +343,10 @@ export default class Class {
 
   get staticVars(): Slots {
     return this._staticVars
+  }
+
+  get fields(): Field[] {
+    return this._fields
   }
 
   get hasInitStarted(): boolean {

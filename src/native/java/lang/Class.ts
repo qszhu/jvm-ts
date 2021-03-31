@@ -14,22 +14,23 @@ export function init(): void {
 function getPrimitiveClass(frame: Frame) {
   const nameObj = frame.localVars.getRef(0)
   const name = jsString(nameObj)
+
   const loader = frame.method.class.loader
   const klass = loader.loadClass(name).jClass
+
   frame.operandStack.pushRef(klass)
-  console.log('Class#getPrimitiveClass', name)
 }
 
 function getName0(frame: Frame) {
   const thiz = frame.localVars.getThis()
   const klass = thiz.extra as Class
+
   const name = klass.javaName
   const nameObj = jString(klass.loader, name)
+
   frame.operandStack.pushRef(nameObj)
-  console.log('Class#getName0', name)
 }
 
 function desiredAssertionStatus0(frame: Frame) {
   frame.operandStack.pushBoolean(false)
-  console.log('Class#desiredAssertionStatus0', false)
 }

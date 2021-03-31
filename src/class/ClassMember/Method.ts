@@ -64,11 +64,7 @@ export default class Method extends ClassMember {
   }
 
   static newMethods(klass: Class, methods: MemberInfo[]): Method[] {
-    const res = new Array(methods.length).fill(null)
-    for (let i = 0; i < res.length; i++) {
-      res[i] = new Method(klass, methods[i])
-    }
-    return res
+    return methods.map(m => new Method(klass, m))
   }
 
   get isSynchronized(): boolean {

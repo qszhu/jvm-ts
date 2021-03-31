@@ -43,18 +43,20 @@ export default class ClassLoader {
 
   private loadPrimitiveClasses() {
     for (const primitiveType of primitiveTypes.keys()) {
-      const jClass = this._classMap.get('java/lang/Class').newObject()
-      const klass = Class.newPrimitiveClass(primitiveType, this, jClass)
-      this._classMap.set(primitiveType, klass)
+      this.loadPrimitiveClass(primitiveType)
     }
+  }
+
+  private loadPrimitiveClass(className: string) {
+    const jClass = this._classMap.get('java/lang/Class').newObject()
+    const klass = Class.newPrimitiveClass(className, this, jClass)
+    this._classMap.set(className, klass)
   }
 
   loadClass(name: string): Class {
     if (this._classMap.has(name)) return this._classMap.get(name)
 
-    let klass: Class
-    if (name.startsWith('[')) klass = this.loadArrayClass(name)
-    else klass = this.loadNonArrayClass(name)
+    const klass = name.startsWith('[') ? this.loadArrayClass(name) : this.loadNonArrayClass(name)
 
     if (this._classMap.has('java/lang/Class')) {
       const jlClassClass = this._classMap.get('java/lang/Class')

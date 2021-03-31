@@ -1,11 +1,15 @@
 import ClassMember from '.'
 import Class from '..'
 import MemberInfo from '../../classFile/MemberInfo'
-import AccessFlag from '../AccessFlag'
+import AccessFlag, { accessFlagsToString } from '../AccessFlag'
 
 export default class Field extends ClassMember {
   private _constValueIndex: number
   private _slotId: number
+
+  toString(): string {
+    return `Field: [${this._slotId}] ${accessFlagsToString(this._accessFlags)} ${this._class.name}.${this._name}:${this._descriptor}`
+  }
 
   constructor(klass: Class, field: MemberInfo) {
     super(klass, field)

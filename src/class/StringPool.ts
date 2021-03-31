@@ -4,14 +4,15 @@ import Obj from './Obj'
 const internedStrings = new Map<string, Obj>()
 
 export function jString(loader: ClassLoader, str: string): Obj {
-  if (!internedStrings.has(str)) {
-    const chars = stringToUtf16(str)
-    const jChars = new Obj(loader.loadClass('[C'), chars)
-    const jStr = loader.loadClass('java/lang/String').newObject()
-    jStr.setRefVar('value', '[C', jChars)
-    internedStrings.set(str, jStr)
-  }
-  return internedStrings.get(str)
+  if (internedStrings.has(str)) return internedStrings.get(str)
+
+  const chars = stringToUtf16(str)
+  const jChars = new Obj(loader.loadClass('[C'), chars)
+  const jStr = loader.loadClass('java/lang/String').newObject()
+  jStr.setRefVar('value', '[C', jChars)
+
+  internedStrings.set(str, jStr)
+  return jStr
 }
 
 export function jsString(jStr: Obj): string {

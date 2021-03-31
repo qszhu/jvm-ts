@@ -1,5 +1,6 @@
 import prompt from 'prompt'
-import Breakpoints, { MethodBreakpoint, stepBreakpoint } from './Breakpoint'
+import Breakpoints, { emptyBreakPoint, MethodBreakpoint, PcBreakPoint, stepBreakpoint } from './Breakpoint'
+import Class from './class'
 import ClassLoader from './class/ClassLoader'
 import Method from './class/ClassMember/Method'
 import Obj from './class/Obj'
@@ -63,10 +64,18 @@ async function loop(thread: Thread, logInst: boolean, debug: boolean): Promise<v
       logFrame(frame, inst)
 
       if (debuggerBreakpoint.shouldBreak(frame) || userBreakpoints.shouldBreak(frame)) {
-        let cmd
+        debuggerBreakpoint = stepBreakpoint
+        let debugCmd
+        let continueDebugging = false
         do {
-          cmd = (await prompt.get(['>']))['>'] as string
-        } while (exec(cmd, frame))
+          debugCmd = (await prompt.get(['>']))['>'] as string
+          try {
+            continueDebugging = execDebugCmd(debugCmd, frame)
+          } catch (e) {
+            console.error(e)
+            continueDebugging = true
+          }
+        } while (continueDebugging)
       }
     }
 
@@ -85,43 +94,69 @@ function printConst(c: any) {
   console.log(c.toString())
 }
 
-function printMethod(frame: Frame) {
-  const {
-    method: {
-      class: { name: className },
-      name: methodName,
-      descriptor: methodDescriptor,
-    },
-  } = frame
-  console.log(`${className}.${methodName}${methodDescriptor}`)
-}
-
 function printStatics(frame: Frame) {
   const klass = frame.method.class
   console.log(klass.name)
   console.log(frame.method.class.staticVars.toString())
 }
 
-function exec(cmd: string, frame: Frame): boolean {
-  if (!cmd) return false
+function printClass(klass: Class) {
+  console.log(`${klass.name}
+Static vars:
+${klass.staticVars.toString()}
+Fields:
+${klass.fields.map(f => f.toString()).join('\n')}
+`)
+}
 
-  debuggerBreakpoint = stepBreakpoint
-  const [fun, arg] = cmd.split(' ')
+function printFields(obj: Obj) {
+  console.log(obj.fields.toString())
+}
+
+function execDebugCmd(cmd: string, frame: Frame): boolean {
+  let continueDebugging = false
+  if (!cmd) return continueDebugging
+
+  continueDebugging = true
+
+  const [fun, arg, arg1, arg2] = cmd.split(' ')
   if (fun === 'string') {
-    printString(frame.localVars.getRef(Number(arg)))
+    if (arg === 'stack') {
+      printString(frame.operandStack.getRefFromTop(frame.operandStack.size - 1 - Number(arg1)))
+    } else if (arg === 'statics') {
+      printString(frame.method.class.staticVars.getRef(Number(arg)))
+    } else {
+      printString(frame.localVars.getRef(Number(arg)))
+    }
+  } else if (fun === 'class') {
+    if (arg === 'stack') {
+      printClass(frame.operandStack.getRefFromTop(frame.operandStack.size - 1 - Number(arg1)).class)
+    } else if (arg === 'var') {
+      printClass(frame.localVars.getRef(Number(arg1)).class)
+    }
+  } else if (fun === 'fields') {
+    if (arg === 'stack') {
+      printFields(frame.operandStack.getRefFromTop(frame.operandStack.size - 1 - Number(arg1)))
+    } else if (arg === 'var') {
+      printFields(frame.localVars.getRef(Number(arg1)))
+    }
   } else if (fun === 'const') {
     printConst(frame.method.class.constantPool.getConstant(Number(arg)))
-  } else if (fun === 'method') {
-    printMethod(frame)
   } else if (fun === 'statics') {
     printStatics(frame)
   } else if (fun === 'step') {
     if (arg === 'over') {
       debuggerBreakpoint = new MethodBreakpoint(frame.method)
     }
-    return false
+    continueDebugging = false
+  } else if (fun === 'bp') {
+    userBreakpoints.add(new PcBreakPoint(frame.method, Number(arg)))
+  } else if (fun === 'run') {
+    debuggerBreakpoint = emptyBreakPoint
+    continueDebugging = false
   }
-  return true
+
+  return continueDebugging
 }
 
 function catchErr(thread: Thread) {

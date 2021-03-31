@@ -25,6 +25,16 @@ export class MethodBreakpoint extends Breakpoint {
   }
 }
 
+export class PcBreakPoint extends Breakpoint {
+  constructor(private _method: Method, private _pc: number) {
+    super()
+  }
+
+  shouldBreak(frame: Frame): boolean {
+    return frame.method === this._method && frame.thread.pc === this._pc
+  }
+}
+
 class StepBreakpoint extends Breakpoint {
   shouldBreak(frame: Frame): boolean {
     return true
@@ -32,6 +42,14 @@ class StepBreakpoint extends Breakpoint {
 }
 
 export const stepBreakpoint = new StepBreakpoint()
+
+class EmptyBreakpoint extends Breakpoint {
+  shouldBreak(frame: Frame): boolean {
+    return false
+  }
+}
+
+export const emptyBreakPoint = new EmptyBreakpoint()
 
 export default class Breakpoints {
   private _breakpoints: Breakpoint[] = []

@@ -107,9 +107,7 @@ function println(stack: OperandStack, descriptor: string) {
       console.log(stack.popDouble())
       break
     case '(Ljava/lang/String;)V':
-      console.log(stack.toString())
       const jStr = stack.popRef()
-      console.log(jStr)
       const str = jsString(jStr)
       console.log(str)
       break
