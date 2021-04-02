@@ -11,7 +11,7 @@
 - [ ] design: move out class loading functions from Class class
 - [ ] implementation: AttributeInfo
 - [ ] implementation: modified utf8
-- [ ] implementation: instructions
+- [x] implementation: instructions
 - [ ] optimization: cache file list in zip
 - [ ] optimization: iushr
 - [ ] optimization: return same instance for instructions

@@ -1,10 +1,27 @@
 import Class from '.'
 import { Slots } from '../thread/Slots'
 
+class HashCodeGenerator {
+  private _id: number
+
+  constructor() {
+    this._id = new Date().getTime() % 2 ** 32
+  }
+
+  next(): number {
+    return this._id++
+  }
+}
+
+const hashCodeGenerator = new HashCodeGenerator()
+
 export default class Obj {
   private _extra: any
+  private _hashCode: number
 
-  constructor(private _class?: Class, private _data?: any) {}
+  constructor(private _class?: Class, private _data?: any) {
+    this._hashCode = hashCodeGenerator.next()
+  }
 
   toString(): string {
     return `object: ${this._class.toString()}`
@@ -104,5 +121,9 @@ ${this._extra ? this._extra : '' })
 
   static arrayCopy(src: Obj, dest: Obj, srcPos: number, destPos: number, length: number): void {
     dest._data.splice(destPos, length, ...src._data.slice(srcPos, length))
+  }
+
+  hashCode(): number {
+    return this._hashCode
   }
 }

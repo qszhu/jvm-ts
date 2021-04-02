@@ -1,4 +1,4 @@
-import Obj from "../class/Obj"
+import Obj from '../class/Obj'
 
 export class Slot {
   constructor(public num = 0, public ref: any = undefined) {}

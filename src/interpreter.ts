@@ -1,5 +1,10 @@
 import prompt from 'prompt'
-import Breakpoints, { emptyBreakPoint, MethodBreakpoint, PcBreakPoint, stepBreakpoint } from './Breakpoint'
+import Breakpoints, {
+  emptyBreakPoint,
+  MethodBreakpoint,
+  PcBreakPoint,
+  stepBreakpoint,
+} from './Breakpoint'
 import Class from './class'
 import ClassLoader from './class/ClassLoader'
 import Method from './class/ClassMember/Method'
@@ -106,7 +111,7 @@ function printClass(klass: Class) {
 Static vars:
 ${klass.staticVars.toString()}
 Fields:
-${klass.fields.map(f => f.toString()).join('\n')}
+${klass.fields.map((f) => f.toString()).join('\n')}
 `)
 }
 
