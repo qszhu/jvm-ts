@@ -38,7 +38,7 @@ export default class ClassReader {
   }
 
   readLong(): bigint {
-    const res = this._readBuffer.readBigUInt64BE()
+    const res = this._readBuffer.readBigInt64BE()
     this._readBuffer = this._readBuffer.slice(8)
     return res
   }

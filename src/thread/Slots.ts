@@ -24,7 +24,7 @@ export function floatFromSlot(slot: Slot): number {
 
 export function longToSlots(slot1: Slot, slot2: Slot, val: bigint): void {
   const buf = Buffer.alloc(8)
-  buf.writeBigUInt64BE(val)
+  buf.writeBigInt64BE(val)
   slot1.num = buf.readInt32BE()
   slot2.num = buf.readInt32BE(4)
 }
@@ -33,18 +33,18 @@ export function longFromSlots(slot1: Slot, slot2: Slot): bigint {
   const buf = Buffer.alloc(8)
   buf.writeInt32BE(slot1.num)
   buf.writeInt32BE(slot2.num, 4)
-  return buf.readBigUInt64BE()
+  return buf.readBigInt64BE()
 }
 
 export function doubleToSlots(slot1: Slot, slot2: Slot, val: number): void {
   const buf = Buffer.alloc(8)
   buf.writeDoubleBE(val)
-  longToSlots(slot1, slot2, buf.readBigUInt64BE())
+  longToSlots(slot1, slot2, buf.readBigInt64BE())
 }
 
 export function doubleFromSlots(slot1: Slot, slot2: Slot): number {
   const buf = Buffer.alloc(8)
-  buf.writeBigUInt64BE(longFromSlots(slot1, slot2))
+  buf.writeBigInt64BE(longFromSlots(slot1, slot2))
   return buf.readDoubleBE()
 }
 
@@ -92,11 +92,11 @@ export class Slots {
     return doubleFromSlots(this._data[idx], this._data[idx + 1])
   }
 
-  setRef(idx: number, ref: any): void {
+  setRef(idx: number, ref: Obj): void {
     this._data[idx].ref = ref
   }
 
-  getRef(idx: number): any {
+  getRef(idx: number): Obj {
     return this._data[idx].ref || null
   }
 

@@ -86,7 +86,8 @@ async function loop(thread: Thread, logInst: boolean, debug: boolean): Promise<v
 }
 
 function printString(obj: any) {
-  const codes = obj._data[0]._data._data[0].ref._data
+  // const codes = obj._data[0]._data._data[0].ref._data
+  const codes = obj._data._data[0].ref._data
   console.log(String.fromCharCode(...codes))
 }
 

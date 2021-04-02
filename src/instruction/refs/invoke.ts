@@ -126,8 +126,8 @@ export class InvokeVirtual extends Index16Instruction {
 
     if (resolvedMethod.isStatic) throw new Error('java.lang.IncompatibleClassChangeError')
 
-    const ref = frame.operandStack.getRefFromTop(resolvedMethod.argSlotCount - 1) as Obj
-    if (!ref) {
+    const ref = frame.operandStack.getRefFromTop(resolvedMethod.argSlotCount - 1)
+    if (ref === null) {
       if (methodRef.name === 'println') {
         println(frame.operandStack, methodRef.descriptor)
         return
@@ -149,8 +149,9 @@ export class InvokeVirtual extends Index16Instruction {
       methodRef.name,
       methodRef.descriptor
     )
-    if (!methodToBeInvoked || methodToBeInvoked.isAbstract)
+    if (!methodToBeInvoked || methodToBeInvoked.isAbstract) {
       throw new Error('java.lang.AbstractMethodError')
+    }
 
     invokeMethod(frame, methodToBeInvoked)
   }

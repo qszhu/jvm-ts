@@ -101,4 +101,8 @@ ${this._extra ? this._extra : '' })
     const slots = this._data as Slots
     return slots.getRef(field.slotId)
   }
+
+  static arrayCopy(src: Obj, dest: Obj, srcPos: number, destPos: number, length: number): void {
+    dest._data.splice(destPos, length, ...src._data.slice(srcPos, length))
+  }
 }

@@ -47,7 +47,7 @@ class ClassRef extends SymRef {
   }
 
   toString(): string {
-    return `Class: ${this._className}`
+    return `ClassRef: ${this._className}`
   }
 }
 
@@ -122,7 +122,7 @@ class MethodRef extends MemberRef {
   }
 
   toString(): string {
-    return `Method: ${this._className}.${this._name}:${this._descriptor}`
+    return `MethodRef: ${this._className}.${this._name}:${this._descriptor}`
   }
 }
 
@@ -539,6 +539,10 @@ export default class Class {
   get componentClass(): Class {
     const componentClassName = getComponentClassName(this._name)
     return this._loader.loadClass(componentClassName)
+  }
+
+  get isPrimitive(): boolean {
+    return primitiveTypes.has(this.name)
   }
 
   static parse(data: Buffer): Class {

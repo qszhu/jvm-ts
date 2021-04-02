@@ -14,6 +14,10 @@ export default class Method extends ClassMember {
   private _code: Buffer
   private _argSlotCount = 0
 
+  toString(): string {
+    return `Method: ${this.name}${this.descriptor}`
+  }
+
   constructor(klass: Class, method: MemberInfo) {
     super(klass, method)
     if (method.codeAttribute) {

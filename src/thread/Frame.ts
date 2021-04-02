@@ -1,5 +1,6 @@
 import { Thread } from '.'
 import Method from '../class/ClassMember/Method'
+import Obj from '../class/Obj'
 import {
   doubleFromSlots,
   doubleToSlots,
@@ -18,7 +19,7 @@ export class OperandStack {
   toString(): string {
     return `size: ${this._size}
 ${this._slots
-  .map((slot, idx) => `${idx}: ${slot.toString()}`)
+  .map((slot, idx) => `${idx}: ${slot ? slot.toString() : slot}`)
   .slice(0, this._size)
   .join('\n')}
 `
@@ -30,7 +31,7 @@ ${this._slots
 
   constructor(maxSize: number) {
     if (!maxSize) return
-    this._slots = new Array(maxSize).fill(null).map(() => new Slot())
+    this._slots = new Array(maxSize).fill(void 0)
   }
 
   /*
@@ -48,15 +49,20 @@ ${this._slots
   }
 
   popSlot(): Slot {
-    return this._slots[--this._size]
+    const slot = this._slots[--this._size]
+    this._slots[this._size] = void 0
+    return slot
   }
 
   pushInt(val: number): void {
-    this._slots[this._size++].num = val
+    const slot = new Slot()
+    slot.num = val
+    this.pushSlot(slot)
   }
 
   popInt(): number {
-    return this._slots[--this._size].num
+    const slot = this.popSlot()
+    return slot.num
   }
 
   pushBoolean(val: boolean): void {
@@ -68,52 +74,57 @@ ${this._slots
   }
 
   pushLong(val: bigint): void {
-    const i = this._size
-    longToSlots(this._slots[i], this._slots[i + 1], val)
-    this._size += 2
+    const slot1 = new Slot()
+    const slot2 = new Slot()
+    longToSlots(slot1, slot2, val)
+    this.pushSlot(slot1)
+    this.pushSlot(slot2)
   }
 
   popLong(): bigint {
-    const i = this._size - 2
-    const res = longFromSlots(this._slots[i], this._slots[i + 1])
-    this._size = i
-    return res
+    const slot2 = this.popSlot()
+    const slot1 = this.popSlot()
+    return longFromSlots(slot1, slot2)
   }
 
   pushFloat(val: number): void {
-    floatToSlot(this._slots[this._size++], val)
+    const slot = new Slot()
+    floatToSlot(slot, val)
+    this.pushSlot(slot)
   }
 
   popFloat(): number {
-    return floatFromSlot(this._slots[--this._size])
+    const slot = this.popSlot()
+    return floatFromSlot(slot)
   }
 
   pushDouble(val: number): void {
-    const i = this._size
-    doubleToSlots(this._slots[i], this._slots[i + 1], val)
-    this._size += 2
+    const slot1 = new Slot()
+    const slot2 = new Slot()
+    doubleToSlots(slot1, slot2, val)
+    this.pushSlot(slot1)
+    this.pushSlot(slot2)
   }
 
   popDouble(): number {
-    const i = this._size - 2
-    const res = doubleFromSlots(this._slots[i], this._slots[i + 1])
-    this._size = i
-    return res
+    const slot2 = this.popSlot()
+    const slot1 = this.popSlot()
+    return doubleFromSlots(slot1, slot2)
   }
 
-  pushRef(ref: any): void {
-    this._slots[this._size++].ref = ref
+  pushRef(ref: Obj): void {
+    const slot = new Slot()
+    slot.ref = ref
+    this.pushSlot(slot)
   }
 
-  popRef(): any {
-    this._size--
-    const res = this._slots[this._size].ref
-    this._slots[this._size] = new Slot()
-    return res
+  popRef(): Obj {
+    const slot = this.popSlot()
+    return slot.ref || null
   }
 
-  getRefFromTop(n: number): any {
-    return this._slots[this._size - 1 - n].ref
+  getRefFromTop(n: number): Obj {
+    return this._slots[this._size - 1 - n].ref || null
   }
 }
 

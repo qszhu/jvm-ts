@@ -31,3 +31,12 @@ function stringToUtf16(str: string): number[] {
 function utf16ToString(s: number[]): string {
   return String.fromCharCode(...s)
 }
+
+export function internString(jStr: Obj): Obj {
+  const jsStr = jsString(jStr)
+  if (internedStrings.has(jsStr)) {
+    return internedStrings.get(jsStr)
+  }
+  internedStrings.set(jsStr, jStr)
+  return jStr
+}
