@@ -8,6 +8,10 @@ export class Slot {
     if (this.ref === null) return 'null'
     return this.ref.toString()
   }
+
+  clone(): Slot {
+    return new Slot(this.num, this.ref)
+  }
 }
 
 export function floatToSlot(slot: Slot, val: number): void {
@@ -58,6 +62,12 @@ export class Slots {
   constructor(maxSize: number) {
     if (!maxSize) return
     this._data = new Array(maxSize).fill(null).map(() => new Slot())
+  }
+
+  clone(): Slots {
+    const slots = new Slots(0)
+    slots._data = this._data.map((slot) => slot.clone())
+    return slots
   }
 
   setInt(idx: number, val: number): void {

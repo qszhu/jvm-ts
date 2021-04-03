@@ -50,6 +50,23 @@ ${this._extra ? this._extra : '' })
     return obj
   }
 
+  clone(): Obj {
+    const obj = new Obj()
+    obj._class = this._class
+    obj._data = this.cloneData()
+    return obj
+  }
+
+  private cloneData(): any {
+    if (Array.isArray(this._data)) {
+      if (this._data.length > 0 && this._data[0] instanceof Obj) {
+        return this._data.map((o) => o.clone())
+      }
+      return this._data.slice()
+    }
+    return this._data.clone()
+  }
+
   get class(): Class {
     return this._class
   }
@@ -120,7 +137,9 @@ ${this._extra ? this._extra : '' })
   }
 
   static arrayCopy(src: Obj, dest: Obj, srcPos: number, destPos: number, length: number): void {
-    dest._data.splice(destPos, length, ...src._data.slice(srcPos, length))
+    for (let i = 0; i < length; i++) {
+      dest._data[destPos + i] = src._data[srcPos + i]
+    }
   }
 
   hashCode(): number {

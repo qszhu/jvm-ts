@@ -6,7 +6,7 @@ const jlObject = 'java/lang/Object'
 export function init(): void {
   register(jlObject, 'getClass', '()Ljava/lang/Class;', getClass)
   register(jlObject, 'hashCode', '()I', hashCode)
-  // register(jlObject, 'clone', '()Ljava/lang/Object;', clone)
+  register(jlObject, 'clone', '()Ljava/lang/Object;', clone)
 }
 
 function getClass(frame: Frame) {
@@ -19,4 +19,13 @@ function hashCode(frame: Frame) {
   const thiz = frame.localVars.getThis()
   const hash = thiz.hashCode()
   frame.operandStack.pushInt(hash)
+}
+
+function clone(frame: Frame) {
+  const thiz = frame.localVars.getThis()
+  const cloneable = thiz.class.loader.loadClass('java/lang/Cloneable')
+  if (!thiz.class.implements(cloneable)) {
+    throw new Error('java.lang.CloneNotSupportedException')
+  }
+  frame.operandStack.pushRef(thiz.clone())
 }
