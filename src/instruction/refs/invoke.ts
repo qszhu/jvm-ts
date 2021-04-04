@@ -141,8 +141,11 @@ export class InvokeVirtual extends Index16Instruction {
       resolvedMethod.class.packageName !== currentClass.packageName &&
       ref.class !== currentClass &&
       !ref.class.isSubClassOf(currentClass)
-    )
-      throw new Error('java.lang.IllegalAccessError')
+    ) {
+      // if (!(ref.class.isArray && resolvedMethod.name === 'clone')) {
+        throw new Error('java.lang.IllegalAccessError')
+      // }
+    }
 
     const methodToBeInvoked = Class.lookupMethodInClass(
       ref.class,

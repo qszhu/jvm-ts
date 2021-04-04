@@ -545,6 +545,20 @@ export default class Class {
     return primitiveTypes.has(this.name)
   }
 
+  getInstanceMethod(name: string, descriptor: string): Method {
+    return Class.getMethod(this, name, descriptor, false)
+  }
+
+  getRefVar(fieldName: string, fieldDescriptor: string): Obj {
+    const field = Class.getField(this, fieldName, fieldDescriptor, true)
+    return this._staticVars.getRef(field.slotId)
+  }
+
+  setRefVar(fieldName: string, fieldDescriptor: string, ref: Obj): void {
+    const field = Class.getField(this, fieldName, fieldDescriptor, true)
+    this._staticVars.setRef(field.slotId, ref)
+  }
+
   static parse(data: Buffer): Class {
     const cf = new ClassFile(data)
     return Class.newClass(cf)
