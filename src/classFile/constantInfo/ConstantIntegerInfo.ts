@@ -8,7 +8,7 @@ export default class ConstantIntegerInfo {
   }
 
   static fromReader(reader: ClassReader): ConstantIntegerInfo {
-    return new ConstantIntegerInfo(reader.readU4())
+    return new ConstantIntegerInfo(reader.readInteger())
   }
 
   toString(): string {

@@ -25,6 +25,12 @@ export default class ClassReader {
     return res
   }
 
+  readInteger(): number {
+    const res = this._readBuffer.readInt32BE()
+    this._readBuffer = this._readBuffer.slice(4)
+    return res
+  }
+
   readFloat(): number {
     const res = this._readBuffer.readFloatBE()
     this._readBuffer = this._readBuffer.slice(4)

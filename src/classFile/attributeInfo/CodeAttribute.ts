@@ -3,8 +3,9 @@ import { codeToString } from '../../classViewer'
 import ClassReader from '../ClassReader'
 import ConstantPool from '../ConstantPool'
 import { u2 } from '../types'
+import LineNumberTableAttribute from './LineNumberTableAttribute'
 
-class ExceptionTableEntry {
+export class ExceptionTableEntry {
   constructor(
     private _startPc: u2,
     private _endPc: u2,
@@ -12,7 +13,23 @@ class ExceptionTableEntry {
     private _catchType: u2
   ) {}
 
-  static fromReader(reader: ClassReader) {
+  get startPc(): u2 {
+    return this._startPc
+  }
+
+  get endPc(): u2 {
+    return this._endPc
+  }
+
+  get handlerPc(): u2 {
+    return this._handlerPc
+  }
+
+  get catchType(): u2 {
+    return this._catchType
+  }
+
+  static fromReader(reader: ClassReader): ExceptionTableEntry {
     return new ExceptionTableEntry(
       reader.readU2(),
       reader.readU2(),
@@ -21,7 +38,7 @@ class ExceptionTableEntry {
     )
   }
 
-  static listFromReader(reader: ClassReader) {
+  static listFromReader(reader: ClassReader): ExceptionTableEntry[] {
     const len = reader.readU2()
     return new Array(len).fill(null).map(() => ExceptionTableEntry.fromReader(reader))
   }
@@ -47,6 +64,16 @@ export default class CodeAttribute {
 
   get code(): Buffer {
     return this._code
+  }
+
+  get exceptionTable(): ExceptionTableEntry[] {
+    return this._exceptionTable
+  }
+
+  get lineNumberTableAttribute(): LineNumberTableAttribute {
+    for (const attr of this._attributes) {
+      if (attr instanceof LineNumberTableAttribute) return attr
+    }
   }
 
   static fromReader(reader: ClassReader, cp: ConstantPool): CodeAttribute {

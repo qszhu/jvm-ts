@@ -40,7 +40,7 @@ abstract class SymRef {
   }
 }
 
-class ClassRef extends SymRef {
+export class ClassRef extends SymRef {
   constructor(cp: RuntimeConstantPool, classInfo: ConstantClassInfo) {
     super(cp)
     this._className = classInfo.name
@@ -257,6 +257,12 @@ function toClassName(descriptor: string): string {
   throw new Error(`Invalid descriptor: ${descriptor}`)
 }
 
+function getSourceFile(cf: ClassFile): string {
+  const sfAttr = cf.sourceFileAttribute
+  if (sfAttr) return sfAttr.fileName
+  return 'Unknown'
+}
+
 export default class Class {
   private _accessFlags: number
   private _name: string
@@ -273,6 +279,7 @@ export default class Class {
   private _staticVars: Slots = new Slots(0)
   private _initStarted: boolean
   private _jClass: Obj
+  private _sourceFile: string
 
   toString(): string {
     return `${accessFlagsToString(this._accessFlags)} ${this._name}`
@@ -288,6 +295,7 @@ export default class Class {
     klass._fields = Field.newFields(klass, cf.fields)
     klass._methods = Method.newMethods(klass, cf.methods)
     klass._initStarted = false
+    klass._sourceFile = getSourceFile(cf)
     return klass
   }
 
@@ -359,6 +367,10 @@ export default class Class {
 
   set jClass(klass: Obj) {
     this._jClass = klass
+  }
+
+  get sourceFile(): string {
+    return this._sourceFile
   }
 
   get javaName(): string {

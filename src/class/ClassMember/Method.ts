@@ -1,7 +1,9 @@
 import ClassMember from '.'
 import Class from '..'
+import LineNumberTableAttribute from '../../classFile/attributeInfo/LineNumberTableAttribute'
 import MemberInfo from '../../classFile/MemberInfo'
 import AccessFlag from '../AccessFlag'
+import ExceptionTable from '../ExceptionTable'
 import MethodDescriptorParser from './MethodDescriptor'
 
 function newByteCodes(...bytes: number[]): Buffer {
@@ -12,6 +14,8 @@ export default class Method extends ClassMember {
   private _maxStack: number
   private _maxLocals: number
   private _code: Buffer
+  private _exceptionTable: ExceptionTable
+  private _lineNumberTable: LineNumberTableAttribute
   private _argSlotCount = 0
 
   toString(): string {
@@ -25,6 +29,8 @@ export default class Method extends ClassMember {
       this._maxStack = codeAttr.maxStack
       this._maxLocals = codeAttr.maxLocals
       this._code = codeAttr.code
+      this._lineNumberTable = codeAttr.lineNumberTableAttribute
+      this._exceptionTable = new ExceptionTable(codeAttr.exceptionTable, klass.constantPool)
     }
     const md = MethodDescriptorParser.parseMethodDescriptor(this._descriptor)
     this.calcArgSlotCount(md.parameterTypes)
@@ -68,7 +74,7 @@ export default class Method extends ClassMember {
   }
 
   static newMethods(klass: Class, methods: MemberInfo[]): Method[] {
-    return methods.map(m => new Method(klass, m))
+    return methods.map((m) => new Method(klass, m))
   }
 
   get isSynchronized(): boolean {
@@ -113,5 +119,17 @@ export default class Method extends ClassMember {
 
   get argSlotCount(): number {
     return this._argSlotCount
+  }
+
+  findExceptionHandler(exClass: Class, pc: number): number {
+    const handler = this._exceptionTable.findExceptionHandler(exClass, pc)
+    if (handler) return handler.handlerPc
+    return -1
+  }
+
+  getLineNumber(pc: number): number {
+    if (this.isNative) return -2
+    if (!this._lineNumberTable) return -1
+    return this._lineNumberTable.getLineNumber(pc)
   }
 }

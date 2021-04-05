@@ -38,6 +38,7 @@ import { DRem, FRem, IRem, LRem } from './maths/rem'
 import { DSub, FSub, ISub, LSub } from './maths/sub'
 import { Nop } from './nop'
 import { ANewArray, ArrayLength, MultiANewArray, NewArray } from './refs/array'
+import { AThrow } from './refs/athrow'
 import { GetField, PutField } from './refs/field'
 import { CheckCast, InstanceOf } from './refs/instance'
 import { InvokeInterface, InvokeSpecial, InvokeStatic, InvokeVirtual } from './refs/invoke'
@@ -446,7 +447,8 @@ export function newInstruction(opcode: number): Instruction {
       return new ANewArray()
     case 0xbe:
       return new ArrayLength()
-    // 0xbf: AThrow
+    case 0xbf:
+      return new AThrow()
     case 0xc0:
       return new CheckCast()
     case 0xc1:

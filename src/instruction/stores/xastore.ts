@@ -13,6 +13,10 @@ export class AAStore extends NoOperandsInstruction {
     checkIndex(refs.length, idx)
     refs[idx] = ref
   }
+
+  toString(): string {
+    return `set a[b] = obj c`
+  }
 }
 
 export class BAStore extends NoOperandsInstruction {
@@ -25,6 +29,10 @@ export class BAStore extends NoOperandsInstruction {
     const bytes = arrRef.bytes
     checkIndex(bytes.length, idx)
     bytes[idx] = val
+  }
+
+  toString(): string {
+    return `set a[b] = byte c`
   }
 }
 
@@ -39,6 +47,10 @@ export class CAStore extends NoOperandsInstruction {
     checkIndex(chars.length, idx)
     chars[idx] = val
   }
+
+  toString(): string {
+    return `set a[b] = char c`
+  }
 }
 
 export class DAStore extends NoOperandsInstruction {
@@ -51,6 +63,10 @@ export class DAStore extends NoOperandsInstruction {
     const doubles = arrRef.doubles
     checkIndex(doubles.length, idx)
     doubles[idx] = val
+  }
+
+  toString(): string {
+    return `set a[b] = double c`
   }
 }
 
@@ -65,6 +81,10 @@ export class FAStore extends NoOperandsInstruction {
     checkIndex(floats.length, idx)
     floats[idx] = val
   }
+
+  toString(): string {
+    return `set a[b] = float c`
+  }
 }
 
 export class IAStore extends NoOperandsInstruction {
@@ -77,6 +97,10 @@ export class IAStore extends NoOperandsInstruction {
     const ints = arrRef.ints
     checkIndex(ints.length, idx)
     ints[idx] = val
+  }
+
+  toString(): string {
+    return `set a[b] = int c`
   }
 }
 
@@ -91,6 +115,10 @@ export class LAStore extends NoOperandsInstruction {
     checkIndex(longs.length, idx)
     longs[idx] = val
   }
+
+  toString(): string {
+    return `set a[b] = long c`
+  }
 }
 
 export class SAStore extends NoOperandsInstruction {
@@ -103,5 +131,9 @@ export class SAStore extends NoOperandsInstruction {
     const shorts = arrRef.shorts
     checkIndex(shorts.length, idx)
     shorts[idx] = val
+  }
+
+  toString(): string {
+    return `set a[b] = short c`
   }
 }

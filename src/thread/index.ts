@@ -21,6 +21,10 @@ class Stack<T> {
     return this._data[this._data.length - 1]
   }
 
+  clear(): void {
+    while (!this.isEmpty) this.pop()
+  }
+
   get isEmpty(): boolean {
     return this._data.length === 0
   }
@@ -44,15 +48,24 @@ export class Thread {
   }
 
   pushFrame(frame: Frame): void {
+    if (!this._stack.isEmpty) {
+      frame.lower = this._stack.peek()
+    }
     this._stack.push(frame)
   }
 
   popFrame(): Frame {
-    return this._stack.pop()
+    const frame = this._stack.pop()
+    frame.lower = void 0
+    return frame
   }
 
   currentFrame(): Frame {
     return this._stack.peek()
+  }
+
+  clearStack(): void {
+    this._stack.clear()
   }
 
   get topFrame(): Frame {
@@ -61,5 +74,13 @@ export class Thread {
 
   get isStackEmpty(): boolean {
     return this._stack.isEmpty
+  }
+
+  get frames(): Frame[] {
+    const res: Frame[] = []
+    for (let frame = this._stack.peek(); frame; frame = frame.lower) {
+      res.push(frame)
+    }
+    return res
   }
 }

@@ -1,5 +1,6 @@
 import { accessFlagsToString } from '../class/AccessFlag'
 import { AttributeInfo, readAttributes } from './attributeInfo'
+import SourceFileAttribute from './attributeInfo/SourceFileAttribute'
 import ClassReader from './ClassReader'
 import ConstantPool from './ConstantPool'
 import MemberInfo from './MemberInfo'
@@ -54,6 +55,12 @@ export default class ClassFile {
 
   get methods(): MemberInfo[] {
     return this._methods
+  }
+
+  get sourceFileAttribute(): SourceFileAttribute {
+    for (const attr of this._attributes) {
+      if (attr instanceof SourceFileAttribute) return attr
+    }
   }
 
   constructor(data: Buffer) {

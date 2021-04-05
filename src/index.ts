@@ -44,7 +44,7 @@ async function main() {
   const mainClass = classLoader.loadClass(className)
   const mainMethod = mainClass.mainMethod
 
-  if (mainMethod) await interpret(mainMethod, verboseInst, argv._ as string[], debug)
+  if (mainMethod) await interpret(mainMethod, verboseInst, (argv._ as string[]).slice(1), debug)
   else console.error('Main method not found in class', argv._[0])
 }
 

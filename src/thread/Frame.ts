@@ -25,6 +25,11 @@ ${this._slots
 `
   }
 
+  clear(): void {
+    this._slots = new Array(this._slots.length).fill(void 0)
+    this._size = 0
+  }
+
   get size(): number {
     return this._size
   }
@@ -137,6 +142,14 @@ export default class Frame {
   constructor(private _thread: Thread, private _method: Method) {
     this._localVars = new Slots(this._method.maxLocals)
     this._operandStack = new OperandStack(this._method.maxStack)
+  }
+
+  get lower(): Frame {
+    return this._lower
+  }
+
+  set lower(frame: Frame) {
+    this._lower = frame
   }
 
   get localVars(): Slots {

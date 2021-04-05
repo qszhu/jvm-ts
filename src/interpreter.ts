@@ -40,7 +40,7 @@ function createArgsArray(loader: ClassLoader, args: string[]): Obj {
   const argsArr = stringClass.arrayClass.newArray(args.length)
   const jArgs = argsArr.refs
   for (const [i, arg] of args.entries()) {
-    jArgs[i] = jString(loader, arg)
+    jArgs[i] = jString(loader, `${arg}`)
   }
   return argsArr
 }
@@ -174,7 +174,10 @@ function logFrames(thread: Thread) {
     const frame = thread.popFrame()
     const method = frame.method
     const className = method.class.name
-    console.log(`>> pc:${frame.nextPc} ${className} ${method.name} ${method.descriptor}`)
+    const lineNum = method.getLineNumber(frame.nextPc)
+    console.log(
+      `>> line: ${lineNum} pc:${frame.nextPc} ${className} ${method.name} ${method.descriptor}`
+    )
   }
 }
 

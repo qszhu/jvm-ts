@@ -4,6 +4,14 @@ import { u2 } from '../types'
 class LineNumberTableEntry {
   constructor(private _startPc: u2, private _lineNumber: u2) {}
 
+  get startPc(): u2 {
+    return this._startPc
+  }
+
+  get lineNumber(): u2 {
+    return this._lineNumber
+  }
+
   static fromReader(reader: ClassReader) {
     return new LineNumberTableEntry(reader.readU2(), reader.readU2())
   }
@@ -23,6 +31,14 @@ export default class LineNumberTableAttribute {
 
   static fromReader(reader: ClassReader): LineNumberTableAttribute {
     return new LineNumberTableAttribute(LineNumberTableEntry.listFromReader(reader))
+  }
+
+  getLineNumber(pc: number): number {
+    for (let i = this._table.length - 1; i >= 0; i--) {
+      const entry = this._table[i]
+      if (pc >= entry.startPc) return entry.lineNumber
+    }
+    return -1
   }
 
   toString(): string {

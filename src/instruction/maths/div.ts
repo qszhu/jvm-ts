@@ -9,6 +9,10 @@ export class DDiv extends NoOperandsInstruction {
     const res = v1 / v2
     stack.pushDouble(res)
   }
+
+  toString(): string {
+    return `push double a / b`
+  }
 }
 
 export class FDiv extends NoOperandsInstruction {
@@ -18,6 +22,10 @@ export class FDiv extends NoOperandsInstruction {
     const v1 = stack.popFloat()
     const res = v1 / v2
     stack.pushFloat(res)
+  }
+
+  toString(): string {
+    return `push float a / b`
   }
 }
 
@@ -30,6 +38,10 @@ export class IDiv extends NoOperandsInstruction {
     const res = Math.floor(v1 / v2)
     stack.pushInt(res)
   }
+
+  toString(): string {
+    return `push int a / b`
+  }
 }
 
 export class LDiv extends NoOperandsInstruction {
@@ -40,5 +52,9 @@ export class LDiv extends NoOperandsInstruction {
     if (v2 === BigInt(0)) throw new Error('java.lang.ArithmeticException: divide by zero')
     const res = v1 / v2
     stack.pushLong(res)
+  }
+
+  toString(): string {
+    return `push long a / b`
   }
 }

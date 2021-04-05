@@ -12,6 +12,11 @@
 - [ ] implementation: AttributeInfo
 - [ ] implementation: modified utf8
 - [x] implementation: instructions
+  - [ ] jsr/jsr_w
+  - [ ] ret
+  - [ ] invokedynamic
+  - [ ] monitorenter/monitorexit
+  - [ ] breakpoint
 - [ ] optimization: cache file list in zip
 - [ ] optimization: iushr
 - [ ] optimization: return same instance for instructions

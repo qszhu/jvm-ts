@@ -4,7 +4,8 @@ import * as Float from './java/lang/Float'
 import * as Obj from './java/lang/Object'
 import * as String from './java/lang/String'
 import * as System from './java/lang/System'
-import * as Vm from './sum/misc/Vm'
+import * as Throwable from './java/lang/Throwable'
+import * as Vm from './sun/misc/Vm'
 
 export function init(): void {
   Class.init()
@@ -13,5 +14,6 @@ export function init(): void {
   Obj.init()
   String.init()
   System.init()
+  Throwable.init()
   Vm.init()
 }
