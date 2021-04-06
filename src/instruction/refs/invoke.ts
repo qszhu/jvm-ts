@@ -128,7 +128,7 @@ export class InvokeVirtual extends Index16Instruction {
 
     const ref = frame.operandStack.getRefFromTop(resolvedMethod.argSlotCount - 1)
     if (ref === null) {
-      if (methodRef.name === 'println') {
+      if (methodRef.name === 'println') { // hack
         println(frame.operandStack, methodRef.descriptor)
         return
       }
@@ -142,9 +142,7 @@ export class InvokeVirtual extends Index16Instruction {
       ref.class !== currentClass &&
       !ref.class.isSubClassOf(currentClass)
     ) {
-      // if (!(ref.class.isArray && resolvedMethod.name === 'clone')) {
-        throw new Error('java.lang.IllegalAccessError')
-      // }
+      throw new Error('java.lang.IllegalAccessError')
     }
 
     const methodToBeInvoked = Class.lookupMethodInClass(

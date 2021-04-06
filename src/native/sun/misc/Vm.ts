@@ -21,4 +21,10 @@ function initialize(frame: Frame) {
     '(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;'
   )
   invokeMethod(frame, setPropMethod)
+  /*
+  const classLoader = frame.method.class.loader
+  const jlSysClass = classLoader.loadClass('java/lang/System')
+  const initSysClass = jlSysClass.getStaticMethod('initializeSystemClass', '()V')
+  invokeMethod(frame, initSysClass)
+  */
 }

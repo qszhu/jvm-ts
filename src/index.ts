@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 import yargs from 'yargs'
-import ClassLoader from './class/ClassLoader'
-import ClassPath from './classPath'
-import { interpret } from './interpreter'
+import Jvm from './jvm'
 
 const argv = yargs(process.argv.slice(2))
   .usage('Usage: $0 [--options] class [args...]')
@@ -25,27 +23,8 @@ const argv = yargs(process.argv.slice(2))
 
   .demandCommand(1).argv
 
-console.log(argv)
-
 async function main() {
-  const cp = new ClassPath(argv.Xjre as string, argv.cp as string)
-  // console.log(cp.toString())
-
-  const verboseClass = argv['verbose:class'] as boolean
-  const verboseInst = argv['verbose:inst'] as boolean
-  const debug = argv['debug'] as boolean
-
-  const classLoader = ClassLoader.newClassLoader(cp, verboseClass)
-
-  let className: string = argv._[0] as string
-  className = className.replace(/\./g, '/')
-  // console.log(className)
-
-  const mainClass = classLoader.loadClass(className)
-  const mainMethod = mainClass.mainMethod
-
-  if (mainMethod) await interpret(mainMethod, verboseInst, (argv._ as string[]).slice(1), debug)
-  else console.error('Main method not found in class', argv._[0])
+  Jvm.newJvm(argv).start()
 }
 
 if (require.main === module) {

@@ -561,6 +561,10 @@ export default class Class {
     return Class.getMethod(this, name, descriptor, false)
   }
 
+  getStaticMethod(name: string, descriptor: string): Method {
+    return Class.getMethod(this, name, descriptor, true)
+  }
+
   getRefVar(fieldName: string, fieldDescriptor: string): Obj {
     const field = Class.getField(this, fieldName, fieldDescriptor, true)
     return this._staticVars.getRef(field.slotId)
