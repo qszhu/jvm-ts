@@ -13,6 +13,12 @@ $ npm link
 $ ./test.sh
 ```
 
+### Class Viewer
+
+```bash
+$ classviewer <path/to/.class>
+```
+
 ### Debugger
 
 * enable with `--debug` flag

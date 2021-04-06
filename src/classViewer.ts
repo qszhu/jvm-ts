@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import fs from 'fs'
 import ClassFile from "./classFile"
 
@@ -75,12 +76,16 @@ export function codeToString(code: Buffer): string {
   return res.join('\n')
 }
 
-async function main() {
-  const data = fs.readFileSync('java/jvmgo/book/ch09/GetClassTest.class')
+async function main(fn: string) {
+  const data = fs.readFileSync(fn)
   const classFile = new ClassFile(data)
   console.log(classFile.toString())
 }
 
 if (require.main === module) {
-  main().catch(console.error)
+  if (process.argv.length !== 3) {
+    console.log('Usage: classViewer <class file>')
+    process.exit(1)
+  }
+  main(process.argv[2]).catch(console.error)
 }
