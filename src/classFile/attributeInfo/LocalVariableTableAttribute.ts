@@ -1,5 +1,5 @@
 import ClassReader from '../ClassReader'
-import LocalVariableTableEntry from './LocalVariableTableEntry'
+import LocalVariableTableEntry from './tableEntry/LocalVariableTableEntry'
 
 export default class LocalVariableTableAttribute {
   static fromReader(reader: ClassReader): LocalVariableTableAttribute {

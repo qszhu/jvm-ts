@@ -1,5 +1,5 @@
-import ClassReader from '../ClassReader'
-import { u2 } from '../types'
+import ClassReader from '../../ClassReader'
+import { u2 } from '../../types'
 
 export default class LineNumberTableEntry {
   static listFromReader(reader: ClassReader): LineNumberTableEntry[] {

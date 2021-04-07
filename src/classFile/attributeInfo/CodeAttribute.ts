@@ -5,7 +5,7 @@ import ConstantPool from '../ConstantPool'
 import { u2 } from '../types'
 import AttributeInfo from './AttributeInfo'
 import AttributeInfoFactory from './AttributeInfoFactory'
-import ExceptionTableEntry from './ExceptionTableEntry'
+import ExceptionTableEntry from './tableEntry/ExceptionTableEntry'
 
 export default class CodeAttribute extends AttributesHolder {
   static fromReader(reader: ClassReader, cp: ConstantPool): CodeAttribute {

@@ -1,5 +1,5 @@
 import ClassReader from '../ClassReader'
-import LineNumberTableEntry from './LineNumberTableEntry'
+import LineNumberTableEntry from './tableEntry/LineNumberTableEntry'
 
 export default class LineNumberTableAttribute {
   static fromReader(reader: ClassReader): LineNumberTableAttribute {
