@@ -1,11 +1,10 @@
-import path from 'path'
 import fs from 'fs'
-
-import Entry from './entries/Entry'
-import WildcardEntry from './entries/WildcardEntry'
-import { newEntry } from './entries'
-import { ClassNotFoundErrorMsg, JavaRuntimeNotFoundError } from './errors'
+import path from 'path'
 import { PATH_LIST_SEP } from './consts'
+import Entry from './entries/Entry'
+import EntryFactory from './entries/EntryFactory'
+import WildcardEntry from './entries/WildcardEntry'
+import { ClassNotFoundErrorMsg, JavaRuntimeNotFoundError } from './errors'
 
 function getJreDir(Xjre: string): string {
   let jreDir = Xjre
@@ -34,7 +33,7 @@ export default class ClassPath {
     const jreExtDir = path.join(jreDir, 'lib', 'ext', '*')
     this._extClassPath = new WildcardEntry(jreExtDir)
 
-    this._userClassPath = newEntry(cp)
+    this._userClassPath = EntryFactory.newEntry(cp)
   }
 
   readClass(className: string): { data: Buffer; entry: Entry } {

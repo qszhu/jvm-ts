@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-
+import { ClassNotFoundError } from '../errors'
 import Entry from './Entry'
 
 export default class DirEntry implements Entry {
@@ -11,9 +11,13 @@ export default class DirEntry implements Entry {
   }
 
   readClass(className: string): { data: Buffer; entry: Entry } {
-    const fn = path.join(this._absPath, className)
-    const data = fs.readFileSync(fn)
-    return { data, entry: this }
+    try {
+      const fn = path.join(this._absPath, className)
+      const data = fs.readFileSync(fn)
+      return { data, entry: this }
+    } catch (e) {
+      throw new ClassNotFoundError()
+    }
   }
 
   toString(): string {

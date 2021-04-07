@@ -1,9 +1,7 @@
-import path from 'path'
-
 import AdmZip from 'adm-zip'
-
-import Entry from './Entry'
+import path from 'path'
 import { ClassNotFoundError } from '../errors'
+import Entry from './Entry'
 
 export default class ZipEntry implements Entry {
   private _absPath: string

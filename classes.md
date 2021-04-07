@@ -1,31 +1,3 @@
-### Classpath
-
-```mermaid
-classDiagram
-  class Classpath {
-    +Parse(options)$ Classpath
-    +ReadClass(name) []byte
-  }
-  Classpath *-- Entry
-
-  class Entry {
-    <<interface>>
-    +ReadClass(name) []byte
-  }
-
-  class DirEntry
-  Entry <|.. DirEntry
-
-  class ZipEntry
-  Entry <|.. ZipEntry
-
-  class CompositeEntry
-  Entry <|.. CompositeEntry
-
-  class WildcardEntry
-  CompositeEntry <|-- WildcardEntry
-```
-
 ### Classfile
 
 ```mermaid

@@ -1,15 +1,14 @@
-import Entry from './Entry'
-import { ClassNotFoundError, ClassNotFoundErrorMsg } from '../errors'
 import { PATH_LIST_SEP } from '../consts'
+import { ClassNotFoundError, ClassNotFoundErrorMsg } from '../errors'
+import Entry from './Entry'
 
 export default abstract class BaseCompositeEntry implements Entry {
   constructor(private _entries: Entry[]) {}
 
-  readClass(className: string): { data: Buffer, entry: Entry } {
+  readClass(className: string): { data: Buffer; entry: Entry } {
     for (const entry of this._entries) {
       try {
-        const res = entry.readClass(className)
-        return res
+        return entry.readClass(className)
       } catch (e) {
         if (e.message !== ClassNotFoundErrorMsg) throw e
       }
