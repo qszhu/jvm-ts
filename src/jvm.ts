@@ -1,7 +1,7 @@
 import ClassLoader from './class/ClassLoader'
 import Obj from './class/Obj'
 import { jString } from './class/StringPool'
-import ClassPath from './classPath'
+import ClassPath from './classPath/ClassPath'
 import { initClass } from './instruction'
 import { interpret } from './interpreter'
 import { Thread } from './thread'

@@ -10,6 +10,8 @@
 - [ ] design: other string encoding
 - [ ] design: move out class loading functions from Class class
 - [ ] implementation: AttributeInfo
+  - [ ] DeprecatedAttribute
+  - [ ] SyntheticAttribute
 - [ ] implementation: ConstantUtf8Info
 - [x] implementation: instructions
   - [ ] jsr/jsr_w

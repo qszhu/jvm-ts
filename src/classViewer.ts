@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import fs from 'fs'
-import ClassFile from "./classFile"
+import ClassFile from "./classFile/ClassFile"
 
 const bytecodes = [
   'Nop',          'AConstNull',       'IConstM1',       'IConst0',      'IConst1',      'IConst2',        'IConst3',        'IConst4',

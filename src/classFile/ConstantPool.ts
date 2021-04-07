@@ -1,11 +1,11 @@
 import ClassReader from './ClassReader'
-import { ConstantInfo } from './constantInfo'
 import ConstantClassInfo from './constantInfo/ConstantClassInfo'
-import ConstantDoubleInfo from './constantInfo/numeric/ConstantDoubleInfo'
+import ConstantInfo from './constantInfo/ConstantInfo'
 import ConstantInfoFactory from './constantInfo/ConstantInfoFactory'
-import ConstantLongInfo from './constantInfo/numeric/ConstantLongInfo'
 import ConstantNameAndTypeInfo from './constantInfo/ConstantNameAndTypeInfo'
 import ConstantUtf8Info from './constantInfo/ConstantUtf8Info'
+import ConstantDoubleInfo from './constantInfo/numeric/ConstantDoubleInfo'
+import ConstantLongInfo from './constantInfo/numeric/ConstantLongInfo'
 import { u2 } from './types'
 
 export default class ConstantPool {
@@ -46,7 +46,6 @@ export default class ConstantPool {
 
   getClassName(idx: u2): string {
     const classInfo = this.getConstantInfo(idx) as ConstantClassInfo
-    // return this.getUtf8(classInfo.nameIndex)
     return classInfo.name
   }
 

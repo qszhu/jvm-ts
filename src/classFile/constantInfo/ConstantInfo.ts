@@ -13,7 +13,7 @@ import ConstantFloatInfo from './numeric/ConstantFloatInfo'
 import ConstantIntegerInfo from './numeric/ConstantIntegerInfo'
 import ConstantLongInfo from './numeric/ConstantLongInfo'
 
-export type ConstantInfo =
+type ConstantInfo =
   | ConstantClassInfo
   | ConstantInvokeDynamicInfo
   | ConstantMethodHandleInfo
@@ -28,3 +28,5 @@ export type ConstantInfo =
   | ConstantFloatInfo
   | ConstantIntegerInfo
   | ConstantLongInfo
+
+export default ConstantInfo

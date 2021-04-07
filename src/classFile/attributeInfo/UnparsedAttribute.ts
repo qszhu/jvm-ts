@@ -1,6 +1,10 @@
 import ClassReader from '../ClassReader'
 
 export default class UnparsedAttribute {
+  static fromReader(name: string, length: number, reader: ClassReader): UnparsedAttribute {
+    return new UnparsedAttribute(name, length, reader.readBytes(length))
+  }
+
   constructor(private _name: string, private _length: number, private _info: Buffer) {}
 
   get name(): string {
@@ -13,10 +17,6 @@ export default class UnparsedAttribute {
 
   get info(): Buffer {
     return this._info
-  }
-
-  static fromReader(name: string, length: number, reader: ClassReader): UnparsedAttribute {
-    return new UnparsedAttribute(name, length, reader.readBytes(length))
   }
 
   toString(): string {

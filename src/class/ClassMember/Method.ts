@@ -1,5 +1,6 @@
 import ClassMember from '.'
 import Class from '..'
+import AttributeInfoFactory from '../../classFile/attributeInfo/AttributeInfoFactory'
 import LineNumberTableAttribute from '../../classFile/attributeInfo/LineNumberTableAttribute'
 import MemberInfo from '../../classFile/MemberInfo'
 import AccessFlag from '../AccessFlag'
@@ -24,12 +25,12 @@ export default class Method extends ClassMember {
 
   constructor(klass: Class, method: MemberInfo) {
     super(klass, method)
-    if (method.codeAttribute) {
-      const codeAttr = method.codeAttribute
+    const codeAttr = AttributeInfoFactory.getCodeAttribute(method)
+    if (codeAttr) {
       this._maxStack = codeAttr.maxStack
       this._maxLocals = codeAttr.maxLocals
       this._code = codeAttr.code
-      this._lineNumberTable = codeAttr.lineNumberTableAttribute
+      this._lineNumberTable = AttributeInfoFactory.getLineNumberTableAttribute(codeAttr)
       this._exceptionTable = new ExceptionTable(codeAttr.exceptionTable, klass.constantPool)
     }
     const md = MethodDescriptorParser.parseMethodDescriptor(this._descriptor)

@@ -1,11 +1,12 @@
 import { accessFlagsToString } from '../class/AccessFlag'
-import { AttributeInfo, readAttributes } from './attributeInfo'
+import AttributeInfoFactory from './attributeInfo/AttributeInfoFactory'
+import AttributesHolder from './AttributesHolder'
 import ClassReader from './ClassReader'
 import ConstantPool from './ConstantPool'
 import MemberInfo from './MemberInfo'
 import { u2, u4 } from './types'
 
-export default class ClassFile {
+export default class ClassFile extends AttributesHolder {
   private _reader: ClassReader
   private _magic: u4
   private _minorVersion: u2
@@ -17,9 +18,9 @@ export default class ClassFile {
   private _interfaces: u2[]
   private _fields: MemberInfo[]
   private _methods: MemberInfo[]
-  private _attributes: AttributeInfo[]
 
   constructor(data: Buffer) {
+    super()
     this._reader = new ClassReader(data)
 
     this.readAndCheckMagic()
@@ -35,7 +36,7 @@ export default class ClassFile {
     this._fields = MemberInfo.listFromReader(this._reader, this._constantPool)
     this._methods = MemberInfo.listFromReader(this._reader, this._constantPool)
 
-    this._attributes = readAttributes(this._reader, this._constantPool)
+    this._attributes = AttributeInfoFactory.readAttributes(this._reader, this._constantPool)
   }
 
   private readAndCheckMagic() {
@@ -89,10 +90,6 @@ export default class ClassFile {
 
   get methods(): MemberInfo[] {
     return this._methods.slice()
-  }
-
-  findAttribute(pred: (attr: AttributeInfo) => boolean): AttributeInfo {
-    return this._attributes.find(pred)
   }
 
   toString(): string {
