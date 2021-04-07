@@ -1,4 +1,4 @@
-## Java Interpreter in TypeScript
+## JVM in TypeScript
 
 ### Setup
 
