@@ -18,9 +18,8 @@ classDiagram
   class ZipEntry
   Entry <|.. ZipEntry
 
-  class BaseCompositeEntry {
-    <<abstract>>
-  }
+  class BaseCompositeEntry
+  <<abstract>>BaseCompositeEntry
   Entry <|.. BaseCompositeEntry
 
   class CompositeEntry

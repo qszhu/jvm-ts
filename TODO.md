@@ -10,7 +10,7 @@
 - [ ] design: other string encoding
 - [ ] design: move out class loading functions from Class class
 - [ ] implementation: AttributeInfo
-- [ ] implementation: modified utf8
+- [ ] implementation: ConstantUtf8Info
 - [x] implementation: instructions
   - [ ] jsr/jsr_w
   - [ ] ret

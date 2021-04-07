@@ -2,6 +2,10 @@ import ClassReader from '../ClassReader'
 import { u2 } from '../types'
 
 export default class ConstantNameAndTypeInfo {
+  static fromReader(reader: ClassReader): ConstantNameAndTypeInfo {
+    return new ConstantNameAndTypeInfo(reader.readU2(), reader.readU2())
+  }
+
   constructor(private _nameIdx: u2, private _descriptorIdx: u2) {}
 
   get nameIndex(): u2 {
@@ -10,10 +14,6 @@ export default class ConstantNameAndTypeInfo {
 
   get descriptorIndex(): u2 {
     return this._descriptorIdx
-  }
-
-  static fromReader(reader: ClassReader): ConstantNameAndTypeInfo {
-    return new ConstantNameAndTypeInfo(reader.readU2(), reader.readU2())
   }
 
   toString(): string {

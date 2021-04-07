@@ -1,14 +1,31 @@
 import ClassReader from './ClassReader'
-import { ConstantInfo, readConstantInfo } from './constantInfo'
-import { u2 } from './types'
-import ConstantNameAndTypeInfo from './constantInfo/ConstantNameAndTypeInfo'
+import { ConstantInfo } from './constantInfo'
 import ConstantClassInfo from './constantInfo/ConstantClassInfo'
+import ConstantDoubleInfo from './constantInfo/numeric/ConstantDoubleInfo'
+import ConstantInfoFactory from './constantInfo/ConstantInfoFactory'
+import ConstantLongInfo from './constantInfo/numeric/ConstantLongInfo'
+import ConstantNameAndTypeInfo from './constantInfo/ConstantNameAndTypeInfo'
 import ConstantUtf8Info from './constantInfo/ConstantUtf8Info'
-import ConstantLongInfo from './constantInfo/ConstantLongInfo'
-import ConstantDoubleInfo from './constantInfo/ConstantDoubleInfo'
+import { u2 } from './types'
 
 export default class ConstantPool {
-  constructor(private _infos?: ConstantInfo[]) {}
+  private _infos: ConstantInfo[]
+
+  static readFrom(reader: ClassReader): ConstantPool {
+    const res = new ConstantPool()
+
+    const cpCount = reader.readU2()
+    const infos = new Array(cpCount).fill(null)
+    let i = 1
+    while (i < cpCount) {
+      const info = ConstantInfoFactory.readConstantInfo(reader, res)
+      infos[i++] = info
+      if (info instanceof ConstantLongInfo || info instanceof ConstantDoubleInfo) i++
+    }
+    res._infos = infos
+
+    return res
+  }
 
   get size(): number {
     return this._infos.length
@@ -36,18 +53,6 @@ export default class ConstantPool {
   getUtf8(idx: u2): string {
     const utf8Info = this.getConstantInfo(idx) as ConstantUtf8Info
     return utf8Info.str
-  }
-
-  readFrom(reader: ClassReader): void {
-    const cpCount = reader.readU2()
-    const res = new Array(cpCount).fill(null)
-    let i = 1
-    while (i < cpCount) {
-      const info = readConstantInfo(reader, this)
-      res[i++] = info
-      if (info instanceof ConstantLongInfo || info instanceof ConstantDoubleInfo) i++
-    }
-    this._infos = res
   }
 
   toString(): string {

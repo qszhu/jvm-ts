@@ -1,5 +1,5 @@
-import ConstantPool from '../ConstantPool'
-import { u2 } from '../types'
+import ConstantPool from '../../ConstantPool'
+import { u2 } from '../../types'
 
 export default abstract class BaseContantMemberRefInfo {
   constructor(private _cp: ConstantPool, protected _classIdx?: u2, protected _nameTypeIdx?: u2) {}

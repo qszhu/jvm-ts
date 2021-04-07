@@ -1,5 +1,5 @@
-import ClassReader from '../ClassReader'
-import ConstantPool from '../ConstantPool'
+import ClassReader from '../../ClassReader'
+import ConstantPool from '../../ConstantPool'
 import BaseConstantMemberRefInfo from './BaseConstantMemberRefInfo'
 
 export default class ConstantFieldRefInfo extends BaseConstantMemberRefInfo {

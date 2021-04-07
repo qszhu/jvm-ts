@@ -1,14 +1,15 @@
 import ClassFile from '../classFile'
-import BaseConstantMemberRefInfo from '../classFile/constantInfo/BaseConstantMemberRefInfo'
+import SourceFileAttribute from '../classFile/attributeInfo/SourceFileAttribute'
 import ConstantClassInfo from '../classFile/constantInfo/ConstantClassInfo'
-import ConstantDoubleInfo from '../classFile/constantInfo/ConstantDoubleInfo'
-import ConstantFieldRefInfo from '../classFile/constantInfo/ConstantFieldRefInfo'
-import ConstantFloatInfo from '../classFile/constantInfo/ConstantFloatInfo'
-import ConstantIntegerInfo from '../classFile/constantInfo/ConstantIntegerInfo'
-import ConstantInterfaceMethodRefInfo from '../classFile/constantInfo/ConstantInterfaceMethodRefInfo'
-import ConstantLongInfo from '../classFile/constantInfo/ConstantLongInfo'
-import ConstantMethodRefInfo from '../classFile/constantInfo/ConstantMethodRefInfo'
+import ConstantDoubleInfo from '../classFile/constantInfo/numeric/ConstantDoubleInfo'
+import ConstantFloatInfo from '../classFile/constantInfo/numeric/ConstantFloatInfo'
+import ConstantIntegerInfo from '../classFile/constantInfo/numeric/ConstantIntegerInfo'
+import ConstantLongInfo from '../classFile/constantInfo/numeric/ConstantLongInfo'
 import ConstantStringInfo from '../classFile/constantInfo/ConstantStringInfo'
+import BaseConstantMemberRefInfo from '../classFile/constantInfo/memberRef/BaseConstantMemberRefInfo'
+import ConstantFieldRefInfo from '../classFile/constantInfo/memberRef/ConstantFieldRefInfo'
+import ConstantInterfaceMethodRefInfo from '../classFile/constantInfo/memberRef/ConstantInterfaceMethodRefInfo'
+import ConstantMethodRefInfo from '../classFile/constantInfo/memberRef/ConstantMethodRefInfo'
 import ConstantPool from '../classFile/ConstantPool'
 import { Slots } from '../thread/Slots'
 import AccessFlag, { accessFlagsToString } from './AccessFlag'
@@ -258,8 +259,8 @@ function toClassName(descriptor: string): string {
 }
 
 function getSourceFile(cf: ClassFile): string {
-  const sfAttr = cf.sourceFileAttribute
-  if (sfAttr) return sfAttr.fileName
+  const sfAttr = cf.findAttribute((attr) => attr instanceof SourceFileAttribute)
+  if (sfAttr) return (sfAttr as SourceFileAttribute).fileName
   return 'Unknown'
 }
 
