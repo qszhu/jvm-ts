@@ -4,7 +4,7 @@ import { jString } from './class/StringPool'
 import ClassPath from './classPath/ClassPath'
 import { initClass } from './instruction'
 import { interpret } from './interpreter'
-import { Thread } from './thread'
+import Thread from './thread/Thread'
 
 export default class Jvm {
   private _verboseInstFlag: boolean

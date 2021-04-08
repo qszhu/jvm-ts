@@ -1,7 +1,7 @@
 import Class from '../../../class'
 import Obj from '../../../class/Obj'
-import { Thread } from '../../../thread'
 import Frame from '../../../thread/Frame'
+import Thread from '../../../thread/Thread'
 import { register } from '../../registry'
 
 const jlThrowable = 'java/lang/Throwable'
@@ -25,24 +25,6 @@ export class StackTraceElement {
   toString(): string {
     return `${this._className}.${this._methodName}(${this._fileName}:${this._lineNumber})`
   }
-
-  /*
-  get fileName(): string {
-    return this._fileName
-  }
-
-  get className(): string {
-    return this._className
-  }
-
-  get methodName(): string {
-    return this._methodName
-  }
-
-  get lineNumber(): number {
-    return this._lineNumber
-  }
-  */
 
   static createStackTraceElements(tObj: Obj, thread: Thread): StackTraceElement[] {
     const skip = distanceToObject(tObj.class) + 2

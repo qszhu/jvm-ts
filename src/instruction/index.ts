@@ -1,8 +1,8 @@
 import Class from '../class'
 import Method from '../class/ClassMember/Method'
 import Obj from '../class/Obj'
-import { Thread } from '../thread'
 import Frame from '../thread/Frame'
+import Thread from '../thread/Thread'
 
 export class BytecodeReader {
   private _pc = 0

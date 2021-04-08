@@ -2,7 +2,8 @@ import { BytecodeReader, Index16Instruction, Instruction, NoOperandsInstruction 
 import Class, { ClassConstant } from '../../class'
 import ClassLoader from '../../class/ClassLoader'
 import Obj from '../../class/Obj'
-import Frame, { OperandStack } from '../../thread/Frame'
+import Frame from '../../thread/Frame'
+import OperandStack from '../../thread/OperandStack'
 
 enum AType {
   Boolean = 4,
@@ -38,7 +39,8 @@ function getPrimitiveArrayClass(loader: ClassLoader, atype: number): Class {
   }
 }
 
-export class NewArray implements Instruction { // can use Index8Instruction
+export class NewArray implements Instruction {
+  // can use Index8Instruction
   constructor(private _atype?: number) {}
 
   fetchOperands(reader: BytecodeReader): void {

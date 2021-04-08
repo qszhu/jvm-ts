@@ -2,8 +2,8 @@ import { NoOperandsInstruction } from '..'
 import Obj from '../../class/Obj'
 import { jsString } from '../../class/StringPool'
 import { StackTraceElement } from '../../native/java/lang/Throwable'
-import { Thread } from '../../thread'
 import Frame from '../../thread/Frame'
+import Thread from '../../thread/Thread'
 
 export class AThrow extends NoOperandsInstruction {
   execute(frame: Frame): void {
@@ -23,7 +23,7 @@ export class AThrow extends NoOperandsInstruction {
 
 function findAndGotExceptionHandler(thread: Thread, ex: Obj): boolean {
   while (true) {
-    const frame = thread.currentFrame()
+    const frame = thread.currentFrame
     const pc = frame.nextPc - 1
     const handlerPc = frame.method.findExceptionHandler(ex.class, pc)
     if (handlerPc > 0) {

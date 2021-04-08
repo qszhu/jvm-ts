@@ -11,7 +11,7 @@ import ConstantFloatInfo from '../classFile/constantInfo/numeric/ConstantFloatIn
 import ConstantIntegerInfo from '../classFile/constantInfo/numeric/ConstantIntegerInfo'
 import ConstantLongInfo from '../classFile/constantInfo/numeric/ConstantLongInfo'
 import ConstantPool from '../classFile/ConstantPool'
-import { Slots } from '../thread/Slots'
+import Slots from '../thread/Slots'
 import AccessFlag, { accessFlagsToString } from './AccessFlag'
 import ClassLoader, { primitiveTypes } from './ClassLoader'
 import Field from './ClassMember/Field'

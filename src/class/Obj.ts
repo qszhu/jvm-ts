@@ -1,5 +1,5 @@
 import Class from '.'
-import { Slots } from '../thread/Slots'
+import Slots from '../thread/Slots'
 
 class HashCodeGenerator {
   private _id: number

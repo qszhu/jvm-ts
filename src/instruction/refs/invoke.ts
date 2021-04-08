@@ -2,7 +2,8 @@ import { BytecodeReader, Index16Instruction, initClass, Instruction, invokeMetho
 import Class, { InterfaceMethodRefConstant, MethodRefConstant } from '../../class'
 import Obj from '../../class/Obj'
 import { jsString } from '../../class/StringPool'
-import Frame, { OperandStack } from '../../thread/Frame'
+import Frame from '../../thread/Frame'
+import OperandStack from '../../thread/OperandStack'
 
 export class InvokeStatic extends Index16Instruction {
   execute(frame: Frame): void {
@@ -128,7 +129,8 @@ export class InvokeVirtual extends Index16Instruction {
 
     const ref = frame.operandStack.getRefFromTop(resolvedMethod.argSlotCount - 1)
     if (ref === null) {
-      if (methodRef.name === 'println') { // hack
+      if (methodRef.name === 'println') {
+        // hack
         println(frame.operandStack, methodRef.descriptor)
         return
       }

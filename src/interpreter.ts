@@ -9,8 +9,8 @@ import Class from './class'
 import Obj from './class/Obj'
 import { BytecodeReader, Instruction } from './instruction'
 import { newInstruction } from './instruction/factory'
-import { Thread } from './thread'
 import Frame from './thread/Frame'
+import Thread from './thread/Thread'
 
 export async function interpret(thread: Thread, logInst: boolean, debug = false): Promise<void> {
   prompt.start()
@@ -28,7 +28,7 @@ let debuggerBreakpoint = stepBreakpoint
 async function loop(thread: Thread, logInst: boolean, debug: boolean): Promise<void> {
   const reader = new BytecodeReader()
   while (true) {
-    const frame = thread.currentFrame()
+    const frame = thread.currentFrame
     const pc = (thread.pc = frame.nextPc)
 
     reader.reset(frame.method.code, pc)

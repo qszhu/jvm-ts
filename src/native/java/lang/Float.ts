@@ -1,3 +1,4 @@
+import Bits from '../../../bits'
 import Frame from '../../../thread/Frame'
 import { register } from '../../registry'
 
@@ -10,24 +11,12 @@ export function init(): void {
 
 function floatToRawIntBits(frame: Frame) {
   const value = frame.localVars.getFloat(0)
-  const bits = float32ToBits(value)
+  const bits = Bits.floatToBits(value)
   frame.operandStack.pushInt(bits)
 }
 
 function intBitsToFloat(frame: Frame) {
   const bits = frame.localVars.getInt(0)
-  const value = float32FromBits(bits)
+  const value = Bits.floatFromBits(bits)
   frame.operandStack.pushFloat(value)
-}
-
-function float32ToBits(n: number) {
-  const buf = Buffer.alloc(4)
-  buf.writeFloatBE(n)
-  return buf.readInt32BE()
-}
-
-function float32FromBits(n: number) {
-  const buf = Buffer.alloc(4)
-  buf.writeInt32BE(n)
-  return buf.readFloatBE()
 }

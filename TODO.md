@@ -1,5 +1,6 @@
 - [ ] design: static methods as factory methods
-- [ ] design: store stack frame variables as is
+- ~~design: store slot value as is~~
+  - native methods: `floatToRawIntBits`/`intBitsToFloat`/`doubleToRawLongBits`/`longBitsToDouble`
 - [ ] design: generic types for slot/stack/instructions
 - [ ] design: define descriptor type as enum
 - [ ] design: define exceptions
