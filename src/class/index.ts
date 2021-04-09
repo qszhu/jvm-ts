@@ -16,7 +16,9 @@ import AccessFlag, { accessFlagsToString } from './AccessFlag'
 import ClassLoader, { primitiveTypes } from './ClassLoader'
 import Field from './ClassMember/Field'
 import Method from './ClassMember/Method'
-import Obj from './Obj'
+import ArrayObject from './object/ArrayObject'
+import BaseObject from './object/BaseObject'
+import InstanceObject from './object/InstanceObject'
 import { jString } from './StringPool'
 
 abstract class SymRef {
@@ -279,7 +281,7 @@ export default class Class {
   private _staticSlotCount = 0
   private _staticVars: Slots = new Slots(0)
   private _initStarted: boolean
-  private _jClass: Obj
+  private _jClass: BaseObject
   private _sourceFile: string
 
   toString(): string {
@@ -314,7 +316,7 @@ export default class Class {
     return klass
   }
 
-  static newPrimitiveClass(className: string, loader: ClassLoader, jClass: Obj): Class {
+  static newPrimitiveClass(className: string, loader: ClassLoader, jClass: BaseObject): Class {
     const klass = new Class()
     klass._accessFlags = AccessFlag.PUBLIC
     klass._name = className
@@ -362,11 +364,11 @@ export default class Class {
     return this._initStarted
   }
 
-  get jClass(): Obj {
+  get jClass(): BaseObject {
     return this._jClass
   }
 
-  set jClass(klass: Obj) {
+  set jClass(klass: BaseObject) {
     this._jClass = klass
   }
 
@@ -518,15 +520,15 @@ export default class Class {
     }
   }
 
-  newObject(): Obj {
-    return Obj.newObject(this)
+  newObject(): InstanceObject {
+    return new InstanceObject(this)
   }
 
   get isArray(): boolean {
     return this._name.startsWith('[')
   }
 
-  newArray(count: number): Obj {
+  newArray(count: number): ArrayObject {
     if (!this.isArray) throw new Error(`Not array class: ${this.name}`)
     switch (this.name) {
       case '[Z':
@@ -536,11 +538,11 @@ export default class Class {
       case '[I':
       case '[F':
       case '[D':
-        return Obj.newArray(this, new Array<number>(count).fill(0))
+        return new ArrayObject(this, new Array<number>(count).fill(0))
       case '[J':
-        return Obj.newArray(this, new Array<bigint>(count).fill(BigInt(0)))
+        return new ArrayObject(this, new Array<bigint>(count).fill(BigInt(0)))
       default:
-        return Obj.newArray(this, new Array<Obj>(count).fill(null))
+        return new ArrayObject(this, new Array<BaseObject>(count).fill(null))
     }
   }
 
@@ -566,12 +568,12 @@ export default class Class {
     return Class.getMethod(this, name, descriptor, true)
   }
 
-  getRefVar(fieldName: string, fieldDescriptor: string): Obj {
+  getRefVar(fieldName: string, fieldDescriptor: string): BaseObject {
     const field = Class.getField(this, fieldName, fieldDescriptor, true)
     return this._staticVars.getRef(field.slotId)
   }
 
-  setRefVar(fieldName: string, fieldDescriptor: string, ref: Obj): void {
+  setRefVar(fieldName: string, fieldDescriptor: string, ref: BaseObject): void {
     const field = Class.getField(this, fieldName, fieldDescriptor, true)
     this._staticVars.setRef(field.slotId, ref)
   }

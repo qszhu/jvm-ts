@@ -1,5 +1,5 @@
 import { NoOperandsInstruction } from '..'
-import Obj from '../../class/Obj'
+import InstanceObject from '../../class/object/InstanceObject'
 import { jsString } from '../../class/StringPool'
 import { StackTraceElement } from '../../native/java/lang/Throwable'
 import Frame from '../../thread/Frame'
@@ -7,7 +7,7 @@ import Thread from '../../thread/Thread'
 
 export class AThrow extends NoOperandsInstruction {
   execute(frame: Frame): void {
-    const ex = frame.operandStack.popRef()
+    const ex = frame.operandStack.popRef() as InstanceObject
     if (!ex) throw new Error('java.lang.NullPointerException')
 
     const thread = frame.thread
@@ -21,7 +21,7 @@ export class AThrow extends NoOperandsInstruction {
   }
 }
 
-function findAndGotExceptionHandler(thread: Thread, ex: Obj): boolean {
+function findAndGotExceptionHandler(thread: Thread, ex: InstanceObject): boolean {
   while (true) {
     const frame = thread.currentFrame
     const pc = frame.nextPc - 1
@@ -41,10 +41,10 @@ function findAndGotExceptionHandler(thread: Thread, ex: Obj): boolean {
   return false
 }
 
-function handleUncaughtException(thread: Thread, ex: Obj): void {
+function handleUncaughtException(thread: Thread, ex: InstanceObject): void {
   thread.clearStack()
 
-  const jMsg = ex.getRefVar('detailMessage', 'Ljava/lang/String;')
+  const jMsg = ex.getRefVar('detailMessage', 'Ljava/lang/String;') as InstanceObject
   const jsMsg = jsString(jMsg)
   console.log(`${ex.class.javaName}: ${jsMsg}`)
 

@@ -1,11 +1,11 @@
 import { Index16Instruction } from '..'
 import { ClassConstant } from '../../class'
-import Obj from '../../class/Obj'
+import BaseObject from '../../class/object/BaseObject'
 import Frame from '../../thread/Frame'
 
 function instanceOf(frame: Frame, idx: number) {
   const stack = frame.operandStack
-  const ref = stack.popRef() as Obj
+  const ref = stack.popRef() as BaseObject
   if (!ref) return { stack, ref, res: false }
 
   const cp = frame.method.class.constantPool

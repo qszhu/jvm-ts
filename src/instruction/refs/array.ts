@@ -1,7 +1,7 @@
 import { BytecodeReader, Index16Instruction, Instruction, NoOperandsInstruction } from '..'
 import Class, { ClassConstant } from '../../class'
 import ClassLoader from '../../class/ClassLoader'
-import Obj from '../../class/Obj'
+import ArrayObject from '../../class/object/ArrayObject'
 import Frame from '../../thread/Frame'
 import OperandStack from '../../thread/OperandStack'
 
@@ -86,9 +86,9 @@ export class ANewArray extends Index16Instruction {
 export class ArrayLength extends NoOperandsInstruction {
   execute(frame: Frame): void {
     const stack = frame.operandStack
-    const arrRef = stack.popRef()
+    const arrRef = stack.popRef() as ArrayObject
     if (!arrRef) throw new Error('java.lang.NullPointerException')
-    const arrLen = (arrRef as Obj).arrayLength
+    const arrLen = arrRef.arrayLength
     stack.pushInt(arrLen)
   }
 

@@ -1,4 +1,4 @@
-import Obj from '../class/Obj'
+import BaseObject from '../class/object/BaseObject'
 import Slot from './Slot'
 
 export default class Slots {
@@ -51,19 +51,15 @@ export default class Slots {
     return Slot.getDouble(this._data[idx], this._data[idx + 1])
   }
 
-  setRef(idx: number, ref: Obj): void {
+  setRef(idx: number, ref: BaseObject): void {
     this._data[idx].ref = ref
   }
 
-  getRef(idx: number): Obj {
+  getRef(idx: number): BaseObject {
     return this._data[idx].ref || null
   }
 
   setSlot(idx: number, slot: Slot): void {
     this._data[idx] = slot
-  }
-
-  getThis(): Obj {
-    return this.getRef(0)
   }
 }

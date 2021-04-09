@@ -1,13 +1,15 @@
 import ClassLoader from './ClassLoader'
-import Obj from './Obj'
+import ArrayObject from './object/ArrayObject'
+import BaseObject from './object/BaseObject'
+import InstanceObject from './object/InstanceObject'
 
-const internedStrings = new Map<string, Obj>()
+const internedStrings = new Map<string, InstanceObject>()
 
-export function jString(loader: ClassLoader, str: string): Obj {
+export function jString(loader: ClassLoader, str: string): BaseObject {
   if (internedStrings.has(str)) return internedStrings.get(str)
 
   const chars = stringToUtf16(str)
-  const jChars = new Obj(loader.loadClass('[C'), chars)
+  const jChars = new ArrayObject(loader.loadClass('[C'), chars)
   const jStr = loader.loadClass('java/lang/String').newObject()
   jStr.setRefVar('value', '[C', jChars)
 
@@ -15,8 +17,8 @@ export function jString(loader: ClassLoader, str: string): Obj {
   return jStr
 }
 
-export function jsString(jStr: Obj): string {
-  const charArr = jStr.getRefVar('value', '[C')
+export function jsString(jStr: InstanceObject): string {
+  const charArr = jStr.getRefVar('value', '[C') as ArrayObject
   return utf16ToString(charArr.chars)
 }
 
@@ -32,7 +34,7 @@ function utf16ToString(s: number[]): string {
   return String.fromCharCode(...s)
 }
 
-export function internString(jStr: Obj): Obj {
+export function internString(jStr: InstanceObject): InstanceObject {
   const jsStr = jsString(jStr)
   if (internedStrings.has(jsStr)) {
     return internedStrings.get(jsStr)

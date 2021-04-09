@@ -10,19 +10,19 @@ export function init(): void {
 }
 
 function getClass(frame: Frame) {
-  const thiz = frame.localVars.getThis()
+  const thiz = frame.localVars.getRef(0)
   const klass = thiz.class.jClass
   frame.operandStack.pushRef(klass)
 }
 
 function hashCode(frame: Frame) {
-  const thiz = frame.localVars.getThis()
+  const thiz = frame.localVars.getRef(0)
   const hash = thiz.hashCode()
   frame.operandStack.pushInt(hash)
 }
 
 function clone(frame: Frame) {
-  const thiz = frame.localVars.getThis()
+  const thiz = frame.localVars.getRef(0)
   const cloneable = thiz.class.loader.loadClass('java/lang/Cloneable')
   if (!thiz.class.implements(cloneable)) {
     throw new Error('java.lang.CloneNotSupportedException')

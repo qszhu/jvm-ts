@@ -1,3 +1,4 @@
+import InstanceObject from '../../../class/object/InstanceObject'
 import { internString } from '../../../class/StringPool'
 import Frame from '../../../thread/Frame'
 import { register } from '../../registry'
@@ -9,7 +10,7 @@ export function init(): void {
 }
 
 function intern(frame: Frame) {
-  const thiz = frame.localVars.getThis()
+  const thiz = frame.localVars.getRef(0) as InstanceObject
   const interned = internString(thiz)
   frame.operandStack.pushRef(interned)
 }

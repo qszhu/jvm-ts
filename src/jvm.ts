@@ -1,5 +1,5 @@
 import ClassLoader from './class/ClassLoader'
-import Obj from './class/Obj'
+import ArrayObject from './class/object/ArrayObject'
 import { jString } from './class/StringPool'
 import ClassPath from './classPath/ClassPath'
 import { initClass } from './instruction'
@@ -55,7 +55,7 @@ export default class Jvm {
     interpret(this._mainThread, this._verboseInstFlag, this._debugFlag)
   }
 
-  private createArgsArray(): Obj {
+  private createArgsArray(): ArrayObject {
     const args = (this._argv._ as string[]).slice(1)
     const stringClass = this._classLoader.loadClass('java/lang/String')
     const argsArr = stringClass.arrayClass.newArray(args.length)

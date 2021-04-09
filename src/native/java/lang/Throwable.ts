@@ -1,5 +1,5 @@
 import Class from '../../../class'
-import Obj from '../../../class/Obj'
+import BaseObject from '../../../class/object/BaseObject'
 import Frame from '../../../thread/Frame'
 import Thread from '../../../thread/Thread'
 import { register } from '../../registry'
@@ -26,7 +26,7 @@ export class StackTraceElement {
     return `${this._className}.${this._methodName}(${this._fileName}:${this._lineNumber})`
   }
 
-  static createStackTraceElements(tObj: Obj, thread: Thread): StackTraceElement[] {
+  static createStackTraceElements(tObj: BaseObject, thread: Thread): StackTraceElement[] {
     const skip = distanceToObject(tObj.class) + 2
     const frames = thread.frames.slice(skip)
     return frames.map((f: Frame) => StackTraceElement.createStackTraceElement(f))
@@ -49,7 +49,7 @@ export function init(): void {
 }
 
 function fillInStackTrace(frame: Frame) {
-  const thiz = frame.localVars.getThis()
+  const thiz = frame.localVars.getRef(0)
   frame.operandStack.pushRef(thiz)
   const stes = StackTraceElement.createStackTraceElements(thiz, frame.thread)
   thiz.extra = stes

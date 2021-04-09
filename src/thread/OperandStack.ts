@@ -1,4 +1,4 @@
-import Obj from '../class/Obj'
+import BaseObject from '../class/object/BaseObject'
 import Slot from './Slot'
 
 export default class OperandStack {
@@ -87,18 +87,18 @@ export default class OperandStack {
     return Slot.getDouble(slot1, slot2)
   }
 
-  pushRef(ref: Obj): void {
+  pushRef(ref: BaseObject): void {
     const slot = new Slot()
     slot.ref = ref
     this.pushSlot(slot)
   }
 
-  popRef(): Obj {
+  popRef(): BaseObject {
     const slot = this.popSlot()
     return slot.ref || null
   }
 
-  getRefFromTop(n: number): Obj {
+  getRefFromTop(n: number): BaseObject {
     return this._slots[this._size - 1 - n].ref || null
   }
 

@@ -1,6 +1,6 @@
 import Class from '../class'
 import Method from '../class/ClassMember/Method'
-import Obj from '../class/Obj'
+import BaseObject from '../class/object/BaseObject'
 import Frame from '../thread/Frame'
 import Thread from '../thread/Thread'
 
@@ -142,7 +142,7 @@ function initSuperClass(thread: Thread, klass: Class): void {
   }
 }
 
-export function checkNotNil(ref: Obj): void {
+export function checkNotNil(ref: BaseObject): void {
   if (!ref) throw new Error('java.lang.NullPointerException')
 }
 

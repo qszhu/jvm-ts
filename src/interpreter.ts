@@ -6,7 +6,7 @@ import Breakpoints, {
   stepBreakpoint,
 } from './Breakpoint'
 import Class from './class'
-import Obj from './class/Obj'
+import InstanceObject from './class/object/InstanceObject'
 import { BytecodeReader, Instruction } from './instruction'
 import { newInstruction } from './instruction/factory'
 import Frame from './thread/Frame'
@@ -92,7 +92,7 @@ ${klass.fields.map((f) => f.toString()).join('\n')}
 `)
 }
 
-function printFields(obj: Obj) {
+function printFields(obj: InstanceObject) {
   console.log(obj.fields.toString())
 }
 
@@ -102,7 +102,7 @@ function execDebugCmd(cmd: string, frame: Frame): boolean {
 
   continueDebugging = true
 
-  const [fun, arg, arg1, arg2] = cmd.split(' ')
+  const [fun, arg, arg1] = cmd.split(' ')
   if (fun === 'string') {
     if (arg === 'stack') {
       printString(frame.operandStack.getRefFromTop(frame.operandStack.size - 1 - Number(arg1)))
@@ -119,9 +119,13 @@ function execDebugCmd(cmd: string, frame: Frame): boolean {
     }
   } else if (fun === 'fields') {
     if (arg === 'stack') {
-      printFields(frame.operandStack.getRefFromTop(frame.operandStack.size - 1 - Number(arg1)))
+      printFields(
+        frame.operandStack.getRefFromTop(
+          frame.operandStack.size - 1 - Number(arg1)
+        ) as InstanceObject
+      )
     } else if (arg === 'var') {
-      printFields(frame.localVars.getRef(Number(arg1)))
+      printFields(frame.localVars.getRef(Number(arg1)) as InstanceObject)
     }
   } else if (fun === 'const') {
     printConst(frame.method.class.constantPool.getConstant(Number(arg)))

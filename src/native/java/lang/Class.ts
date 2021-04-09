@@ -1,18 +1,19 @@
-import Class from "../../../class";
-import { jsString, jString } from "../../../class/StringPool";
-import Frame from "../../../thread/Frame";
-import { register } from "../../registry";
+import Class from '../../../class'
+import InstanceObject from '../../../class/object/InstanceObject'
+import { jsString, jString } from '../../../class/StringPool'
+import Frame from '../../../thread/Frame'
+import { register } from '../../registry'
 
 const jlClass = 'java/lang/Class'
 
 export function init(): void {
-	register(jlClass, "getPrimitiveClass", "(Ljava/lang/String;)Ljava/lang/Class;", getPrimitiveClass)
-	register(jlClass, "getName0", "()Ljava/lang/String;", getName0)
-	register(jlClass, "desiredAssertionStatus0", "(Ljava/lang/Class;)Z", desiredAssertionStatus0)
+  register(jlClass, 'getPrimitiveClass', '(Ljava/lang/String;)Ljava/lang/Class;', getPrimitiveClass)
+  register(jlClass, 'getName0', '()Ljava/lang/String;', getName0)
+  register(jlClass, 'desiredAssertionStatus0', '(Ljava/lang/Class;)Z', desiredAssertionStatus0)
 }
 
 function getPrimitiveClass(frame: Frame) {
-  const nameObj = frame.localVars.getRef(0)
+  const nameObj = frame.localVars.getRef(0) as InstanceObject
   const name = jsString(nameObj)
 
   const loader = frame.method.class.loader
@@ -22,7 +23,7 @@ function getPrimitiveClass(frame: Frame) {
 }
 
 function getName0(frame: Frame) {
-  const thiz = frame.localVars.getThis()
+  const thiz = frame.localVars.getRef(0)
   const klass = thiz.extra as Class
 
   const name = klass.javaName

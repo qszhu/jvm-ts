@@ -1,6 +1,7 @@
 import { BytecodeReader, Index16Instruction, initClass, Instruction, invokeMethod } from '..'
 import Class, { InterfaceMethodRefConstant, MethodRefConstant } from '../../class'
-import Obj from '../../class/Obj'
+import BaseObject from '../../class/object/BaseObject'
+import InstanceObject from '../../class/object/InstanceObject'
 import { jsString } from '../../class/StringPool'
 import Frame from '../../thread/Frame'
 import OperandStack from '../../thread/OperandStack'
@@ -45,7 +46,7 @@ export class InvokeSpecial extends Index16Instruction {
     if (resolvedMethod.isStatic) throw new Error('java.lang.IncompatibleClassChangeError')
 
     // "this" should not be null
-    const ref = frame.operandStack.getRefFromTop(resolvedMethod.argSlotCount - 1) as Obj // "this" ref
+    const ref = frame.operandStack.getRefFromTop(resolvedMethod.argSlotCount - 1) as BaseObject // "this" ref
     if (!ref) throw new Error('java.lang.NullPointerException')
 
     if (
@@ -108,7 +109,7 @@ function println(stack: OperandStack, descriptor: string) {
       console.log(stack.popDouble())
       break
     case '(Ljava/lang/String;)V':
-      const jStr = stack.popRef()
+      const jStr = stack.popRef() as InstanceObject
       const str = jsString(jStr)
       console.log(str)
       break
@@ -180,7 +181,7 @@ export class InvokeInterface implements Instruction {
     if (resolvedMethod.isStatic || resolvedMethod.isPrivate)
       throw new Error('java.lang.IncompatibleClassChangeError')
 
-    const ref = frame.operandStack.getRefFromTop(resolvedMethod.argSlotCount - 1) as Obj
+    const ref = frame.operandStack.getRefFromTop(resolvedMethod.argSlotCount - 1) as BaseObject
     if (!ref) throw new Error('java.lang.NullPointerException')
 
     if (!ref.class.implements(methodRef.resolvedClass))

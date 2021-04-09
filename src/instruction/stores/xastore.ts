@@ -1,5 +1,5 @@
 import { checkIndex, checkNotNil, NoOperandsInstruction } from '..'
-import Obj from '../../class/Obj'
+import ArrayObject from '../../class/object/ArrayObject'
 import Frame from '../../thread/Frame'
 
 export class AAStore extends NoOperandsInstruction {
@@ -7,7 +7,7 @@ export class AAStore extends NoOperandsInstruction {
     const stack = frame.operandStack
     const ref = stack.popRef()
     const idx = stack.popInt()
-    const arrRef = stack.popRef() as Obj
+    const arrRef = stack.popRef() as ArrayObject
     checkNotNil(arrRef)
     const refs = arrRef.refs
     checkIndex(refs.length, idx)
@@ -24,7 +24,7 @@ export class BAStore extends NoOperandsInstruction {
     const stack = frame.operandStack
     const val = stack.popInt()
     const idx = stack.popInt()
-    const arrRef = stack.popRef() as Obj
+    const arrRef = stack.popRef() as ArrayObject
     checkNotNil(arrRef)
     const bytes = arrRef.bytes
     checkIndex(bytes.length, idx)
@@ -41,7 +41,7 @@ export class CAStore extends NoOperandsInstruction {
     const stack = frame.operandStack
     const val = stack.popInt()
     const idx = stack.popInt()
-    const arrRef = stack.popRef() as Obj
+    const arrRef = stack.popRef() as ArrayObject
     checkNotNil(arrRef)
     const chars = arrRef.chars
     checkIndex(chars.length, idx)
@@ -58,7 +58,7 @@ export class DAStore extends NoOperandsInstruction {
     const stack = frame.operandStack
     const val = stack.popDouble()
     const idx = stack.popInt()
-    const arrRef = stack.popRef() as Obj
+    const arrRef = stack.popRef() as ArrayObject
     checkNotNil(arrRef)
     const doubles = arrRef.doubles
     checkIndex(doubles.length, idx)
@@ -75,7 +75,7 @@ export class FAStore extends NoOperandsInstruction {
     const stack = frame.operandStack
     const val = stack.popFloat()
     const idx = stack.popInt()
-    const arrRef = stack.popRef() as Obj
+    const arrRef = stack.popRef() as ArrayObject
     checkNotNil(arrRef)
     const floats = arrRef.floats
     checkIndex(floats.length, idx)
@@ -92,7 +92,7 @@ export class IAStore extends NoOperandsInstruction {
     const stack = frame.operandStack
     const val = stack.popInt()
     const idx = stack.popInt()
-    const arrRef = stack.popRef() as Obj
+    const arrRef = stack.popRef() as ArrayObject
     checkNotNil(arrRef)
     const ints = arrRef.ints
     checkIndex(ints.length, idx)
@@ -109,7 +109,7 @@ export class LAStore extends NoOperandsInstruction {
     const stack = frame.operandStack
     const val = stack.popLong()
     const idx = stack.popInt()
-    const arrRef = stack.popRef() as Obj
+    const arrRef = stack.popRef() as ArrayObject
     checkNotNil(arrRef)
     const longs = arrRef.longs
     checkIndex(longs.length, idx)
@@ -126,7 +126,7 @@ export class SAStore extends NoOperandsInstruction {
     const stack = frame.operandStack
     const val = stack.popInt()
     const idx = stack.popInt()
-    const arrRef = stack.popRef() as Obj
+    const arrRef = stack.popRef() as ArrayObject
     checkNotNil(arrRef)
     const shorts = arrRef.shorts
     checkIndex(shorts.length, idx)

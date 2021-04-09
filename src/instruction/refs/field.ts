@@ -1,6 +1,6 @@
 import { Index16Instruction } from '..'
 import { FieldRefConstant } from '../../class'
-import Obj from '../../class/Obj'
+import InstanceObject from '../../class/object/InstanceObject'
 import Frame from '../../thread/Frame'
 
 export class PutField extends Index16Instruction {
@@ -28,32 +28,32 @@ export class PutField extends Index16Instruction {
       case 'S':
       case 'I':
         val = stack.popInt()
-        ref = stack.popRef() as Obj
+        ref = stack.popRef() as InstanceObject
         if (!ref) throw new Error('java.lang.NullPointerException')
         ref.fields.setInt(slotId, val)
         break
       case 'F':
         val = stack.popFloat()
-        ref = stack.popRef() as Obj
+        ref = stack.popRef() as InstanceObject
         if (!ref) throw new Error('java.lang.NullPointerException')
         ref.fields.setFloat(slotId, val)
         break
       case 'J':
         val = stack.popLong()
-        ref = stack.popRef() as Obj
+        ref = stack.popRef() as InstanceObject
         if (!ref) throw new Error('java.lang.NullPointerException')
         ref.fields.setLong(slotId, val)
         break
       case 'D':
         val = stack.popDouble()
-        ref = stack.popRef() as Obj
+        ref = stack.popRef() as InstanceObject
         if (!ref) throw new Error('java.lang.NullPointerException')
         ref.fields.setDouble(slotId, val)
         break
       case 'L':
       case '[':
         val = stack.popRef()
-        ref = stack.popRef() as Obj
+        ref = stack.popRef() as InstanceObject
         if (!ref) throw new Error('java.lang.NullPointerException')
         ref.fields.setRef(slotId, val)
         break
@@ -74,7 +74,7 @@ export class GetField extends Index16Instruction {
     if (field.isStatic) throw new Error('java.lang.IncompatibleClassChangeError')
 
     const stack = frame.operandStack
-    const ref = stack.popRef() as Obj
+    const ref = stack.popRef() as InstanceObject
     if (!ref) throw new Error('java.lang.NullPointerException')
 
     const { descriptor, slotId } = field

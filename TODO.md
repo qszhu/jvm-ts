@@ -1,3 +1,4 @@
+- [x] design: Obj should not have multiple responsibities
 - [ ] design: static methods as factory methods
 - ~~design: store slot value as is~~
   - native methods: `floatToRawIntBits`/`intBitsToFloat`/`doubleToRawLongBits`/`longBitsToDouble`
@@ -7,7 +8,6 @@
 - [ ] design: define `<init>`
 - [ ] design: bad `const cp = frame.method.class.constantPool`
 - [ ] design: DRY `putstatic/putfield`, `getstatic/getfield`
-- [ ] design: Slot stores Obj directly
 - [ ] design: other string encoding
 - [ ] design: move out class loading functions from Class class
 - [ ] implementation: AttributeInfo
