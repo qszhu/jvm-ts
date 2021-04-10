@@ -1,4 +1,3 @@
-import { accessFlagsToString } from '../class/AccessFlag'
 import AttributeInfoFactory from './attributeInfo/AttributeInfoFactory'
 import AttributesHolder from './AttributesHolder'
 import ClassReader from './ClassReader'
@@ -101,7 +100,7 @@ major version: ${this._majorVersion}
 constant pool:
 ${this._constantPool.toString()}
 
-access flags: ${accessFlagsToString(this._accessFlags)}
+access flags: ${this._accessFlags.toString()}
 this class: {${this._thisClass}}${this.className}
 super class: {${this._superClass}}${this.superClassName}
 

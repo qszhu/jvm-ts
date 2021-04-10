@@ -1,4 +1,3 @@
-import { accessFlagsToString } from '../class/AccessFlag'
 import AttributeInfo from './attributeInfo/AttributeInfo'
 import AttributeInfoFactory from './attributeInfo/AttributeInfoFactory'
 import AttributesHolder from './AttributesHolder'
@@ -44,7 +43,7 @@ export default class MemberInfo extends AttributesHolder {
 
   toString(): string {
     return `
-access flags: ${accessFlagsToString(this._accessFlags)}
+access flags: ${this._accessFlags.toString()}
 name: {${this._nameIndex}}${this.name}
 descriptor: {${this._descriptorIndex}}${this.descriptor}
 attributes:

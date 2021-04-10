@@ -1,10 +1,9 @@
-import ClassMember from '.'
-import Class from '..'
 import AttributeInfoFactory from '../../classFile/attributeInfo/AttributeInfoFactory'
 import LineNumberTableAttribute from '../../classFile/attributeInfo/LineNumberTableAttribute'
 import MemberInfo from '../../classFile/MemberInfo'
-import AccessFlag from '../AccessFlag'
+import Class from '../Class'
 import ExceptionTable from '../ExceptionTable'
+import ClassMember from './ClassMember'
 import MethodDescriptorParser from './MethodDescriptor'
 
 function newByteCodes(...bytes: number[]): Buffer {
@@ -35,7 +34,7 @@ export default class Method extends ClassMember {
     }
     const md = MethodDescriptorParser.parseMethodDescriptor(this._descriptor)
     this.calcArgSlotCount(md.parameterTypes)
-    if (this.isNative) {
+    if (this.accessFlags.isNative) {
       this.injectCodeAttribute(md.returnType)
     }
   }
@@ -45,7 +44,7 @@ export default class Method extends ClassMember {
       this._argSlotCount++
       if (paramType === 'J' || paramType === 'D') this._argSlotCount++
     }
-    if (!this.isStatic) this._argSlotCount++
+    if (!this.accessFlags.isStatic) this._argSlotCount++
   }
 
   private injectCodeAttribute(returnType: string) {
@@ -78,34 +77,6 @@ export default class Method extends ClassMember {
     return methods.map((m) => new Method(klass, m))
   }
 
-  get isSynchronized(): boolean {
-    return this.hasAccessFlag(AccessFlag.SYNCHRONIZED)
-  }
-
-  get isBridge(): boolean {
-    return this.hasAccessFlag(AccessFlag.BRIDGE)
-  }
-
-  get isVarArgs(): boolean {
-    return this.hasAccessFlag(AccessFlag.VARARGS)
-  }
-
-  get isNative(): boolean {
-    return this.hasAccessFlag(AccessFlag.NATIVE)
-  }
-
-  get isAbstract(): boolean {
-    return this.hasAccessFlag(AccessFlag.ABSTRACT)
-  }
-
-  get isStrict(): boolean {
-    return this.hasAccessFlag(AccessFlag.STRICT)
-  }
-
-  get isSynthetic(): boolean {
-    return this.hasAccessFlag(AccessFlag.SYNTHETIC)
-  }
-
   get maxLocals(): number {
     return this._maxLocals
   }
@@ -129,7 +100,7 @@ export default class Method extends ClassMember {
   }
 
   getLineNumber(pc: number): number {
-    if (this.isNative) return -2
+    if (this.accessFlags.isNative) return -2
     if (!this._lineNumberTable) return -1
     return this._lineNumberTable.getLineNumber(pc)
   }

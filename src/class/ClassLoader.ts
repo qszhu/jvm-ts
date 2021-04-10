@@ -1,5 +1,5 @@
-import Class from '.'
 import ClassPath from '../classPath/ClassPath'
+import Class from './Class'
 
 export const primitiveTypes = new Map<string, string>([
   ['void', 'V'],

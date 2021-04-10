@@ -1,17 +1,16 @@
-import ClassMember from '.'
-import Class from '..'
 import AttributeInfoFactory from '../../classFile/attributeInfo/AttributeInfoFactory'
 import MemberInfo from '../../classFile/MemberInfo'
-import AccessFlag, { accessFlagsToString } from '../AccessFlag'
+import Class from '../Class'
+import ClassMember from './ClassMember'
 
 export default class Field extends ClassMember {
   private _constValueIndex: number
   private _slotId: number
 
   toString(): string {
-    return `Field: [${this._slotId}] ${accessFlagsToString(this._accessFlags)} ${
-      this._class.name
-    }.${this._name}:${this._descriptor}`
+    return `Field: [${this._slotId}] ${this._accessFlags.toString()} ${this._class.name}.${
+      this._name
+    }:${this._descriptor}`
   }
 
   constructor(klass: Class, field: MemberInfo) {
@@ -38,18 +37,6 @@ export default class Field extends ClassMember {
 
   get slotId(): number {
     return this._slotId
-  }
-
-  get isVolatile(): boolean {
-    return this.hasAccessFlag(AccessFlag.VOLATILE)
-  }
-
-  get isTransient(): boolean {
-    return this.hasAccessFlag(AccessFlag.TRANSIENT)
-  }
-
-  get isEnum(): boolean {
-    return this.hasAccessFlag(AccessFlag.ENUM)
   }
 
   get isLongOrDouble(): boolean {

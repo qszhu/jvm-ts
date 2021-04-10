@@ -1,5 +1,5 @@
-import Class from '../class'
-import Method from '../class/ClassMember/Method'
+import Class from '../class/Class'
+import Method from '../class/member/Method'
 import BaseObject from '../class/object/BaseObject'
 import Frame from '../thread/Frame'
 import Thread from '../thread/Thread'
@@ -134,7 +134,7 @@ function scheduleClinit(thread: Thread, klass: Class): void {
 }
 
 function initSuperClass(thread: Thread, klass: Class): void {
-  if (!klass.isInterface) {
+  if (!klass.accessFlags.isInterface) {
     const superClass = klass.superClass
     if (superClass && !superClass.hasInitStarted) {
       initClass(thread, superClass)

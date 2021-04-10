@@ -1,5 +1,5 @@
 import { Index16Instruction, initClass } from '..'
-import { ClassConstant } from '../../class'
+import { ClassConstant } from '../../class/RuntimeConstant'
 import Frame from '../../thread/Frame'
 
 export class New extends Index16Instruction {
@@ -14,7 +14,8 @@ export class New extends Index16Instruction {
       return
     }
 
-    if (klass.isInterface || klass.isAbstract) throw new Error('java.lang.InstantiationError')
+    if (klass.accessFlags.isInterface || klass.accessFlags.isAbstract)
+      throw new Error('java.lang.InstantiationError')
 
     const ref = klass.newObject()
     frame.operandStack.pushRef(ref)

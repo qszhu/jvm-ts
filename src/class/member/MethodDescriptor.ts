@@ -3,7 +3,7 @@ class MethodDescriptor {
   private _returnType: string
 
   constructor() {
-    this._parameterTypes =[]
+    this._parameterTypes = []
     this._returnType = ''
   }
 

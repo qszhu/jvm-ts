@@ -1,4 +1,4 @@
-import Class from '../../../class'
+import Class from '../../../class/Class'
 import InstanceObject from '../../../class/object/InstanceObject'
 import { jsString, jString } from '../../../class/StringPool'
 import Frame from '../../../thread/Frame'

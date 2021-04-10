@@ -1,4 +1,4 @@
-import Class from '..'
+import Class from '../Class'
 
 class HashCodeGenerator {
   private static _id: number = new Date().getTime() % 2 ** 32

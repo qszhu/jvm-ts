@@ -1,5 +1,8 @@
-import Class, { ClassConstant, ClassRef, RuntimeConstantPool } from '.'
 import ExceptionTableEntry from '../classFile/attributeInfo/tableEntry/ExceptionTableEntry'
+import Class from './Class'
+import ClassRef from './ref/ClassRef'
+import { ClassConstant } from './RuntimeConstant'
+import RuntimeConstantPool from './RuntimeContantPool'
 
 class ExceptionHandler {
   constructor(

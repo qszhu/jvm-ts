@@ -6,7 +6,7 @@ import {
   IntegerConstant,
   LongConstant,
   StringConstant,
-} from '../../class'
+} from '../../class/RuntimeConstant'
 import { jString } from '../../class/StringPool'
 import Frame from '../../thread/Frame'
 

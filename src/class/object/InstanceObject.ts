@@ -1,5 +1,5 @@
-import Class from '..'
 import Slots from '../../thread/Slots'
+import Class from '../Class'
 import BaseObject from './BaseObject'
 
 export default class InstanceObject extends BaseObject {

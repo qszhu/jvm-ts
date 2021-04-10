@@ -1,7 +1,8 @@
 import { BytecodeReader, Index16Instruction, Instruction, NoOperandsInstruction } from '..'
-import Class, { ClassConstant } from '../../class'
+import Class from '../../class/Class'
 import ClassLoader from '../../class/ClassLoader'
 import ArrayObject from '../../class/object/ArrayObject'
+import { ClassConstant } from '../../class/RuntimeConstant'
 import Frame from '../../thread/Frame'
 import OperandStack from '../../thread/OperandStack'
 

@@ -1,4 +1,4 @@
-import Method from './class/ClassMember/Method'
+import Method from './class/member/Method'
 import Frame from './thread/Frame'
 
 export abstract class Breakpoint {

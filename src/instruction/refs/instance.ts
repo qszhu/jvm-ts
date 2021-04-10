@@ -1,6 +1,6 @@
 import { Index16Instruction } from '..'
-import { ClassConstant } from '../../class'
 import BaseObject from '../../class/object/BaseObject'
+import { ClassConstant } from '../../class/RuntimeConstant'
 import Frame from '../../thread/Frame'
 
 function instanceOf(frame: Frame, idx: number) {

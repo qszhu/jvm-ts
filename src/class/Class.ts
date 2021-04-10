@@ -1,237 +1,22 @@
 import SourceFileAttribute from '../classFile/attributeInfo/SourceFileAttribute'
 import ClassFile from '../classFile/ClassFile'
-import ConstantClassInfo from '../classFile/constantInfo/ConstantClassInfo'
-import ConstantStringInfo from '../classFile/constantInfo/ConstantStringInfo'
-import BaseConstantMemberRefInfo from '../classFile/constantInfo/memberRef/BaseConstantMemberRefInfo'
-import ConstantFieldRefInfo from '../classFile/constantInfo/memberRef/ConstantFieldRefInfo'
-import ConstantInterfaceMethodRefInfo from '../classFile/constantInfo/memberRef/ConstantInterfaceMethodRefInfo'
-import ConstantMethodRefInfo from '../classFile/constantInfo/memberRef/ConstantMethodRefInfo'
-import ConstantDoubleInfo from '../classFile/constantInfo/numeric/ConstantDoubleInfo'
-import ConstantFloatInfo from '../classFile/constantInfo/numeric/ConstantFloatInfo'
-import ConstantIntegerInfo from '../classFile/constantInfo/numeric/ConstantIntegerInfo'
-import ConstantLongInfo from '../classFile/constantInfo/numeric/ConstantLongInfo'
-import ConstantPool from '../classFile/ConstantPool'
 import Slots from '../thread/Slots'
-import AccessFlag, { accessFlagsToString } from './AccessFlag'
+import AccessFlags from './AccessFlags'
 import ClassLoader, { primitiveTypes } from './ClassLoader'
-import Field from './ClassMember/Field'
-import Method from './ClassMember/Method'
+import Field from './member/Field'
+import Method from './member/Method'
 import ArrayObject from './object/ArrayObject'
 import BaseObject from './object/BaseObject'
 import InstanceObject from './object/InstanceObject'
+import {
+  DoubleConstant,
+  FloatConstant,
+  IntegerConstant,
+  LongConstant,
+  StringConstant,
+} from './RuntimeConstant'
+import RuntimeConstantPool from './RuntimeContantPool'
 import { jString } from './StringPool'
-
-abstract class SymRef {
-  protected _cp: RuntimeConstantPool
-  protected _className: string
-  protected _class: Class
-
-  constructor(cp: RuntimeConstantPool) {
-    this._cp = cp
-  }
-
-  get resolvedClass(): Class {
-    if (!this._class) this.resolveClassRef()
-    return this._class
-  }
-
-  private resolveClassRef(): void {
-    const d = this._cp.class
-    const c = d.loader.loadClass(this._className)
-    if (!c.isAccessibleTo(d)) throw new Error('java.lang.IllegalAccessError')
-    this._class = c
-  }
-}
-
-export class ClassRef extends SymRef {
-  constructor(cp: RuntimeConstantPool, classInfo: ConstantClassInfo) {
-    super(cp)
-    this._className = classInfo.name
-  }
-
-  toString(): string {
-    return `ClassRef: ${this._className}`
-  }
-}
-
-abstract class MemberRef extends SymRef {
-  protected _name: string
-  protected _descriptor: string
-
-  constructor(cp: RuntimeConstantPool, refInfo: BaseConstantMemberRefInfo) {
-    super(cp)
-    this._className = refInfo.className
-    ;[this._name, this._descriptor] = refInfo.nameAndDescriptor
-  }
-
-  get name(): string {
-    return this._name
-  }
-
-  get descriptor(): string {
-    return this._descriptor
-  }
-}
-
-class FieldRef extends MemberRef {
-  private _field: Field
-
-  constructor(cp: RuntimeConstantPool, refInfo: ConstantFieldRefInfo) {
-    super(cp, refInfo)
-  }
-
-  get resolvedField(): Field {
-    if (!this._field) this.resolveFieldRef()
-    return this._field
-  }
-
-  private resolveFieldRef(): void {
-    const d = this._cp.class
-    const c = this.resolvedClass
-    const field = c.lookupField(this.name, this.descriptor)
-    if (!field) throw new Error('java.lang.NoSuchFieldError')
-    if (!field.isAccessibleTo(d)) throw new Error('java.lang.IllegalAccessError')
-    this._field = field
-  }
-
-  toString(): string {
-    return `FieldRef: ${this._className}.${this._name}:${this._descriptor}`
-  }
-}
-
-class MethodRef extends MemberRef {
-  private _method: Method
-
-  constructor(cp: RuntimeConstantPool, refInfo: ConstantMethodRefInfo) {
-    super(cp, refInfo)
-  }
-
-  get resolvedMethod(): Method {
-    if (!this._method) this.resolveMethodRef()
-    return this._method
-  }
-
-  private resolveMethodRef(): void {
-    const c = this.resolvedClass
-    if (c.isInterface) throw new Error('java.lang.IncompatibleClassChangeError')
-
-    const method = c.lookupMethod(this._name, this._descriptor)
-    if (!method) throw new Error('java.lang.NoSuchmethodError')
-
-    const d = this._cp.class
-    if (!method.isAccessibleTo(d)) throw new Error('java.lang.IllegalAccessError')
-
-    this._method = method
-  }
-
-  toString(): string {
-    return `MethodRef: ${this._className}.${this._name}:${this._descriptor}`
-  }
-}
-
-class InterfaceMethodRef extends MemberRef {
-  private _method: Method
-
-  constructor(cp: RuntimeConstantPool, refInfo: ConstantInterfaceMethodRefInfo) {
-    super(cp, refInfo)
-  }
-
-  get resolvedInterfaceMethod(): Method {
-    if (!this._method) this.resolveInterfaceMethodRef()
-    return this._method
-  }
-
-  private resolveInterfaceMethodRef(): void {
-    const c = this.resolvedClass
-    if (!c.isInterface) throw new Error('java.lang.IncompatibleClassChangeError')
-
-    const method = c.lookupInterfaceMethod(this._name, this._descriptor)
-    if (!method) throw new Error('java.lang.NoSuchmethodError')
-
-    const d = this._cp.class
-    if (!method.isAccessibleTo(d)) throw new Error('java.lang.IllegalAccessError')
-
-    this._method = method
-  }
-
-  toString(): string {
-    return `InterfaceMethod: ${this._className}.${this._name}:${this._descriptor}`
-  }
-}
-
-abstract class Constant<T> {
-  constructor(private _data: T) {}
-
-  get data(): T {
-    return this._data
-  }
-
-  toString(): string {
-    return this._data.toString()
-  }
-}
-
-export class IntegerConstant extends Constant<number> {}
-
-export class FloatConstant extends Constant<number> {}
-
-export class LongConstant extends Constant<bigint> {}
-
-export class DoubleConstant extends Constant<number> {}
-
-export class StringConstant extends Constant<string> {}
-
-export class ClassConstant extends Constant<ClassRef> {}
-
-export class FieldRefConstant extends Constant<FieldRef> {}
-
-export class MethodRefConstant extends Constant<MethodRef> {}
-
-export class InterfaceMethodRefConstant extends Constant<InterfaceMethodRef> {}
-
-type RuntimeConstant = Constant<number | bigint | string | SymRef>
-
-export class RuntimeConstantPool {
-  private _class: Class
-  private _consts: RuntimeConstant[]
-
-  constructor(klass: Class, cp: ConstantPool) {
-    this._class = klass
-    this._consts = new Array(cp.size).fill(null)
-    for (let i = 1; i < this._consts.length; i++) {
-      const cpInfo = cp.getConstantInfo(i)
-      if (cpInfo instanceof ConstantIntegerInfo) this._consts[i] = new IntegerConstant(cpInfo.val)
-      else if (cpInfo instanceof ConstantFloatInfo) this._consts[i] = new FloatConstant(cpInfo.val)
-      else if (cpInfo instanceof ConstantLongInfo) this._consts[i++] = new LongConstant(cpInfo.val)
-      else if (cpInfo instanceof ConstantDoubleInfo)
-        this._consts[i++] = new DoubleConstant(cpInfo.val)
-      else if (cpInfo instanceof ConstantStringInfo)
-        this._consts[i] = new StringConstant(cpInfo.string)
-      else if (cpInfo instanceof ConstantClassInfo)
-        this._consts[i] = new ClassConstant(new ClassRef(this, cpInfo))
-      else if (cpInfo instanceof ConstantFieldRefInfo)
-        this._consts[i] = new FieldRefConstant(new FieldRef(this, cpInfo))
-      else if (cpInfo instanceof ConstantMethodRefInfo)
-        this._consts[i] = new MethodRefConstant(new MethodRef(this, cpInfo))
-      else if (cpInfo instanceof ConstantInterfaceMethodRefInfo)
-        this._consts[i] = new InterfaceMethodRefConstant(new InterfaceMethodRef(this, cpInfo))
-    }
-  }
-
-  get class(): Class {
-    return this._class
-  }
-
-  getConstant(idx: number): RuntimeConstant {
-    const res = this._consts[idx]
-    if (res) return res
-    throw new Error(`No constants at index ${idx}`)
-  }
-
-  toString(): string {
-    return this._consts.map((c, i) => `{${i}}: ${c}`).join('\n')
-  }
-}
 
 function getArrayClassName(name: string): string {
   return `[${toDescriptor(name)}`
@@ -267,7 +52,7 @@ function getSourceFile(cf: ClassFile): string {
 }
 
 export default class Class {
-  private _accessFlags: number
+  private _accessFlags: AccessFlags
   private _name: string
   private _superClassName: string
   private _interfaceNames: string[]
@@ -284,13 +69,9 @@ export default class Class {
   private _jClass: BaseObject
   private _sourceFile: string
 
-  toString(): string {
-    return `${accessFlagsToString(this._accessFlags)} ${this._name}`
-  }
-
   static newClass(cf: ClassFile): Class {
     const klass = new Class()
-    klass._accessFlags = cf.accessFlags
+    klass._accessFlags = new AccessFlags(cf.accessFlags)
     klass._name = cf.className
     klass._superClassName = cf.superClassName
     klass._interfaceNames = cf.interfaceNames
@@ -304,7 +85,7 @@ export default class Class {
 
   static newArrayClass(name: string, loader: ClassLoader): Class {
     const klass = new Class()
-    klass._accessFlags = AccessFlag.PUBLIC
+    klass._accessFlags = new AccessFlags()
     klass._name = name
     klass._loader = loader
     klass._initStarted = true
@@ -318,7 +99,7 @@ export default class Class {
 
   static newPrimitiveClass(className: string, loader: ClassLoader, jClass: BaseObject): Class {
     const klass = new Class()
-    klass._accessFlags = AccessFlag.PUBLIC
+    klass._accessFlags = new AccessFlags()
     klass._name = className
     klass._loader = loader
     klass._initStarted = true
@@ -326,6 +107,10 @@ export default class Class {
     klass._jClass = jClass
     klass._jClass.extra = klass
     return klass
+  }
+
+  get accessFlags(): AccessFlags {
+    return this._accessFlags
   }
 
   get name(): string {
@@ -384,54 +169,20 @@ export default class Class {
     this._initStarted = true
   }
 
-  private hasAccessFlag(f: AccessFlag) {
-    return (this._accessFlags & f) !== 0
-  }
-
-  get isPublic(): boolean {
-    return this.hasAccessFlag(AccessFlag.PUBLIC)
-  }
-
-  get isFinal(): boolean {
-    return this.hasAccessFlag(AccessFlag.FINAL)
-  }
-
-  get isSuper(): boolean {
-    return this.hasAccessFlag(AccessFlag.SUPER)
-  }
-
-  get isInterface(): boolean {
-    return this.hasAccessFlag(AccessFlag.INTERFACE)
-  }
-
-  get isAbstract(): boolean {
-    return this.hasAccessFlag(AccessFlag.ABSTRACT)
-  }
-
-  get isSynthetic(): boolean {
-    return this.hasAccessFlag(AccessFlag.SYNTHETIC)
-  }
-
-  get isAnnotation(): boolean {
-    return this.hasAccessFlag(AccessFlag.ANNOTATION)
-  }
-
-  get isEnum(): boolean {
-    return this.hasAccessFlag(AccessFlag.ENUM)
-  }
-
   isAccessibleTo(other: Class): boolean {
-    return this.isPublic || this.packageName === other.packageName
+    return this.accessFlags.isPublic || this.packageName === other.packageName
   }
 
   isAssignableFrom(other: Class): boolean {
     const [s, t] = [other, this]
     if (s === t) return true
     if (!s.isArray) {
-      if (!s.isInterface) return t.isInterface ? s.implements(t) : s.isSubClassOf(t)
-      else return t.isInterface ? t.isSuperInterfaceOf(s) : t.isJlObject
+      if (!s.accessFlags.isInterface)
+        return t.accessFlags.isInterface ? s.implements(t) : s.isSubClassOf(t)
+      else return t.accessFlags.isInterface ? t.isSuperInterfaceOf(s) : t.isJlObject
     } else {
-      if (!t.isArray) return t.isInterface ? t.isJlCloneable || t.isJioSerializable : t.isJlObject
+      if (!t.isArray)
+        return t.accessFlags.isInterface ? t.isJlCloneable || t.isJioSerializable : t.isJlObject
       else {
         const [sc, tc] = [s.componentClass, t.componentClass]
         return sc === tc || tc.isAssignableFrom(sc)
@@ -504,7 +255,7 @@ export default class Class {
         if (
           method.name === name &&
           method.descriptor === descriptor &&
-          method.isStatic === isStatic
+          method.accessFlags.isStatic === isStatic
         )
           return method
       }
@@ -514,7 +265,11 @@ export default class Class {
   static getField(klass: Class, name: string, descriptor: string, isStatic: boolean): Field {
     for (let c = klass; c; c = c.superClass) {
       for (const field of c._fields) {
-        if (field.name === name && field.descriptor === descriptor && field.isStatic === isStatic)
+        if (
+          field.name === name &&
+          field.descriptor === descriptor &&
+          field.accessFlags.isStatic === isStatic
+        )
           return field
       }
     }
@@ -612,7 +367,7 @@ export default class Class {
     let slotId = 0
     if (this._superClass) slotId = this._superClass._instanceSlotCount
     for (const field of this._fields) {
-      if (field.isStatic) continue
+      if (field.accessFlags.isStatic) continue
       field.slotId = slotId++
       if (field.isLongOrDouble) slotId++
     }
@@ -622,7 +377,7 @@ export default class Class {
   private calcStaticFieldSlotIds(): void {
     let slotId = 0
     for (const field of this._fields) {
-      if (!field.isStatic) continue
+      if (!field.accessFlags.isStatic) continue
       field.slotId = slotId++
       if (field.isLongOrDouble) slotId++
     }
@@ -632,7 +387,7 @@ export default class Class {
   private allocAndInitStaticVars() {
     this._staticVars = new Slots(this._staticSlotCount)
     for (const field of this._fields) {
-      if (field.isStatic && field.isFinal) {
+      if (field.accessFlags.isStatic && field.accessFlags.isFinal) {
         this.initStaticFinalVar(field)
       }
     }
@@ -712,5 +467,9 @@ export default class Class {
       const method = Class.lookupMethodInInterfaces(iface._interfaces, name, descriptor)
       if (method) return method
     }
+  }
+
+  toString(): string {
+    return `${this._accessFlags.toString()} ${this._name}`
   }
 }

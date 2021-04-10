@@ -1,4 +1,4 @@
-import Method from '../class/ClassMember/Method'
+import Method from '../class/member/Method'
 import OperandStack from './OperandStack'
 import Slots from './Slots'
 import Thread from './Thread'
