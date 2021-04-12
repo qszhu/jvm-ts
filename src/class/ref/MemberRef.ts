@@ -1,5 +1,5 @@
 import BaseConstantMemberRefInfo from '../../classFile/constantInfo/memberRef/BaseConstantMemberRefInfo'
-import RuntimeConstantPool from '../RuntimeContantPool'
+import RuntimeConstantPool from '../constantPool/RuntimeContantPool'
 import SymRef from './SymRef'
 
 export default abstract class MemberRef extends SymRef {

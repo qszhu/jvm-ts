@@ -2,9 +2,9 @@ import AttributeInfoFactory from '../../classFile/attributeInfo/AttributeInfoFac
 import LineNumberTableAttribute from '../../classFile/attributeInfo/LineNumberTableAttribute'
 import MemberInfo from '../../classFile/MemberInfo'
 import Class from '../Class'
-import ExceptionTable from '../ExceptionTable'
+import ExceptionTable from '../exception/ExceptionTable'
 import ClassMember from './ClassMember'
-import MethodDescriptorParser from './MethodDescriptor'
+import MethodDescriptor from './MethodDescriptor'
 
 function newByteCodes(...bytes: number[]): Buffer {
   return Buffer.from(bytes)
@@ -18,10 +18,6 @@ export default class Method extends ClassMember {
   private _lineNumberTable: LineNumberTableAttribute
   private _argSlotCount = 0
 
-  toString(): string {
-    return `Method: ${this.name}${this.descriptor}`
-  }
-
   constructor(klass: Class, method: MemberInfo) {
     super(klass, method)
     const codeAttr = AttributeInfoFactory.getCodeAttribute(method)
@@ -32,9 +28,9 @@ export default class Method extends ClassMember {
       this._lineNumberTable = AttributeInfoFactory.getLineNumberTableAttribute(codeAttr)
       this._exceptionTable = new ExceptionTable(codeAttr.exceptionTable, klass.constantPool)
     }
-    const md = MethodDescriptorParser.parseMethodDescriptor(this._descriptor)
+    const md = MethodDescriptor.parse(this._descriptor)
     this.calcArgSlotCount(md.parameterTypes)
-    if (this.accessFlags.isNative) {
+    if (this.isNative) {
       this.injectCodeAttribute(md.returnType)
     }
   }
@@ -44,7 +40,7 @@ export default class Method extends ClassMember {
       this._argSlotCount++
       if (paramType === 'J' || paramType === 'D') this._argSlotCount++
     }
-    if (!this.accessFlags.isStatic) this._argSlotCount++
+    if (!this.isStatic) this._argSlotCount++
   }
 
   private injectCodeAttribute(returnType: string) {
@@ -100,8 +96,24 @@ export default class Method extends ClassMember {
   }
 
   getLineNumber(pc: number): number {
-    if (this.accessFlags.isNative) return -2
+    if (this.isNative) return -2
     if (!this._lineNumberTable) return -1
     return this._lineNumberTable.getLineNumber(pc)
+  }
+
+  get isNative(): boolean {
+    return this._accessFlags.isNative
+  }
+
+  get isStatic(): boolean {
+    return this._accessFlags.isStatic
+  }
+
+  get isAbstract(): boolean {
+    return this._accessFlags.isAbstract
+  }
+
+  toString(): string {
+    return `Method: ${this.name}${this.descriptor}`
   }
 }

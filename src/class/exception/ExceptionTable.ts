@@ -1,33 +1,9 @@
-import ExceptionTableEntry from '../classFile/attributeInfo/tableEntry/ExceptionTableEntry'
-import Class from './Class'
-import ClassRef from './ref/ClassRef'
-import { ClassConstant } from './RuntimeConstant'
-import RuntimeConstantPool from './RuntimeContantPool'
-
-class ExceptionHandler {
-  constructor(
-    private _startPc: number,
-    private _endPc: number,
-    private _handlerPc: number,
-    private _catchType: ClassRef
-  ) {}
-
-  get startPc(): number {
-    return this._startPc
-  }
-
-  get endPc(): number {
-    return this._endPc
-  }
-
-  get handlerPc(): number {
-    return this._handlerPc
-  }
-
-  get catchType(): ClassRef {
-    return this._catchType
-  }
-}
+import ExceptionTableEntry from '../../classFile/attributeInfo/tableEntry/ExceptionTableEntry'
+import Class from '../Class'
+import { ClassConstant } from '../constantPool/RuntimeConstant'
+import RuntimeConstantPool from '../constantPool/RuntimeContantPool'
+import ClassRef from '../ref/ClassRef'
+import ExceptionHandler from './ExceptionHandler'
 
 function getCatchType(idx: number, cp: RuntimeConstantPool): ClassRef {
   if (idx === 0) return null

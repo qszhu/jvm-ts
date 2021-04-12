@@ -42,4 +42,12 @@ export default class Field extends ClassMember {
   get isLongOrDouble(): boolean {
     return this._descriptor === 'J' || this._descriptor === 'D'
   }
+
+  get isStatic(): boolean {
+    return this._accessFlags.isStatic
+  }
+
+  get isFinal(): boolean {
+    return this._accessFlags.isFinal
+  }
 }

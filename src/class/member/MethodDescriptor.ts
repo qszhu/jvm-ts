@@ -1,4 +1,4 @@
-class MethodDescriptor {
+export default class MethodDescriptor {
   private _parameterTypes: string[]
   private _returnType: string
 
@@ -7,24 +7,28 @@ class MethodDescriptor {
     this._returnType = ''
   }
 
-  addParameterType(t: string) {
+  static parse(descriptor: string): MethodDescriptor {
+    return MethodDescriptorParser.parseMethodDescriptor(descriptor)
+  }
+
+  addParameterType(t: string): void {
     this._parameterTypes.push(t)
   }
 
-  get parameterTypes() {
+  get parameterTypes(): string[] {
     return this._parameterTypes.slice()
   }
 
-  setReturnType(t: string) {
+  setReturnType(t: string): void {
     this._returnType = t
   }
 
-  get returnType() {
+  get returnType(): string {
     return this._returnType
   }
 }
 
-export default class MethodDescriptorParser {
+class MethodDescriptorParser {
   private _raw: string
   private _offset: number
   private _parsed: MethodDescriptor

@@ -15,8 +15,16 @@ export default abstract class ClassMember {
     this._descriptor = memberInfo.descriptor
   }
 
-  get accessFlags(): AccessFlags {
-    return this._accessFlags
+  get isPublic(): boolean {
+    return this._accessFlags.isPublic
+  }
+
+  get isProtected(): boolean {
+    return this._accessFlags.isProtected
+  }
+
+  get isPrivate(): boolean {
+    return this._accessFlags.isPrivate
   }
 
   get name(): string {
@@ -32,11 +40,17 @@ export default abstract class ClassMember {
   }
 
   isAccessibleTo(d: Class): boolean {
-    if (this.accessFlags.isPublic) return true
+    if (this.isPublic) return true
+
     const c = this._class
-    if (this.accessFlags.isProtected)
+    if (this.isProtected) {
       return d === c || d.isSubClassOf(c) || c.packageName == d.packageName
-    if (!this.accessFlags.isPrivate) return c.packageName === d.packageName
+    }
+
+    if (!this.isPrivate) {
+      return c.packageName === d.packageName
+    }
+
     return d === c
   }
 }

@@ -1,6 +1,6 @@
 import { NoOperandsInstruction } from '..'
 import InstanceObject from '../../class/object/InstanceObject'
-import { jsString } from '../../class/StringPool'
+import StringPool from '../../class/StringPool'
 import { StackTraceElement } from '../../native/java/lang/Throwable'
 import Frame from '../../thread/Frame'
 import Thread from '../../thread/Thread'
@@ -45,7 +45,7 @@ function handleUncaughtException(thread: Thread, ex: InstanceObject): void {
   thread.clearStack()
 
   const jMsg = ex.getRefVar('detailMessage', 'Ljava/lang/String;') as InstanceObject
-  const jsMsg = jsString(jMsg)
+  const jsMsg = StringPool.jsString(jMsg)
   console.log(`${ex.class.javaName}: ${jsMsg}`)
 
   const stes = ex.extra as StackTraceElement[]

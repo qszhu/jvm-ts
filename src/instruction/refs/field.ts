@@ -1,6 +1,6 @@
 import { Index16Instruction } from '..'
+import { FieldRefConstant } from '../../class/constantPool/RuntimeConstant'
 import InstanceObject from '../../class/object/InstanceObject'
-import { FieldRefConstant } from '../../class/RuntimeConstant'
 import Frame from '../../thread/Frame'
 
 export class PutField extends Index16Instruction {
@@ -11,9 +11,9 @@ export class PutField extends Index16Instruction {
     const fieldRef = (cp.getConstant(this._index) as FieldRefConstant).data
     const field = fieldRef.resolvedField
 
-    if (field.accessFlags.isStatic) throw new Error('java.lang.IncompatibleClassChangeError')
+    if (field.isStatic) throw new Error('java.lang.IncompatibleClassChangeError')
 
-    if (field.accessFlags.isFinal) {
+    if (field.isFinal) {
       if (curClass !== field.class || curMethod.name !== '<init>')
         throw new Error('java.lang.IllegalAccessError')
     }
@@ -71,7 +71,7 @@ export class GetField extends Index16Instruction {
     const fieldRef = (cp.getConstant(this._index) as FieldRefConstant).data
     const field = fieldRef.resolvedField
 
-    if (field.accessFlags.isStatic) throw new Error('java.lang.IncompatibleClassChangeError')
+    if (field.isStatic) throw new Error('java.lang.IncompatibleClassChangeError')
 
     const stack = frame.operandStack
     const ref = stack.popRef() as InstanceObject

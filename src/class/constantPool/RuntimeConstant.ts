@@ -1,8 +1,8 @@
-import ClassRef from './ref/ClassRef'
-import FieldRef from './ref/FieldRef'
-import InterfaceMethodRef from './ref/InterfaceMethodRef'
-import MethodRef from './ref/MethodRef'
-import SymRef from './ref/SymRef'
+import ClassRef from '../ref/ClassRef'
+import FieldRef from '../ref/FieldRef'
+import InterfaceMethodRef from '../ref/InterfaceMethodRef'
+import MethodRef from '../ref/MethodRef'
+import SymRef from '../ref/SymRef'
 
 abstract class Constant<T> {
   constructor(private _data: T) {}

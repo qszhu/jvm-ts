@@ -1,5 +1,5 @@
 import { Index16Instruction, initClass } from '..'
-import { FieldRefConstant } from '../../class/RuntimeConstant'
+import { FieldRefConstant } from '../../class/constantPool/RuntimeConstant'
 import Frame from '../../thread/Frame'
 
 export class PutStatic extends Index16Instruction {
@@ -17,9 +17,9 @@ export class PutStatic extends Index16Instruction {
       return
     }
 
-    if (!field.accessFlags.isStatic) throw new Error('java.lang.IncompatibleClassChangeError')
+    if (!field.isStatic) throw new Error('java.lang.IncompatibleClassChangeError')
 
-    if (field.accessFlags.isFinal) {
+    if (field.isFinal) {
       if (curClass !== klass || curMethod.name !== '<clinit>')
         throw new Error('java.lang.IllegalAccessError')
     }
@@ -69,7 +69,7 @@ export class GetStatic extends Index16Instruction {
       return
     }
 
-    if (!field.accessFlags.isStatic) throw new Error('java.lang.IncompatibleClassChangeError')
+    if (!field.isStatic) throw new Error('java.lang.IncompatibleClassChangeError')
 
     const { descriptor, slotId } = field
     const slots = klass.staticVars

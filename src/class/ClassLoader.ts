@@ -1,17 +1,6 @@
 import ClassPath from '../classPath/ClassPath'
 import Class from './Class'
-
-export const primitiveTypes = new Map<string, string>([
-  ['void', 'V'],
-  ['boolean', 'Z'],
-  ['byte', 'B'],
-  ['short', 'S'],
-  ['int', 'I'],
-  ['long', 'J'],
-  ['char', 'C'],
-  ['float', 'F'],
-  ['double', 'D'],
-])
+import PrimitiveTypes from './PrimitiveTypes'
 
 export default class ClassLoader {
   private _classpath: ClassPath
@@ -42,7 +31,7 @@ export default class ClassLoader {
   }
 
   private loadPrimitiveClasses() {
-    for (const primitiveType of primitiveTypes.keys()) {
+    for (const primitiveType of PrimitiveTypes.names) {
       this.loadPrimitiveClass(primitiveType)
     }
   }

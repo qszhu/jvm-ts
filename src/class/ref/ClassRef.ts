@@ -1,5 +1,5 @@
 import ConstantClassInfo from '../../classFile/constantInfo/ConstantClassInfo'
-import RuntimeConstantPool from '../RuntimeContantPool'
+import RuntimeConstantPool from '../constantPool/RuntimeContantPool'
 import SymRef from './SymRef'
 
 export default class ClassRef extends SymRef {

@@ -6,8 +6,8 @@ import {
   IntegerConstant,
   LongConstant,
   StringConstant,
-} from '../../class/RuntimeConstant'
-import { jString } from '../../class/StringPool'
+} from '../../class/constantPool/RuntimeConstant'
+import StringPool from '../../class/StringPool'
 import Frame from '../../thread/Frame'
 
 function ldc(frame: Frame, idx: number) {
@@ -19,7 +19,7 @@ function ldc(frame: Frame, idx: number) {
   } else if (c instanceof FloatConstant) {
     stack.pushFloat(c.data)
   } else if (c instanceof StringConstant) {
-    const internedStr = jString(klass.loader, c.data)
+    const internedStr = StringPool.jString(klass.loader, c.data)
     stack.pushRef(internedStr)
   } else if (c instanceof ClassConstant) {
     const classRef = c.data

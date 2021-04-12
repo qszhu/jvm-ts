@@ -1,6 +1,6 @@
 import ConstantMethodRefInfo from '../../classFile/constantInfo/memberRef/ConstantMethodRefInfo'
+import RuntimeConstantPool from '../constantPool/RuntimeContantPool'
 import Method from '../member/Method'
-import RuntimeConstantPool from '../RuntimeContantPool'
 import MemberRef from './MemberRef'
 
 export default class MethodRef extends MemberRef {
@@ -17,7 +17,7 @@ export default class MethodRef extends MemberRef {
 
   private resolveMethodRef(): void {
     const c = this.resolvedClass
-    if (c.accessFlags.isInterface) throw new Error('java.lang.IncompatibleClassChangeError')
+    if (c.isInterface) throw new Error('java.lang.IncompatibleClassChangeError')
 
     const method = c.lookupMethod(this._name, this._descriptor)
     if (!method) throw new Error('java.lang.NoSuchmethodError')

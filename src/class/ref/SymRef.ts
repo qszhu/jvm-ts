@@ -1,5 +1,5 @@
 import Class from '../Class'
-import RuntimeConstantPool from '../RuntimeContantPool'
+import RuntimeConstantPool from '../constantPool/RuntimeContantPool'
 
 export default abstract class SymRef {
   protected _cp: RuntimeConstantPool

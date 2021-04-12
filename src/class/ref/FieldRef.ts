@@ -1,6 +1,6 @@
 import ConstantFieldRefInfo from '../../classFile/constantInfo/memberRef/ConstantFieldRefInfo'
+import RuntimeConstantPool from '../constantPool/RuntimeContantPool'
 import Field from '../member/Field'
-import RuntimeConstantPool from '../RuntimeContantPool'
 import MemberRef from './MemberRef'
 
 export default class FieldRef extends MemberRef {

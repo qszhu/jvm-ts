@@ -134,7 +134,7 @@ function scheduleClinit(thread: Thread, klass: Class): void {
 }
 
 function initSuperClass(thread: Thread, klass: Class): void {
-  if (!klass.accessFlags.isInterface) {
+  if (!klass.isInterface) {
     const superClass = klass.superClass
     if (superClass && !superClass.hasInitStarted) {
       initClass(thread, superClass)

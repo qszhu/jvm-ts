@@ -1,9 +1,12 @@
 import { BytecodeReader, Index16Instruction, initClass, Instruction, invokeMethod } from '..'
 import Class from '../../class/Class'
+import {
+  InterfaceMethodRefConstant,
+  MethodRefConstant,
+} from '../../class/constantPool/RuntimeConstant'
 import BaseObject from '../../class/object/BaseObject'
 import InstanceObject from '../../class/object/InstanceObject'
-import { InterfaceMethodRefConstant, MethodRefConstant } from '../../class/RuntimeConstant'
-import { jsString } from '../../class/StringPool'
+import StringPool from '../../class/StringPool'
 import Frame from '../../thread/Frame'
 import OperandStack from '../../thread/OperandStack'
 
@@ -14,8 +17,7 @@ export class InvokeStatic extends Index16Instruction {
     const resolvedMethod = methodRef.resolvedMethod
 
     // must be static
-    if (!resolvedMethod.accessFlags.isStatic)
-      throw new Error('java.lang.IncompatibleClassChangeError')
+    if (!resolvedMethod.isStatic) throw new Error('java.lang.IncompatibleClassChangeError')
 
     const klass = resolvedMethod.class
     if (!klass.hasInitStarted) {
@@ -45,15 +47,14 @@ export class InvokeSpecial extends Index16Instruction {
       throw new Error('java.lang.NoSuchMethodError')
 
     // must not be static
-    if (resolvedMethod.accessFlags.isStatic)
-      throw new Error('java.lang.IncompatibleClassChangeError')
+    if (resolvedMethod.isStatic) throw new Error('java.lang.IncompatibleClassChangeError')
 
     // "this" should not be null
     const ref = frame.operandStack.getRefFromTop(resolvedMethod.argSlotCount - 1) as BaseObject // "this" ref
     if (!ref) throw new Error('java.lang.NullPointerException')
 
     if (
-      resolvedMethod.accessFlags.isProtected &&
+      resolvedMethod.isProtected &&
       resolvedMethod.class.isSuperClassOf(currentClass) &&
       resolvedMethod.class.packageName !== currentClass.packageName &&
       ref.class !== currentClass &&
@@ -64,7 +65,7 @@ export class InvokeSpecial extends Index16Instruction {
     let methodToBeInvoked = resolvedMethod
     // lookup non constructor method in super class
     if (
-      currentClass.accessFlags.isSuper &&
+      currentClass.isSuper &&
       resolvedClass.isSuperClassOf(currentClass) &&
       resolvedMethod.name !== '<init>'
     ) {
@@ -74,7 +75,7 @@ export class InvokeSpecial extends Index16Instruction {
         methodRef.descriptor
       )
     }
-    if (!methodToBeInvoked || methodToBeInvoked.accessFlags.isAbstract)
+    if (!methodToBeInvoked || methodToBeInvoked.isAbstract)
       throw new Error('java.lang.AbstractMethodError')
 
     invokeMethod(frame, methodToBeInvoked)
@@ -113,7 +114,7 @@ function println(stack: OperandStack, descriptor: string) {
       break
     case '(Ljava/lang/String;)V':
       const jStr = stack.popRef() as InstanceObject
-      const str = jsString(jStr)
+      const str = StringPool.jsString(jStr)
       console.log(str)
       break
     default:
@@ -129,8 +130,7 @@ export class InvokeVirtual extends Index16Instruction {
     const methodRef = (cp.getConstant(this._index) as MethodRefConstant).data
     const resolvedMethod = methodRef.resolvedMethod
 
-    if (resolvedMethod.accessFlags.isStatic)
-      throw new Error('java.lang.IncompatibleClassChangeError')
+    if (resolvedMethod.isStatic) throw new Error('java.lang.IncompatibleClassChangeError')
 
     const ref = frame.operandStack.getRefFromTop(resolvedMethod.argSlotCount - 1)
     if (ref === null) {
@@ -143,7 +143,7 @@ export class InvokeVirtual extends Index16Instruction {
     }
 
     if (
-      resolvedMethod.accessFlags.isProtected &&
+      resolvedMethod.isProtected &&
       resolvedMethod.class.isSuperClassOf(currentClass) &&
       resolvedMethod.class.packageName !== currentClass.packageName &&
       ref.class !== currentClass &&
@@ -157,7 +157,7 @@ export class InvokeVirtual extends Index16Instruction {
       methodRef.name,
       methodRef.descriptor
     )
-    if (!methodToBeInvoked || methodToBeInvoked.accessFlags.isAbstract) {
+    if (!methodToBeInvoked || methodToBeInvoked.isAbstract) {
       throw new Error('java.lang.AbstractMethodError')
     }
 
@@ -182,7 +182,7 @@ export class InvokeInterface implements Instruction {
     const cp = frame.method.class.constantPool
     const methodRef = (cp.getConstant(this._index) as InterfaceMethodRefConstant).data
     const resolvedMethod = methodRef.resolvedInterfaceMethod
-    if (resolvedMethod.accessFlags.isStatic || resolvedMethod.accessFlags.isPrivate)
+    if (resolvedMethod.isStatic || resolvedMethod.isPrivate)
       throw new Error('java.lang.IncompatibleClassChangeError')
 
     const ref = frame.operandStack.getRefFromTop(resolvedMethod.argSlotCount - 1) as BaseObject
@@ -196,10 +196,10 @@ export class InvokeInterface implements Instruction {
       methodRef.name,
       methodRef.descriptor
     )
-    if (!methodToBeInvoked || methodToBeInvoked.accessFlags.isAbstract)
+    if (!methodToBeInvoked || methodToBeInvoked.isAbstract)
       throw new Error('java.lang.AbstractMethodError')
 
-    if (!methodToBeInvoked.accessFlags.isPublic) throw new Error('java.lang.IllegalAccessError')
+    if (!methodToBeInvoked.isPublic) throw new Error('java.lang.IllegalAccessError')
 
     invokeMethod(frame, methodToBeInvoked)
   }

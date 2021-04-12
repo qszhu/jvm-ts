@@ -2,21 +2,22 @@ import SourceFileAttribute from '../classFile/attributeInfo/SourceFileAttribute'
 import ClassFile from '../classFile/ClassFile'
 import Slots from '../thread/Slots'
 import AccessFlags from './AccessFlags'
-import ClassLoader, { primitiveTypes } from './ClassLoader'
-import Field from './member/Field'
-import Method from './member/Method'
-import ArrayObject from './object/ArrayObject'
-import BaseObject from './object/BaseObject'
-import InstanceObject from './object/InstanceObject'
+import ClassLoader from './ClassLoader'
 import {
   DoubleConstant,
   FloatConstant,
   IntegerConstant,
   LongConstant,
   StringConstant,
-} from './RuntimeConstant'
-import RuntimeConstantPool from './RuntimeContantPool'
-import { jString } from './StringPool'
+} from './constantPool/RuntimeConstant'
+import RuntimeConstantPool from './constantPool/RuntimeContantPool'
+import Field from './member/Field'
+import Method from './member/Method'
+import ArrayObject from './object/ArrayObject'
+import BaseObject from './object/BaseObject'
+import InstanceObject from './object/InstanceObject'
+import PrimitiveTypes from './PrimitiveTypes'
+import StringPool from './StringPool'
 
 function getArrayClassName(name: string): string {
   return `[${toDescriptor(name)}`
@@ -24,7 +25,7 @@ function getArrayClassName(name: string): string {
 
 function toDescriptor(name: string): string {
   if (name.startsWith('[')) return name
-  if (primitiveTypes.has(name)) return primitiveTypes.get(name)
+  if (PrimitiveTypes.has(name)) return PrimitiveTypes.getDescriptor(name)
   return `L${name};`
 }
 
@@ -39,8 +40,8 @@ function getComponentClassName(name: string): string {
 function toClassName(descriptor: string): string {
   if (descriptor.startsWith('[')) return descriptor
   if (descriptor.startsWith('L')) return descriptor.substring(1, descriptor.length - 1)
-  for (const [className, d] of primitiveTypes.entries()) {
-    if (d === descriptor) return className
+  for (const className of PrimitiveTypes.names) {
+    if (PrimitiveTypes.getDescriptor(className) === descriptor) return className
   }
   throw new Error(`Invalid descriptor: ${descriptor}`)
 }
@@ -109,10 +110,6 @@ export default class Class {
     return klass
   }
 
-  get accessFlags(): AccessFlags {
-    return this._accessFlags
-  }
-
   get name(): string {
     return this._name
   }
@@ -165,24 +162,38 @@ export default class Class {
     return this._name.replace(/\//g, '.')
   }
 
+  get isPublic(): boolean {
+    return this._accessFlags.isPublic
+  }
+
+  get isInterface(): boolean {
+    return this._accessFlags.isInterface
+  }
+
+  get isSuper(): boolean {
+    return this._accessFlags.isSuper
+  }
+
+  get isAbstract(): boolean {
+    return this._accessFlags.isAbstract
+  }
+
   startInit(): void {
     this._initStarted = true
   }
 
   isAccessibleTo(other: Class): boolean {
-    return this.accessFlags.isPublic || this.packageName === other.packageName
+    return this.isPublic || this.packageName === other.packageName
   }
 
   isAssignableFrom(other: Class): boolean {
     const [s, t] = [other, this]
     if (s === t) return true
     if (!s.isArray) {
-      if (!s.accessFlags.isInterface)
-        return t.accessFlags.isInterface ? s.implements(t) : s.isSubClassOf(t)
-      else return t.accessFlags.isInterface ? t.isSuperInterfaceOf(s) : t.isJlObject
+      if (!s.isInterface) return t.isInterface ? s.implements(t) : s.isSubClassOf(t)
+      else return t.isInterface ? t.isSuperInterfaceOf(s) : t.isJlObject
     } else {
-      if (!t.isArray)
-        return t.accessFlags.isInterface ? t.isJlCloneable || t.isJioSerializable : t.isJlObject
+      if (!t.isArray) return t.isInterface ? t.isJlCloneable || t.isJioSerializable : t.isJlObject
       else {
         const [sc, tc] = [s.componentClass, t.componentClass]
         return sc === tc || tc.isAssignableFrom(sc)
@@ -255,7 +266,7 @@ export default class Class {
         if (
           method.name === name &&
           method.descriptor === descriptor &&
-          method.accessFlags.isStatic === isStatic
+          method.isStatic === isStatic
         )
           return method
       }
@@ -265,11 +276,7 @@ export default class Class {
   static getField(klass: Class, name: string, descriptor: string, isStatic: boolean): Field {
     for (let c = klass; c; c = c.superClass) {
       for (const field of c._fields) {
-        if (
-          field.name === name &&
-          field.descriptor === descriptor &&
-          field.accessFlags.isStatic === isStatic
-        )
+        if (field.name === name && field.descriptor === descriptor && field.isStatic === isStatic)
           return field
       }
     }
@@ -312,7 +319,7 @@ export default class Class {
   }
 
   get isPrimitive(): boolean {
-    return primitiveTypes.has(this.name)
+    return PrimitiveTypes.has(this.name)
   }
 
   getInstanceMethod(name: string, descriptor: string): Method {
@@ -367,7 +374,7 @@ export default class Class {
     let slotId = 0
     if (this._superClass) slotId = this._superClass._instanceSlotCount
     for (const field of this._fields) {
-      if (field.accessFlags.isStatic) continue
+      if (field.isStatic) continue
       field.slotId = slotId++
       if (field.isLongOrDouble) slotId++
     }
@@ -377,7 +384,7 @@ export default class Class {
   private calcStaticFieldSlotIds(): void {
     let slotId = 0
     for (const field of this._fields) {
-      if (!field.accessFlags.isStatic) continue
+      if (!field.isStatic) continue
       field.slotId = slotId++
       if (field.isLongOrDouble) slotId++
     }
@@ -387,7 +394,7 @@ export default class Class {
   private allocAndInitStaticVars() {
     this._staticVars = new Slots(this._staticSlotCount)
     for (const field of this._fields) {
-      if (field.accessFlags.isStatic && field.accessFlags.isFinal) {
+      if (field.isStatic && field.isFinal) {
         this.initStaticFinalVar(field)
       }
     }
@@ -421,7 +428,7 @@ export default class Class {
         break
       case 'Ljava/lang/String;':
         const str = (aConst as StringConstant).data
-        const jStr = jString(this.loader, str)
+        const jStr = StringPool.jString(this.loader, str)
         sVars.setRef(slotId, jStr)
         break
     }

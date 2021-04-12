@@ -1,6 +1,6 @@
 import ClassLoader from './class/ClassLoader'
 import ArrayObject from './class/object/ArrayObject'
-import { jString } from './class/StringPool'
+import StringPool from './class/StringPool'
 import ClassPath from './classPath/ClassPath'
 import { initClass } from './instruction'
 import { interpret } from './interpreter'
@@ -61,7 +61,7 @@ export default class Jvm {
     const argsArr = stringClass.arrayClass.newArray(args.length)
     const jArgs = argsArr.refs
     for (const [i, arg] of args.entries()) {
-      jArgs[i] = jString(this._classLoader, `${arg}`)
+      jArgs[i] = StringPool.jString(this._classLoader, `${arg}`)
     }
     return argsArr
   }
