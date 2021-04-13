@@ -1,5 +1,4 @@
 import { Index16Instruction, initClass } from '..'
-import { FieldRefConstant } from '../../class/constantPool/RuntimeConstant'
 import Frame from '../../thread/Frame'
 
 export class PutStatic extends Index16Instruction {
@@ -7,7 +6,7 @@ export class PutStatic extends Index16Instruction {
     const curMethod = frame.method
     const curClass = curMethod.class
     const cp = curClass.constantPool
-    const fieldRef = (cp.getConstant(this._index) as FieldRefConstant).data
+    const fieldRef = cp.getFieldRef(this._index)
     const field = fieldRef.resolvedField
     const klass = field.class
 
@@ -59,7 +58,7 @@ export class PutStatic extends Index16Instruction {
 export class GetStatic extends Index16Instruction {
   execute(frame: Frame): void {
     const cp = frame.method.class.constantPool
-    const fieldRef = (cp.getConstant(this._index) as FieldRefConstant).data
+    const fieldRef = cp.getFieldRef(this._index)
     const field = fieldRef.resolvedField
     const klass = field.class
 

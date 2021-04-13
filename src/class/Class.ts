@@ -3,13 +3,6 @@ import ClassFile from '../classFile/ClassFile'
 import Slots from '../thread/Slots'
 import AccessFlags from './AccessFlags'
 import ClassLoader from './ClassLoader'
-import {
-  DoubleConstant,
-  FloatConstant,
-  IntegerConstant,
-  LongConstant,
-  StringConstant,
-} from './constantPool/RuntimeConstant'
 import RuntimeConstantPool from './constantPool/RuntimeContantPool'
 import Field from './member/Field'
 import Method from './member/Method'
@@ -405,7 +398,6 @@ export default class Class {
     if (!cpIdx) return
 
     const cp = this._constantPool
-    const aConst = cp.getConstant(cpIdx)
 
     const sVars = this._staticVars
     const slotId = field.slotId
@@ -415,19 +407,19 @@ export default class Class {
       case 'C':
       case 'S':
       case 'I':
-        sVars.setInt(slotId, (aConst as IntegerConstant).data)
+        sVars.setInt(slotId, cp.getInt(cpIdx))
         break
       case 'J':
-        sVars.setLong(slotId, (aConst as LongConstant).data)
+        sVars.setLong(slotId, cp.getLong(cpIdx))
         break
       case 'F':
-        sVars.setFloat(slotId, (aConst as FloatConstant).data)
+        sVars.setFloat(slotId, cp.getFloat(cpIdx))
         break
       case 'D':
-        sVars.setDouble(slotId, (aConst as DoubleConstant).data)
+        sVars.setDouble(slotId, cp.getDouble(cpIdx))
         break
       case 'Ljava/lang/String;':
-        const str = (aConst as StringConstant).data
+        const str = cp.getString(cpIdx)
         const jStr = StringPool.jString(this.loader, str)
         sVars.setRef(slotId, jStr)
         break

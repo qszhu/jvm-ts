@@ -1,11 +1,10 @@
 import { Index16Instruction, initClass } from '..'
-import { ClassConstant } from '../../class/constantPool/RuntimeConstant'
 import Frame from '../../thread/Frame'
 
 export class New extends Index16Instruction {
   execute(frame: Frame): void {
     const cp = frame.method.class.constantPool
-    const classRef = (cp.getConstant(this._index) as ClassConstant).data
+    const classRef = cp.getClassRef(this._index)
     const klass = classRef.resolvedClass
 
     if (!klass.hasInitStarted) {

@@ -1,7 +1,6 @@
 import { BytecodeReader, Index16Instruction, Instruction, NoOperandsInstruction } from '..'
 import Class from '../../class/Class'
 import ClassLoader from '../../class/ClassLoader'
-import { ClassConstant } from '../../class/constantPool/RuntimeConstant'
 import ArrayObject from '../../class/object/ArrayObject'
 import Frame from '../../thread/Frame'
 import OperandStack from '../../thread/OperandStack'
@@ -67,7 +66,7 @@ export class NewArray implements Instruction {
 export class ANewArray extends Index16Instruction {
   execute(frame: Frame): void {
     const cp = frame.method.class.constantPool
-    const classRef = (cp.getConstant(this._index) as ClassConstant).data
+    const classRef = cp.getClassRef(this._index)
     const componentClass = classRef.resolvedClass
 
     const stack = frame.operandStack
@@ -99,16 +98,16 @@ export class ArrayLength extends NoOperandsInstruction {
 }
 
 export class MultiANewArray implements Instruction {
-  constructor(private _idx?: number, private _dims?: number) {}
+  constructor(private _index?: number, private _dims?: number) {}
 
   fetchOperands(reader: BytecodeReader): void {
-    this._idx = reader.readUint16()
+    this._index = reader.readUint16()
     this._dims = reader.readUint8()
   }
 
   execute(frame: Frame): void {
     const cp = frame.method.class.constantPool
-    const classRef = (cp.getConstant(this._idx) as ClassConstant).data
+    const classRef = cp.getClassRef(this._index)
     const arrClass = classRef.resolvedClass
     const stack = frame.operandStack
     const counts = popAndCheckCounts(stack, this._dims)
@@ -117,7 +116,7 @@ export class MultiANewArray implements Instruction {
   }
 
   toString(): string {
-    return `push new ${this._dims} dimensional array of type {${this._idx}} size a`
+    return `push new ${this._dims} dimensional array of type {${this._index}} size a`
   }
 }
 

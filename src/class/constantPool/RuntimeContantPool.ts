@@ -56,6 +56,42 @@ export default class RuntimeConstantPool {
     return this._class
   }
 
+  getInt(idx: number): number {
+    return (this.getConstant(idx) as IntegerConstant).data
+  }
+
+  getFloat(idx: number): number {
+    return (this.getConstant(idx) as FloatConstant).data
+  }
+
+  getDouble(idx: number): number {
+    return (this.getConstant(idx) as DoubleConstant).data
+  }
+
+  getLong(idx: number): bigint {
+    return (this.getConstant(idx) as LongConstant).data
+  }
+
+  getString(idx: number): string {
+    return (this.getConstant(idx) as StringConstant).data
+  }
+
+  getClassRef(idx: number): ClassRef {
+    return (this.getConstant(idx) as ClassConstant).data
+  }
+
+  getFieldRef(idx: number): FieldRef {
+    return (this.getConstant(idx) as FieldRefConstant).data
+  }
+
+  getMethodRef(idx: number): MethodRef {
+    return (this.getConstant(idx) as MethodRefConstant).data
+  }
+
+  getInterfaceMethodRef(idx: number): InterfaceMethodRef {
+    return (this.getConstant(idx) as InterfaceMethodRefConstant).data
+  }
+
   getConstant(idx: number): RuntimeConstant {
     const res = this._consts[idx]
     if (res) return res

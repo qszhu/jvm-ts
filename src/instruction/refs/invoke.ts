@@ -1,9 +1,5 @@
 import { BytecodeReader, Index16Instruction, initClass, Instruction, invokeMethod } from '..'
 import Class from '../../class/Class'
-import {
-  InterfaceMethodRefConstant,
-  MethodRefConstant,
-} from '../../class/constantPool/RuntimeConstant'
 import BaseObject from '../../class/object/BaseObject'
 import InstanceObject from '../../class/object/InstanceObject'
 import StringPool from '../../class/StringPool'
@@ -13,7 +9,7 @@ import OperandStack from '../../thread/OperandStack'
 export class InvokeStatic extends Index16Instruction {
   execute(frame: Frame): void {
     const cp = frame.method.class.constantPool
-    const methodRef = (cp.getConstant(this._index) as MethodRefConstant).data
+    const methodRef = cp.getMethodRef(this._index)
     const resolvedMethod = methodRef.resolvedMethod
 
     // must be static
@@ -38,7 +34,7 @@ export class InvokeSpecial extends Index16Instruction {
   execute(frame: Frame): void {
     const currentClass = frame.method.class
     const cp = currentClass.constantPool
-    const methodRef = (cp.getConstant(this._index) as MethodRefConstant).data
+    const methodRef = cp.getMethodRef(this._index)
     const resolvedClass = methodRef.resolvedClass
     const resolvedMethod = methodRef.resolvedMethod
 
@@ -127,7 +123,7 @@ export class InvokeVirtual extends Index16Instruction {
   execute(frame: Frame): void {
     const currentClass = frame.method.class
     const cp = currentClass.constantPool
-    const methodRef = (cp.getConstant(this._index) as MethodRefConstant).data
+    const methodRef = cp.getMethodRef(this._index)
     const resolvedMethod = methodRef.resolvedMethod
 
     if (resolvedMethod.isStatic) throw new Error('java.lang.IncompatibleClassChangeError')
@@ -180,7 +176,7 @@ export class InvokeInterface implements Instruction {
 
   execute(frame: Frame): void {
     const cp = frame.method.class.constantPool
-    const methodRef = (cp.getConstant(this._index) as InterfaceMethodRefConstant).data
+    const methodRef = cp.getInterfaceMethodRef(this._index)
     const resolvedMethod = methodRef.resolvedInterfaceMethod
     if (resolvedMethod.isStatic || resolvedMethod.isPrivate)
       throw new Error('java.lang.IncompatibleClassChangeError')

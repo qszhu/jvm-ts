@@ -1,5 +1,4 @@
 import { Index16Instruction } from '..'
-import { ClassConstant } from '../../class/constantPool/RuntimeConstant'
 import BaseObject from '../../class/object/BaseObject'
 import Frame from '../../thread/Frame'
 
@@ -9,7 +8,7 @@ function instanceOf(frame: Frame, idx: number) {
   if (!ref) return { stack, ref, res: false }
 
   const cp = frame.method.class.constantPool
-  const classRef = (cp.getConstant(idx) as ClassConstant).data
+  const classRef = cp.getClassRef(idx)
   const klass = classRef.resolvedClass
   return { stack, ref, res: ref.isInstanceOf(klass) }
 }
