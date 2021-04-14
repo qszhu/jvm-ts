@@ -1,7 +1,9 @@
+import AttributeInfoFactory from '../classFile/attributeInfo/AttributeInfoFactory'
 import SourceFileAttribute from '../classFile/attributeInfo/SourceFileAttribute'
 import ClassFile from '../classFile/ClassFile'
 import Slots from '../thread/Slots'
 import AccessFlags from './AccessFlags'
+import ClassHierarchy from './ClassHierarchy'
 import ClassLoader from './ClassLoader'
 import RuntimeConstantPool from './constantPool/RuntimeContantPool'
 import Field from './member/Field'
@@ -40,7 +42,7 @@ function toClassName(descriptor: string): string {
 }
 
 function getSourceFile(cf: ClassFile): string {
-  const sfAttr = cf.findAttribute((attr) => attr instanceof SourceFileAttribute)
+  const sfAttr = AttributeInfoFactory.getSourceFileAttribute(cf)
   if (sfAttr) return (sfAttr as SourceFileAttribute).fileName
   return 'Unknown'
 }
@@ -123,6 +125,10 @@ export default class Class {
     return this._superClass
   }
 
+  get interfaces(): Class[] {
+    return this._interfaces.slice()
+  }
+
   get instanceSlotCount(): number {
     return this._instanceSlotCount
   }
@@ -176,22 +182,31 @@ export default class Class {
   }
 
   isAccessibleTo(other: Class): boolean {
-    return this.isPublic || this.packageName === other.packageName
+    return ClassHierarchy.isAccessibleTo(this, other)
   }
 
   isAssignableFrom(other: Class): boolean {
-    const [s, t] = [other, this]
-    if (s === t) return true
-    if (!s.isArray) {
-      if (!s.isInterface) return t.isInterface ? s.implements(t) : s.isSubClassOf(t)
-      else return t.isInterface ? t.isSuperInterfaceOf(s) : t.isJlObject
-    } else {
-      if (!t.isArray) return t.isInterface ? t.isJlCloneable || t.isJioSerializable : t.isJlObject
-      else {
-        const [sc, tc] = [s.componentClass, t.componentClass]
-        return sc === tc || tc.isAssignableFrom(sc)
-      }
-    }
+    return ClassHierarchy.isAssignableFrom(this, other)
+  }
+
+  isSubClassOf(other: Class): boolean {
+    return ClassHierarchy.isSubClassOf(this, other)
+  }
+
+  isSuperClassOf(other: Class): boolean {
+    return ClassHierarchy.isSuperClassOf(this, other)
+  }
+
+  isSubInterfaceOf(iface: Class): boolean {
+    return ClassHierarchy.isSubInterfaceOf(this, iface)
+  }
+
+  isSuperInterfaceOf(iface: Class): boolean {
+    return ClassHierarchy.isSuperInterfaceOf(this, iface)
+  }
+
+  implements(iface: Class): boolean {
+    return ClassHierarchy.implements(this, iface)
   }
 
   get isJlObject(): boolean {
@@ -206,39 +221,6 @@ export default class Class {
     return this._name === 'java/io/Serializable'
   }
 
-  isSubClassOf(other: Class): boolean {
-    for (let c = this._superClass; c; c = c._superClass) {
-      if (c === other) return true
-    }
-    return false
-  }
-
-  isSuperClassOf(other: Class): boolean {
-    return other.isSubClassOf(this)
-  }
-
-  isSubInterfaceOf(iface: Class): boolean {
-    for (const superInterface of this._interfaces) {
-      if (superInterface === iface || superInterface.isSubInterfaceOf(iface)) return true
-    }
-    return false
-  }
-
-  isSuperInterfaceOf(iface: Class): boolean {
-    return iface.isSubInterfaceOf(this)
-  }
-
-  implements(iface: Class): boolean {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    let c: Class = this
-    for (; c; c = c._superClass) {
-      for (const i of c._interfaces) {
-        if (i === iface || i.isSubInterfaceOf(iface)) return true
-      }
-    }
-    return false
-  }
-
   get packageName(): string {
     const p = this._name.lastIndexOf('/')
     if (p === -1) return ''
@@ -251,6 +233,14 @@ export default class Class {
 
   get clinitMethod(): Method {
     return Class.getMethod(this, '<clinit>', '()V', true)
+  }
+
+  getInstanceMethod(name: string, descriptor: string): Method {
+    return Class.getMethod(this, name, descriptor, false)
+  }
+
+  getStaticMethod(name: string, descriptor: string): Method {
+    return Class.getMethod(this, name, descriptor, true)
   }
 
   static getMethod(klass: Class, name: string, descriptor: string, isStatic: boolean): Method {
@@ -272,6 +262,48 @@ export default class Class {
         if (field.name === name && field.descriptor === descriptor && field.isStatic === isStatic)
           return field
       }
+    }
+  }
+
+  lookupField(name: string, descriptor: string): Field {
+    for (const field of this._fields) {
+      if (field.name === name && field.descriptor === descriptor) return field
+    }
+    for (const iface of this._interfaces) {
+      const field = iface.lookupField(name, descriptor)
+      if (field) return field
+    }
+    if (this._superClass) return this._superClass.lookupField(name, descriptor)
+  }
+
+  lookupMethod(name: string, descriptor: string): Method {
+    let method = Class.lookupMethodInClass(this, name, descriptor)
+    if (!method) method = Class.lookupMethodInInterfaces(this._interfaces, name, descriptor)
+    return method
+  }
+
+  lookupInterfaceMethod(name: string, descriptor: string): Method {
+    for (const method of this._methods) {
+      if (method.name === name && method.descriptor === descriptor) return method
+    }
+    return Class.lookupMethodInInterfaces(this._interfaces, name, descriptor)
+  }
+
+  static lookupMethodInClass(klass: Class, name: string, descriptor: string): Method {
+    for (let c = klass; c; c = c._superClass) {
+      for (const method of c._methods) {
+        if (method.name === name && method.descriptor === descriptor) return method
+      }
+    }
+  }
+
+  static lookupMethodInInterfaces(ifaces: Class[], name: string, descriptor: string): Method {
+    for (const iface of ifaces) {
+      for (const method of iface._methods) {
+        if (method.name === name && method.descriptor === descriptor) return method
+      }
+      const method = Class.lookupMethodInInterfaces(iface._interfaces, name, descriptor)
+      if (method) return method
     }
   }
 
@@ -313,14 +345,6 @@ export default class Class {
 
   get isPrimitive(): boolean {
     return PrimitiveTypes.has(this.name)
-  }
-
-  getInstanceMethod(name: string, descriptor: string): Method {
-    return Class.getMethod(this, name, descriptor, false)
-  }
-
-  getStaticMethod(name: string, descriptor: string): Method {
-    return Class.getMethod(this, name, descriptor, true)
   }
 
   getRefVar(fieldName: string, fieldDescriptor: string): BaseObject {
@@ -423,48 +447,6 @@ export default class Class {
         const jStr = StringPool.jString(this.loader, str)
         sVars.setRef(slotId, jStr)
         break
-    }
-  }
-
-  lookupField(name: string, descriptor: string): Field {
-    for (const field of this._fields) {
-      if (field.name === name && field.descriptor === descriptor) return field
-    }
-    for (const iface of this._interfaces) {
-      const field = iface.lookupField(name, descriptor)
-      if (field) return field
-    }
-    if (this._superClass) return this._superClass.lookupField(name, descriptor)
-  }
-
-  lookupMethod(name: string, descriptor: string): Method {
-    let method = Class.lookupMethodInClass(this, name, descriptor)
-    if (!method) method = Class.lookupMethodInInterfaces(this._interfaces, name, descriptor)
-    return method
-  }
-
-  lookupInterfaceMethod(name: string, descriptor: string): Method {
-    for (const method of this._methods) {
-      if (method.name === name && method.descriptor === descriptor) return method
-    }
-    return Class.lookupMethodInInterfaces(this._interfaces, name, descriptor)
-  }
-
-  static lookupMethodInClass(klass: Class, name: string, descriptor: string): Method {
-    for (let c = klass; c; c = c._superClass) {
-      for (const method of c._methods) {
-        if (method.name === name && method.descriptor === descriptor) return method
-      }
-    }
-  }
-
-  static lookupMethodInInterfaces(ifaces: Class[], name: string, descriptor: string): Method {
-    for (const iface of ifaces) {
-      for (const method of iface._methods) {
-        if (method.name === name && method.descriptor === descriptor) return method
-      }
-      const method = Class.lookupMethodInInterfaces(iface._interfaces, name, descriptor)
-      if (method) return method
     }
   }
 
