@@ -1,4 +1,4 @@
-import ClassLoader from './class/ClassLoader'
+import ClassLoader from './class/class/ClassLoader'
 import ArrayObject from './class/object/ArrayObject'
 import StringPool from './class/StringPool'
 import ClassPath from './classPath/ClassPath'
@@ -19,7 +19,7 @@ export default class Jvm {
     const verboseInstFlag = argv['verbose:inst'] as boolean
     const debugFlag = argv['debug'] as boolean
 
-    const classLoader = ClassLoader.newClassLoader(cp, verboseClassFlag)
+    const classLoader = new ClassLoader(cp, verboseClassFlag)
     const jvm = new Jvm(argv, classLoader, new Thread())
     jvm._verboseInstFlag = verboseInstFlag
     jvm._debugFlag = debugFlag

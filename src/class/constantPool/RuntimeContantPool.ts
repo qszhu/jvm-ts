@@ -8,11 +8,13 @@ import ConstantFloatInfo from '../../classFile/constantInfo/numeric/ConstantFloa
 import ConstantIntegerInfo from '../../classFile/constantInfo/numeric/ConstantIntegerInfo'
 import ConstantLongInfo from '../../classFile/constantInfo/numeric/ConstantLongInfo'
 import ConstantPool from '../../classFile/ConstantPool'
-import Class from '../Class'
+import Class from '../class/Class'
+import BaseObject from '../object/BaseObject'
 import ClassRef from '../ref/ClassRef'
 import FieldRef from '../ref/FieldRef'
 import InterfaceMethodRef from '../ref/InterfaceMethodRef'
 import MethodRef from '../ref/MethodRef'
+import StringPool from '../StringPool'
 import RuntimeConstant, {
   ClassConstant,
   DoubleConstant,
@@ -72,8 +74,9 @@ export default class RuntimeConstantPool {
     return (this.getConstant(idx) as LongConstant).data
   }
 
-  getString(idx: number): string {
-    return (this.getConstant(idx) as StringConstant).data
+  getString(idx: number): BaseObject {
+    const str = (this.getConstant(idx) as StringConstant).data
+    return StringPool.jString(this.class.loader, str)
   }
 
   getClassRef(idx: number): ClassRef {

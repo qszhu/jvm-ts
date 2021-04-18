@@ -1,4 +1,4 @@
-import Class from '../class/Class'
+import Class from '../class/class/Class'
 import Method from '../class/member/Method'
 import BaseObject from '../class/object/BaseObject'
 import Frame from '../thread/Frame'

@@ -1,12 +1,11 @@
 import Bits from '../../../bits'
+import { JL_FLOAT } from '../../../class/names'
 import Frame from '../../../thread/Frame'
 import { register } from '../../registry'
 
-const jlFloat = 'java/lang/Float'
-
 export function init(): void {
-  register(jlFloat, 'floatToRawIntBits', '(F)I', floatToRawIntBits)
-  register(jlFloat, 'intBitsToFloat', '(I)F', intBitsToFloat)
+  register(JL_FLOAT, 'floatToRawIntBits', '(F)I', floatToRawIntBits)
+  register(JL_FLOAT, 'intBitsToFloat', '(I)F', intBitsToFloat)
 }
 
 function floatToRawIntBits(frame: Frame) {

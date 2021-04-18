@@ -1,11 +1,10 @@
+import { JL_SYSTEM } from '../../../class/names'
 import ArrayObject from '../../../class/object/ArrayObject'
 import Frame from '../../../thread/Frame'
 import { register } from '../../registry'
 
-const jlSystem = 'java/lang/System'
-
 export function init(): void {
-  register(jlSystem, 'arraycopy', '(Ljava/lang/Object;ILjava/lang/Object;II)V', arraycopy)
+  register(JL_SYSTEM, 'arraycopy', '(Ljava/lang/Object;ILjava/lang/Object;II)V', arraycopy)
 }
 
 function arraycopy(frame: Frame) {

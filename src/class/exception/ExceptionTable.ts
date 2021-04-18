@@ -1,5 +1,5 @@
 import ExceptionTableEntry from '../../classFile/attributeInfo/tableEntry/ExceptionTableEntry'
-import Class from '../Class'
+import Class from '../class/Class'
 import RuntimeConstantPool from '../constantPool/RuntimeContantPool'
 import ClassRef from '../ref/ClassRef'
 import ExceptionHandler from './ExceptionHandler'

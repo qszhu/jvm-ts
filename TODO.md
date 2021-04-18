@@ -1,4 +1,5 @@
 - [x] design: Obj should not have multiple responsibities
+- [] design: Class should not have multiple responsibities
 - [ ] design: static methods as factory methods
 - ~~design: store slot value as is~~
   - native methods: `floatToRawIntBits`/`intBitsToFloat`/`doubleToRawLongBits`/`longBitsToDouble`
@@ -9,7 +10,7 @@
 - [ ] design: bad `const cp = frame.method.class.constantPool`
 - [ ] design: DRY `putstatic/putfield`, `getstatic/getfield`
 - [ ] design: other string encoding
-- [ ] design: move out class loading functions from Class class
+- [x] design: move out class loading functions from Class class
 - [ ] implementation: AttributeInfo
   - [ ] DeprecatedAttribute
   - [ ] SyntheticAttribute

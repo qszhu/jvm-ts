@@ -1,4 +1,4 @@
-import Class from '../Class'
+import Class from '../class/Class'
 import RuntimeConstantPool from '../constantPool/RuntimeContantPool'
 
 export default abstract class SymRef {

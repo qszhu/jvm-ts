@@ -1,10 +1,9 @@
-import Class from '../../../class/Class'
+import Class from '../../../class/class/Class'
+import { JL_THROWABLE } from '../../../class/names'
 import BaseObject from '../../../class/object/BaseObject'
 import Frame from '../../../thread/Frame'
 import Thread from '../../../thread/Thread'
 import { register } from '../../registry'
-
-const jlThrowable = 'java/lang/Throwable'
 
 function distanceToObject(klass: Class): number {
   let distance = 0
@@ -45,7 +44,7 @@ export class StackTraceElement {
 }
 
 export function init(): void {
-  register(jlThrowable, 'fillInStackTrace', `(I)L${jlThrowable};`, fillInStackTrace)
+  register(JL_THROWABLE, 'fillInStackTrace', `(I)L${JL_THROWABLE};`, fillInStackTrace)
 }
 
 function fillInStackTrace(frame: Frame) {

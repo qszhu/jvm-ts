@@ -1,12 +1,11 @@
+import { JL_OBJECT } from '../../../class/names'
 import Frame from '../../../thread/Frame'
 import { register } from '../../registry'
 
-const jlObject = 'java/lang/Object'
-
 export function init(): void {
-  register(jlObject, 'getClass', '()Ljava/lang/Class;', getClass)
-  register(jlObject, 'hashCode', '()I', hashCode)
-  register(jlObject, 'clone', '()Ljava/lang/Object;', clone)
+  register(JL_OBJECT, 'getClass', '()Ljava/lang/Class;', getClass)
+  register(JL_OBJECT, 'hashCode', '()I', hashCode)
+  register(JL_OBJECT, 'clone', '()Ljava/lang/Object;', clone)
 }
 
 function getClass(frame: Frame) {

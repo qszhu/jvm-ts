@@ -1,4 +1,4 @@
-import ClassLoader from './ClassLoader'
+import ClassLoader from './class/ClassLoader'
 import ArrayObject from './object/ArrayObject'
 import BaseObject from './object/BaseObject'
 import InstanceObject from './object/InstanceObject'

@@ -1,6 +1,6 @@
 import AttributeInfoFactory from '../../classFile/attributeInfo/AttributeInfoFactory'
 import MemberInfo from '../../classFile/MemberInfo'
-import Class from '../Class'
+import Class from '../class/Class'
 import ClassMember from './ClassMember'
 
 export default class Field extends ClassMember {

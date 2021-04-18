@@ -1,4 +1,4 @@
-import Class from '../Class'
+import Class from '../class/Class'
 import BaseObject from './BaseObject'
 
 export default class ArrayObject extends BaseObject {

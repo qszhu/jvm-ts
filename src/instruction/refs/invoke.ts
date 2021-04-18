@@ -1,5 +1,5 @@
 import { BytecodeReader, Index16Instruction, initClass, Instruction, invokeMethod } from '..'
-import Class from '../../class/Class'
+import ClassReflection from '../../class/class/ClassReflection'
 import BaseObject from '../../class/object/BaseObject'
 import InstanceObject from '../../class/object/InstanceObject'
 import StringPool from '../../class/StringPool'
@@ -65,7 +65,7 @@ export class InvokeSpecial extends Index16Instruction {
       resolvedClass.isSuperClassOf(currentClass) &&
       resolvedMethod.name !== '<init>'
     ) {
-      methodToBeInvoked = Class.lookupMethodInClass(
+      methodToBeInvoked = ClassReflection.lookupMethodInClass(
         currentClass.superClass,
         methodRef.name,
         methodRef.descriptor
@@ -148,7 +148,7 @@ export class InvokeVirtual extends Index16Instruction {
       throw new Error('java.lang.IllegalAccessError')
     }
 
-    const methodToBeInvoked = Class.lookupMethodInClass(
+    const methodToBeInvoked = ClassReflection.lookupMethodInClass(
       ref.class,
       methodRef.name,
       methodRef.descriptor
@@ -187,7 +187,7 @@ export class InvokeInterface implements Instruction {
     if (!ref.class.implements(methodRef.resolvedClass))
       throw new Error('java.lang.IncompatibleClassChangeError')
 
-    const methodToBeInvoked = Class.lookupMethodInClass(
+    const methodToBeInvoked = ClassReflection.lookupMethodInClass(
       ref.class,
       methodRef.name,
       methodRef.descriptor

@@ -1,6 +1,6 @@
 import MemberInfo from '../../classFile/MemberInfo'
 import AccessFlags from '../AccessFlags'
-import Class from '../Class'
+import Class from '../class/Class'
 
 export default abstract class ClassMember {
   protected _accessFlags: AccessFlags
