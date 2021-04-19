@@ -24,6 +24,6 @@
 - [ ] implementation: gc
 - [ ] optimization: cache file list in zip
 - [ ] optimization: iushr
-- [ ] optimization: return same instance for instructions
+- [x] optimization: return same instance for instructions
 - [ ] optimization: vtable in invokevirtual
 - [x] debug: instruction debug string

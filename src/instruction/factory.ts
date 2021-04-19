@@ -1,4 +1,4 @@
-import { Instruction } from '.'
+import { Instruction, UnimplementedInstruction } from '.'
 import { IAnd, LAnd } from './bits/and'
 import { IOr, LOr } from './bits/or'
 import { IShl, IShr, IUShr, LShl, LShr, LUShr } from './bits/shift'
@@ -65,412 +65,418 @@ import {
 } from './stores/xastore'
 import { Wide } from './wide'
 
-// put in here in a separate file to break circular dependency
-export function newInstruction(opcode: number): Instruction {
-  switch (opcode) {
-    case 0x00:
-      return new Nop()
-    case 0x01:
-      return new AConstNull()
-    case 0x02:
-      return new IConstM1()
-    case 0x03:
-      return new IConst0()
-    case 0x04:
-      return new IConst1()
-    case 0x05:
-      return new IConst2()
-    case 0x06:
-      return new IConst3()
-    case 0x07:
-      return new IConst4()
-    case 0x08:
-      return new IConst5()
-    case 0x09:
-      return new LConst0()
-    case 0x0a:
-      return new LConst1()
-    case 0x0b:
-      return new FConst0()
-    case 0x0c:
-      return new FConst1()
-    case 0x0d:
-      return new FConst2()
-    case 0x0e:
-      return new DConst0()
-    case 0x0f:
-      return new DConst1()
-    case 0x10:
-      return new BiPush()
-    case 0x11:
-      return new SiPush()
-    case 0x12:
-      return new Ldc()
-    case 0x13:
-      return new LdcW()
-    case 0x14:
-      return new Ldc2W()
-    case 0x15:
-      return new ILoad()
-    case 0x16:
-      return new LLoad()
-    case 0x17:
-      return new FLoad()
-    case 0x18:
-      return new DLoad()
-    case 0x19:
-      return new ALoad()
-    case 0x1a:
-      return new ILoad0()
-    case 0x1b:
-      return new ILoad1()
-    case 0x1c:
-      return new ILoad2()
-    case 0x1d:
-      return new ILoad3()
-    case 0x1e:
-      return new LLoad0()
-    case 0x1f:
-      return new LLoad1()
-    case 0x20:
-      return new LLoad2()
-    case 0x21:
-      return new LLoad3()
-    case 0x22:
-      return new FLoad0()
-    case 0x23:
-      return new FLoad1()
-    case 0x24:
-      return new FLoad2()
-    case 0x25:
-      return new FLoad3()
-    case 0x26:
-      return new DLoad0()
-    case 0x27:
-      return new DLoad1()
-    case 0x28:
-      return new DLoad2()
-    case 0x29:
-      return new DLoad3()
-    case 0x2a:
-      return new ALoad0()
-    case 0x2b:
-      return new ALoad1()
-    case 0x2c:
-      return new ALoad2()
-    case 0x2d:
-      return new ALoad3()
-    case 0x2e:
-      return new IALoad()
-    case 0x2f:
-      return new LALoad()
-    case 0x30:
-      return new FALoad()
-    case 0x31:
-      return new DALoad()
-    case 0x32:
-      return new AALoad()
-    case 0x33:
-      return new BALoad()
-    case 0x34:
-      return new CALoad()
-    case 0x35:
-      return new SALoad()
-    case 0x36:
-      return new IStore()
-    case 0x37:
-      return new LStore()
-    case 0x38:
-      return new FStore()
-    case 0x39:
-      return new DStore()
-    case 0x3a:
-      return new AStore()
-    case 0x3b:
-      return new IStore0()
-    case 0x3c:
-      return new IStore1()
-    case 0x3d:
-      return new IStore2()
-    case 0x3e:
-      return new IStore3()
-    case 0x3f:
-      return new LStore0()
-    case 0x40:
-      return new LStore1()
-    case 0x41:
-      return new LStore2()
-    case 0x42:
-      return new LStore3()
-    case 0x43:
-      return new FStore0()
-    case 0x44:
-      return new FStore1()
-    case 0x45:
-      return new FStore2()
-    case 0x46:
-      return new FStore3()
-    case 0x47:
-      return new DStore0()
-    case 0x48:
-      return new DStore1()
-    case 0x49:
-      return new DStore2()
-    case 0x4a:
-      return new DStore3()
-    case 0x4b:
-      return new AStore0()
-    case 0x4c:
-      return new AStore1()
-    case 0x4d:
-      return new AStore2()
-    case 0x4e:
-      return new AStore3()
-    case 0x4f:
-      return new IAStore()
-    case 0x50:
-      return new LAStore()
-    case 0x51:
-      return new FAStore()
-    case 0x52:
-      return new DAStore()
-    case 0x53:
-      return new AAStore()
-    case 0x54:
-      return new BAStore()
-    case 0x55:
-      return new CAStore()
-    case 0x56:
-      return new SAStore()
-    case 0x57:
-      return new Pop()
-    case 0x58:
-      return new Pop2()
-    case 0x59:
-      return new Dup()
-    case 0x5a:
-      return new DupX1()
-    case 0x5b:
-      return new DupX2()
-    case 0x5c:
-      return new Dup2()
-    case 0x5d:
-      return new Dup2X1()
-    case 0x5e:
-      return new Dup2X2()
-    case 0x5f:
-      return new Swap()
-    case 0x60:
-      return new IAdd()
-    case 0x61:
-      return new LAdd()
-    case 0x62:
-      return new FAdd()
-    case 0x63:
-      return new DAdd()
-    case 0x64:
-      return new ISub()
-    case 0x65:
-      return new LSub()
-    case 0x66:
-      return new FSub()
-    case 0x67:
-      return new DSub()
-    case 0x68:
-      return new IMul()
-    case 0x69:
-      return new LMul()
-    case 0x6a:
-      return new FMul()
-    case 0x6b:
-      return new DMul()
-    case 0x6c:
-      return new IDiv()
-    case 0x6d:
-      return new LDiv()
-    case 0x6e:
-      return new FDiv()
-    case 0x6f:
-      return new DDiv()
-    case 0x70:
-      return new IRem()
-    case 0x71:
-      return new LRem()
-    case 0x72:
-      return new FRem()
-    case 0x73:
-      return new DRem()
-    case 0x74:
-      return new INeg()
-    case 0x75:
-      return new LNeg()
-    case 0x76:
-      return new FNeg()
-    case 0x77:
-      return new DNeg()
-    case 0x78:
-      return new IShl()
-    case 0x79:
-      return new LShl()
-    case 0x7a:
-      return new IShr()
-    case 0x7b:
-      return new LShr()
-    case 0x7c:
-      return new IUShr()
-    case 0x7d:
-      return new LUShr()
-    case 0x7e:
-      return new IAnd()
-    case 0x7f:
-      return new LAnd()
-    case 0x80:
-      return new IOr()
-    case 0x81:
-      return new LOr()
-    case 0x82:
-      return new IXor()
-    case 0x83:
-      return new LXor()
-    case 0x84:
-      return new IInc()
-    case 0x85:
-      return new I2L()
-    case 0x86:
-      return new I2F()
-    case 0x87:
-      return new I2D()
-    case 0x88:
-      return new L2I()
-    case 0x89:
-      return new L2F()
-    case 0x8a:
-      return new L2D()
-    case 0x8b:
-      return new F2I()
-    case 0x8c:
-      return new F2L()
-    case 0x8d:
-      return new F2D()
-    case 0x8e:
-      return new D2I()
-    case 0x8f:
-      return new D2L()
-    case 0x90:
-      return new D2F()
-    case 0x91:
-      return new I2B()
-    case 0x92:
-      return new I2C()
-    case 0x93:
-      return new I2S()
-    case 0x94:
-      return new LCmp()
-    case 0x95:
-      return new FCmpL()
-    case 0x96:
-      return new FCmpG()
-    case 0x97:
-      return new DCmpL()
-    case 0x98:
-      return new DCmpG()
-    case 0x99:
-      return new IfEq()
-    case 0x9a:
-      return new IfNE()
-    case 0x9b:
-      return new IfLT()
-    case 0x9c:
-      return new IfGE()
-    case 0x9d:
-      return new IfGT()
-    case 0x9e:
-      return new IfLE()
-    case 0x9f:
-      return new IfICmpEq()
-    case 0xa0:
-      return new IfICmpNE()
-    case 0xa1:
-      return new IfICmpLT()
-    case 0xa2:
-      return new IfICmpGE()
-    case 0xa3:
-      return new IfICmpGT()
-    case 0xa4:
-      return new IfICmpLE()
-    case 0xa5:
-      return new IfACmpEq()
-    case 0xa6:
-      return new IfACmpNE()
-    case 0xa7:
-      return new Goto()
-    // 0xa8: JSR
-    // 0xa9: RET
-    case 0xaa:
-      return new TableSwitch()
-    case 0xab:
-      return new LookupSwitch()
-    case 0xac:
-      return new IReturn()
-    case 0xad:
-      return new LReturn()
-    case 0xae:
-      return new FReturn()
-    case 0xaf:
-      return new DReturn()
-    case 0xb0:
-      return new AReturn()
-    case 0xb1:
-      return new Return()
-    case 0xb2:
-      return new GetStatic()
-    case 0xb3:
-      return new PutStatic()
-    case 0xb4:
-      return new GetField()
-    case 0xb5:
-      return new PutField()
-    case 0xb6:
-      return new InvokeVirtual()
-    case 0xb7:
-      return new InvokeSpecial()
-    case 0xb8:
-      return new InvokeStatic()
-    case 0xb9:
-      return new InvokeInterface()
-    // 0xba: InvokeDynamic
-    case 0xbb:
-      return new New()
-    case 0xbc:
-      return new NewArray()
-    case 0xbd:
-      return new ANewArray()
-    case 0xbe:
-      return new ArrayLength()
-    case 0xbf:
-      return new AThrow()
-    case 0xc0:
-      return new CheckCast()
-    case 0xc1:
-      return new InstanceOf()
-    // 0xc2: MonitorEnter
-    // 0xc3: MonitorExit
-    case 0xc4:
-      return new Wide()
-    case 0xc5:
-      return new MultiANewArray()
-    case 0xc6:
-      return new IfNull()
-    case 0xc7:
-      return new IfNonNull()
-    case 0xc8:
-      return new GotoW()
-    // 0xc9: JSRW
-    // 0xca: Breakpoint
-    case 0xfe:
-      return new InvokeNative()
-    // 0xff: ImpDep2
-    default:
-      throw new Error(`Unsupported opcode: 0x${opcode.toString(16)}`)
-  }
+const INSTRUCTIONS = [
+  // 0x00:
+  new Nop(),
+  // 0x01:
+  new AConstNull(),
+  // 0x02:
+  new IConstM1(),
+  // 0x03:
+  new IConst0(),
+  // 0x04:
+  new IConst1(),
+  // 0x05:
+  new IConst2(),
+  // 0x06:
+  new IConst3(),
+  // 0x07:
+  new IConst4(),
+  // 0x08:
+  new IConst5(),
+  // 0x09:
+  new LConst0(),
+  // 0x0a:
+  new LConst1(),
+  // 0x0b:
+  new FConst0(),
+  // 0x0c:
+  new FConst1(),
+  // 0x0d:
+  new FConst2(),
+  // 0x0e:
+  new DConst0(),
+  // 0x0f:
+  new DConst1(),
+  // 0x10:
+  new BiPush(),
+  // 0x11:
+  new SiPush(),
+  // 0x12:
+  new Ldc(),
+  // 0x13:
+  new LdcW(),
+  // 0x14:
+  new Ldc2W(),
+  // 0x15:
+  new ILoad(),
+  // 0x16:
+  new LLoad(),
+  // 0x17:
+  new FLoad(),
+  // 0x18:
+  new DLoad(),
+  // 0x19:
+  new ALoad(),
+  // 0x1a:
+  new ILoad0(),
+  // 0x1b:
+  new ILoad1(),
+  // 0x1c:
+  new ILoad2(),
+  // 0x1d:
+  new ILoad3(),
+  // 0x1e:
+  new LLoad0(),
+  // 0x1f:
+  new LLoad1(),
+  // 0x20:
+  new LLoad2(),
+  // 0x21:
+  new LLoad3(),
+  // 0x22:
+  new FLoad0(),
+  // 0x23:
+  new FLoad1(),
+  // 0x24:
+  new FLoad2(),
+  // 0x25:
+  new FLoad3(),
+  // 0x26:
+  new DLoad0(),
+  // 0x27:
+  new DLoad1(),
+  // 0x28:
+  new DLoad2(),
+  // 0x29:
+  new DLoad3(),
+  // 0x2a:
+  new ALoad0(),
+  // 0x2b:
+  new ALoad1(),
+  // 0x2c:
+  new ALoad2(),
+  // 0x2d:
+  new ALoad3(),
+  // 0x2e:
+  new IALoad(),
+  // 0x2f:
+  new LALoad(),
+  // 0x30:
+  new FALoad(),
+  // 0x31:
+  new DALoad(),
+  // 0x32:
+  new AALoad(),
+  // 0x33:
+  new BALoad(),
+  // 0x34:
+  new CALoad(),
+  // 0x35:
+  new SALoad(),
+  // 0x36:
+  new IStore(),
+  // 0x37:
+  new LStore(),
+  // 0x38:
+  new FStore(),
+  // 0x39:
+  new DStore(),
+  // 0x3a:
+  new AStore(),
+  // 0x3b:
+  new IStore0(),
+  // 0x3c:
+  new IStore1(),
+  // 0x3d:
+  new IStore2(),
+  // 0x3e:
+  new IStore3(),
+  // 0x3f:
+  new LStore0(),
+  // 0x40:
+  new LStore1(),
+  // 0x41:
+  new LStore2(),
+  // 0x42:
+  new LStore3(),
+  // 0x43:
+  new FStore0(),
+  // 0x44:
+  new FStore1(),
+  // 0x45:
+  new FStore2(),
+  // 0x46:
+  new FStore3(),
+  // 0x47:
+  new DStore0(),
+  // 0x48:
+  new DStore1(),
+  // 0x49:
+  new DStore2(),
+  // 0x4a:
+  new DStore3(),
+  // 0x4b:
+  new AStore0(),
+  // 0x4c:
+  new AStore1(),
+  // 0x4d:
+  new AStore2(),
+  // 0x4e:
+  new AStore3(),
+  // 0x4f:
+  new IAStore(),
+  // 0x50:
+  new LAStore(),
+  // 0x51:
+  new FAStore(),
+  // 0x52:
+  new DAStore(),
+  // 0x53:
+  new AAStore(),
+  // 0x54:
+  new BAStore(),
+  // 0x55:
+  new CAStore(),
+  // 0x56:
+  new SAStore(),
+  // 0x57:
+  new Pop(),
+  // 0x58:
+  new Pop2(),
+  // 0x59:
+  new Dup(),
+  // 0x5a:
+  new DupX1(),
+  // 0x5b:
+  new DupX2(),
+  // 0x5c:
+  new Dup2(),
+  // 0x5d:
+  new Dup2X1(),
+  // 0x5e:
+  new Dup2X2(),
+  // 0x5f:
+  new Swap(),
+  // 0x60:
+  new IAdd(),
+  // 0x61:
+  new LAdd(),
+  // 0x62:
+  new FAdd(),
+  // 0x63:
+  new DAdd(),
+  // 0x64:
+  new ISub(),
+  // 0x65:
+  new LSub(),
+  // 0x66:
+  new FSub(),
+  // 0x67:
+  new DSub(),
+  // 0x68:
+  new IMul(),
+  // 0x69:
+  new LMul(),
+  // 0x6a:
+  new FMul(),
+  // 0x6b:
+  new DMul(),
+  // 0x6c:
+  new IDiv(),
+  // 0x6d:
+  new LDiv(),
+  // 0x6e:
+  new FDiv(),
+  // 0x6f:
+  new DDiv(),
+  // 0x70:
+  new IRem(),
+  // 0x71:
+  new LRem(),
+  // 0x72:
+  new FRem(),
+  // 0x73:
+  new DRem(),
+  // 0x74:
+  new INeg(),
+  // 0x75:
+  new LNeg(),
+  // 0x76:
+  new FNeg(),
+  // 0x77:
+  new DNeg(),
+  // 0x78:
+  new IShl(),
+  // 0x79:
+  new LShl(),
+  // 0x7a:
+  new IShr(),
+  // 0x7b:
+  new LShr(),
+  // 0x7c:
+  new IUShr(),
+  // 0x7d:
+  new LUShr(),
+  // 0x7e:
+  new IAnd(),
+  // 0x7f:
+  new LAnd(),
+  // 0x80:
+  new IOr(),
+  // 0x81:
+  new LOr(),
+  // 0x82:
+  new IXor(),
+  // 0x83:
+  new LXor(),
+  // 0x84:
+  new IInc(),
+  // 0x85:
+  new I2L(),
+  // 0x86:
+  new I2F(),
+  // 0x87:
+  new I2D(),
+  // 0x88:
+  new L2I(),
+  // 0x89:
+  new L2F(),
+  // 0x8a:
+  new L2D(),
+  // 0x8b:
+  new F2I(),
+  // 0x8c:
+  new F2L(),
+  // 0x8d:
+  new F2D(),
+  // 0x8e:
+  new D2I(),
+  // 0x8f:
+  new D2L(),
+  // 0x90:
+  new D2F(),
+  // 0x91:
+  new I2B(),
+  // 0x92:
+  new I2C(),
+  // 0x93:
+  new I2S(),
+  // 0x94:
+  new LCmp(),
+  // 0x95:
+  new FCmpL(),
+  // 0x96:
+  new FCmpG(),
+  // 0x97:
+  new DCmpL(),
+  // 0x98:
+  new DCmpG(),
+  // 0x99:
+  new IfEq(),
+  // 0x9a:
+  new IfNE(),
+  // 0x9b:
+  new IfLT(),
+  // 0x9c:
+  new IfGE(),
+  // 0x9d:
+  new IfGT(),
+  // 0x9e:
+  new IfLE(),
+  // 0x9f:
+  new IfICmpEq(),
+  // 0xa0:
+  new IfICmpNE(),
+  // 0xa1:
+  new IfICmpLT(),
+  // 0xa2:
+  new IfICmpGE(),
+  // 0xa3:
+  new IfICmpGT(),
+  // 0xa4:
+  new IfICmpLE(),
+  // 0xa5:
+  new IfACmpEq(),
+  // 0xa6:
+  new IfACmpNE(),
+  // 0xa7:
+  new Goto(),
+  // 0xa8: JSR
+  new UnimplementedInstruction(),
+  // 0xa9: RET
+  new UnimplementedInstruction(),
+  // 0xaa:
+  new TableSwitch(),
+  // 0xab:
+  new LookupSwitch(),
+  // 0xac:
+  new IReturn(),
+  // 0xad:
+  new LReturn(),
+  // 0xae:
+  new FReturn(),
+  // 0xaf:
+  new DReturn(),
+  // 0xb0:
+  new AReturn(),
+  // 0xb1:
+  new Return(),
+  // 0xb2:
+  new GetStatic(),
+  // 0xb3:
+  new PutStatic(),
+  // 0xb4:
+  new GetField(),
+  // 0xb5:
+  new PutField(),
+  // 0xb6:
+  new InvokeVirtual(),
+  // 0xb7:
+  new InvokeSpecial(),
+  // 0xb8:
+  new InvokeStatic(),
+  // 0xb9:
+  new InvokeInterface(),
+  // 0xba: InvokeDynamic
+  new UnimplementedInstruction(),
+  // 0xbb:
+  new New(),
+  // 0xbc:
+  new NewArray(),
+  // 0xbd:
+  new ANewArray(),
+  // 0xbe:
+  new ArrayLength(),
+  // 0xbf:
+  new AThrow(),
+  // 0xc0:
+  new CheckCast(),
+  // 0xc1:
+  new InstanceOf(),
+  // 0xc2: MonitorEnter
+  new UnimplementedInstruction(),
+  // 0xc3: MonitorExit
+  new UnimplementedInstruction(),
+  // 0xc4:
+  new Wide(),
+  // 0xc5:
+  new MultiANewArray(),
+  // 0xc6:
+  new IfNull(),
+  // 0xc7:
+  new IfNonNull(),
+  // 0xc8:
+  new GotoW(),
+  // 0xc9: JSRW
+  new UnimplementedInstruction(),
+  // 0xca: Breakpoint
+  new UnimplementedInstruction(),
+]
+
+const ImpDep1 = new InvokeNative()
+
+export function getInstruction(opCode: number): Instruction {
+  if (opCode === 0xfe) return ImpDep1
+  return INSTRUCTIONS[opCode]
 }

@@ -62,6 +62,15 @@ export interface Instruction {
   execute(frame: Frame): void
 }
 
+export class UnimplementedInstruction implements Instruction {
+  fetchOperands(reader: BytecodeReader): void {
+    throw new Error('Method not implemented.')
+  }
+  execute(frame: Frame): void {
+    throw new Error('Method not implemented.')
+  }
+}
+
 export abstract class NoOperandsInstruction implements Instruction {
   fetchOperands(): void {
     return
