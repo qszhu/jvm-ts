@@ -1,5 +1,5 @@
 import ExceptionTableEntry from '../../classFile/attributeInfo/tableEntry/ExceptionTableEntry'
-import Class from '../class/Class'
+import BaseClass from '../class/BaseClass'
 import RuntimeConstantPool from '../constantPool/RuntimeContantPool'
 import ClassRef from '../ref/ClassRef'
 import ExceptionHandler from './ExceptionHandler'
@@ -18,7 +18,7 @@ export default class ExceptionTable {
     )
   }
 
-  findExceptionHandler(exClass: Class, pc: number): ExceptionHandler {
+  findExceptionHandler(exClass: BaseClass, pc: number): ExceptionHandler {
     for (const handler of this._exceptionHandlers) {
       if (!(pc >= handler.startPc && pc < handler.endPc)) continue
 

@@ -1,5 +1,5 @@
 import { BytecodeReader, Index16Instruction, Instruction, NoOperandsInstruction } from '..'
-import Class from '../../class/class/Class'
+import ArrayClass from '../../class/class/ArrayClass'
 import ClassLoader from '../../class/class/ClassLoader'
 import ArrayObject from '../../class/object/ArrayObject'
 import Frame from '../../thread/Frame'
@@ -16,24 +16,24 @@ enum AType {
   Long = 11,
 }
 
-function getPrimitiveArrayClass(loader: ClassLoader, atype: number): Class {
+function getPrimitiveArrayClass(loader: ClassLoader, atype: number): ArrayClass {
   switch (atype) {
     case AType.Boolean:
-      return loader.loadClass('[Z')
+      return loader.loadClass('[Z') as ArrayClass
     case AType.Byte:
-      return loader.loadClass('[B')
+      return loader.loadClass('[B') as ArrayClass
     case AType.Char:
-      return loader.loadClass('[C')
+      return loader.loadClass('[C') as ArrayClass
     case AType.Short:
-      return loader.loadClass('[S')
+      return loader.loadClass('[S') as ArrayClass
     case AType.Int:
-      return loader.loadClass('[I')
+      return loader.loadClass('[I') as ArrayClass
     case AType.Long:
-      return loader.loadClass('[J')
+      return loader.loadClass('[J') as ArrayClass
     case AType.Float:
-      return loader.loadClass('[F')
+      return loader.loadClass('[F') as ArrayClass
     case AType.Double:
-      return loader.loadClass('[D')
+      return loader.loadClass('[D') as ArrayClass
     default:
       throw new Error('Invalid atype')
   }
@@ -108,7 +108,7 @@ export class MultiANewArray implements Instruction {
   execute(frame: Frame): void {
     const cp = frame.method.class.constantPool
     const classRef = cp.getClassRef(this._index)
-    const arrClass = classRef.resolvedClass
+    const arrClass = classRef.resolvedClass as ArrayClass
     const stack = frame.operandStack
     const counts = popAndCheckCounts(stack, this._dims)
     const arr = newMultiDimensionalArray(counts, arrClass)
@@ -129,13 +129,13 @@ function popAndCheckCounts(stack: OperandStack, dims: number) {
   return counts
 }
 
-function newMultiDimensionalArray(counts: number[], arrClass: Class) {
+function newMultiDimensionalArray(counts: number[], arrClass: ArrayClass) {
   const count = counts[0]
   const arr = arrClass.newArray(count)
   if (counts.length > 1) {
     const refs = arr.refs
     for (let i = 0; i < refs.length; i++) {
-      refs[i] = newMultiDimensionalArray(counts.slice(1), arrClass.componentClass)
+      refs[i] = newMultiDimensionalArray(counts.slice(1), arrClass.componentClass as ArrayClass)
     }
   }
   return arr

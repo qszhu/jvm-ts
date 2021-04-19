@@ -1,14 +1,14 @@
 import MemberInfo from '../../classFile/MemberInfo'
 import AccessFlags from '../AccessFlags'
-import Class from '../class/Class'
+import BaseClass from '../class/BaseClass'
 
 export default abstract class ClassMember {
   protected _accessFlags: AccessFlags
   protected _name: string
   protected _descriptor: string
-  protected _class: Class
+  protected _class: BaseClass
 
-  constructor(klass: Class, memberInfo: MemberInfo) {
+  constructor(klass: BaseClass, memberInfo: MemberInfo) {
     this._class = klass
     this._accessFlags = new AccessFlags(memberInfo.accessFlags)
     this._name = memberInfo.name
@@ -35,11 +35,11 @@ export default abstract class ClassMember {
     return this._descriptor
   }
 
-  get class(): Class {
+  get class(): BaseClass {
     return this._class
   }
 
-  isAccessibleTo(d: Class): boolean {
+  isAccessibleTo(d: BaseClass): boolean {
     if (this.isPublic) return true
 
     const c = this._class

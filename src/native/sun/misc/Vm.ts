@@ -1,3 +1,4 @@
+import Class from '../../../class/class/Class'
 import StringPool from '../../../class/StringPool'
 import { invokeMethod } from '../../../instruction'
 import Frame from '../../../thread/Frame'
@@ -8,7 +9,7 @@ export function init(): void {
 }
 
 function initialize(frame: Frame) {
-  const vmClass = frame.method.class
+  const vmClass = frame.method.class as Class
   const savedProps = vmClass.getRefVar('savedProps', 'Ljava/util/Properties;')
   const key = StringPool.jString(vmClass.loader, 'foo')
   const val = StringPool.jString(vmClass.loader, 'bar')

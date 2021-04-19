@@ -1,9 +1,9 @@
 import Slots from '../../thread/Slots'
-import Class from '../class/Class'
+import BaseClass from '../class/BaseClass'
 import BaseObject from './BaseObject'
 
 export default class InstanceObject extends BaseObject {
-  constructor(klass: Class, private _fields?: Slots) {
+  constructor(klass: BaseClass, private _fields?: Slots) {
     super(klass)
     this._fields = _fields || new Slots(klass.instanceSlotCount)
   }

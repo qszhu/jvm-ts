@@ -1,16 +1,16 @@
-import Class from '../class/Class'
+import BaseClass from '../class/BaseClass'
 import RuntimeConstantPool from '../constantPool/RuntimeContantPool'
 
 export default abstract class SymRef {
   protected _cp: RuntimeConstantPool
   protected _className: string
-  protected _class: Class
+  protected _class: BaseClass
 
   constructor(cp: RuntimeConstantPool) {
     this._cp = cp
   }
 
-  get resolvedClass(): Class {
+  get resolvedClass(): BaseClass {
     if (!this._class) this.resolveClassRef()
     return this._class
   }

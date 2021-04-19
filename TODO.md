@@ -1,5 +1,5 @@
 - [x] design: Obj should not have multiple responsibities
-- [] design: Class should not have multiple responsibities
+- [x] design: Class should not have multiple responsibities
 - [ ] design: static methods as factory methods
 - ~~design: store slot value as is~~
   - native methods: `floatToRawIntBits`/`intBitsToFloat`/`doubleToRawLongBits`/`longBitsToDouble`
@@ -21,6 +21,7 @@
   - [ ] invokedynamic
   - [ ] monitorenter/monitorexit
   - [ ] breakpoint
+- [ ] implementation: gc
 - [ ] optimization: cache file list in zip
 - [ ] optimization: iushr
 - [ ] optimization: return same instance for instructions

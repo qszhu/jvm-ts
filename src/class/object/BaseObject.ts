@@ -1,4 +1,4 @@
-import Class from '../class/Class'
+import BaseClass from '../class/BaseClass'
 
 class HashCodeGenerator {
   private static _id: number = new Date().getTime() % 2 ** 32
@@ -12,13 +12,13 @@ export default abstract class BaseObject {
   protected _extra: unknown
   protected _hashCode: number
 
-  constructor(protected _class: Class) {
+  constructor(protected _class: BaseClass) {
     this._hashCode = HashCodeGenerator.next()
   }
 
   abstract clone(): BaseObject
 
-  get class(): Class {
+  get class(): BaseClass {
     return this._class
   }
 
@@ -30,7 +30,7 @@ export default abstract class BaseObject {
     this._extra = e
   }
 
-  isInstanceOf(other: Class): boolean {
+  isInstanceOf(other: BaseClass): boolean {
     return other.isAssignableFrom(this._class)
   }
 

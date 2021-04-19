@@ -1,7 +1,7 @@
 import AttributeInfoFactory from '../../classFile/attributeInfo/AttributeInfoFactory'
 import LineNumberTableAttribute from '../../classFile/attributeInfo/LineNumberTableAttribute'
 import MemberInfo from '../../classFile/MemberInfo'
-import Class from '../class/Class'
+import BaseClass from '../class/BaseClass'
 import ExceptionTable from '../exception/ExceptionTable'
 import ClassMember from './ClassMember'
 import MethodDescriptor from './MethodDescriptor'
@@ -18,7 +18,7 @@ export default class Method extends ClassMember {
   private _lineNumberTable: LineNumberTableAttribute
   private _argSlotCount = 0
 
-  constructor(klass: Class, method: MemberInfo) {
+  constructor(klass: BaseClass, method: MemberInfo) {
     super(klass, method)
     const codeAttr = AttributeInfoFactory.getCodeAttribute(method)
     if (codeAttr) {
@@ -69,7 +69,7 @@ export default class Method extends ClassMember {
     }
   }
 
-  static newMethods(klass: Class, methods: MemberInfo[]): Method[] {
+  static newMethods(klass: BaseClass, methods: MemberInfo[]): Method[] {
     return methods.map((m) => new Method(klass, m))
   }
 
@@ -89,7 +89,7 @@ export default class Method extends ClassMember {
     return this._argSlotCount
   }
 
-  findExceptionHandler(exClass: Class, pc: number): number {
+  findExceptionHandler(exClass: BaseClass, pc: number): number {
     const handler = this._exceptionTable.findExceptionHandler(exClass, pc)
     if (handler) return handler.handlerPc
     return -1

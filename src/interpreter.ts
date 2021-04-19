@@ -5,7 +5,7 @@ import Breakpoints, {
   PcBreakPoint,
   stepBreakpoint,
 } from './Breakpoint'
-import Class from './class/class/Class'
+import BaseClass from './class/class/BaseClass'
 import InstanceObject from './class/object/InstanceObject'
 import { BytecodeReader, Instruction } from './instruction'
 import { newInstruction } from './instruction/factory'
@@ -83,7 +83,7 @@ function printStatics(frame: Frame) {
   console.log(frame.method.class.staticVars.toString())
 }
 
-function printClass(klass: Class) {
+function printClass(klass: BaseClass) {
   console.log(`${klass.name}
 Static vars:
 ${klass.staticVars.toString()}

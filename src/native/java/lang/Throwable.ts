@@ -1,11 +1,11 @@
-import Class from '../../../class/class/Class'
+import BaseClass from '../../../class/class/BaseClass'
 import { JL_THROWABLE } from '../../../class/names'
 import BaseObject from '../../../class/object/BaseObject'
 import Frame from '../../../thread/Frame'
 import Thread from '../../../thread/Thread'
 import { register } from '../../registry'
 
-function distanceToObject(klass: Class): number {
+function distanceToObject(klass: BaseClass): number {
   let distance = 0
   for (let c = klass.superClass; c; c = c.superClass) {
     distance++

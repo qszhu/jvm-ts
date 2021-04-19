@@ -1,11 +1,11 @@
 import Field from '../member/Field'
 import Method from '../member/Method'
-import Class from './Class'
+import BaseClass from './BaseClass'
 
 export default class ClassReflection {
-  constructor(private _class: Class) {}
+  constructor(private _class: BaseClass) {}
 
-  static lookupMethodInClass(klass: Class, name: string, descriptor: string): Method {
+  static lookupMethodInClass(klass: BaseClass, name: string, descriptor: string): Method {
     for (let c = klass; c; c = c.superClass) {
       for (const method of c.methods) {
         if (method.name === name && method.descriptor === descriptor) return method
@@ -13,7 +13,7 @@ export default class ClassReflection {
     }
   }
 
-  static lookupMethodInInterfaces(ifaces: Class[], name: string, descriptor: string): Method {
+  static lookupMethodInInterfaces(ifaces: BaseClass[], name: string, descriptor: string): Method {
     for (const iface of ifaces) {
       for (const method of iface.methods) {
         if (method.name === name && method.descriptor === descriptor) return method

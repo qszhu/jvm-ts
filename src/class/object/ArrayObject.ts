@@ -1,8 +1,8 @@
-import Class from '../class/Class'
+import BaseClass from '../class/BaseClass'
 import BaseObject from './BaseObject'
 
 export default class ArrayObject extends BaseObject {
-  constructor(klass: Class, private _arr: unknown[]) {
+  constructor(klass: BaseClass, private _arr: unknown[]) {
     super(klass)
   }
 

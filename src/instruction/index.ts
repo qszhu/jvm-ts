@@ -1,4 +1,4 @@
-import Class from '../class/class/Class'
+import BaseClass from '../class/class/BaseClass'
 import Method from '../class/member/Method'
 import BaseObject from '../class/object/BaseObject'
 import Frame from '../thread/Frame'
@@ -119,13 +119,13 @@ export function invokeMethod(invokerFrame: Frame, method: Method): void {
   }
 }
 
-export function initClass(thread: Thread, klass: Class): void {
+export function initClass(thread: Thread, klass: BaseClass): void {
   klass.startInit()
   scheduleClinit(thread, klass)
   initSuperClass(thread, klass)
 }
 
-function scheduleClinit(thread: Thread, klass: Class): void {
+function scheduleClinit(thread: Thread, klass: BaseClass): void {
   const clinit = klass.clinitMethod
   if (clinit && clinit.class === klass) {
     const newFrame = thread.newFrame(clinit)
@@ -133,7 +133,7 @@ function scheduleClinit(thread: Thread, klass: Class): void {
   }
 }
 
-function initSuperClass(thread: Thread, klass: Class): void {
+function initSuperClass(thread: Thread, klass: BaseClass): void {
   if (!klass.isInterface) {
     const superClass = klass.superClass
     if (superClass && !superClass.hasInitStarted) {

@@ -1,3 +1,5 @@
+import ArrayClass from '../../../class/class/ArrayClass'
+import PrimitiveClass from '../../../class/class/PrimitiveClass'
 import { JL_SYSTEM } from '../../../class/names'
 import ArrayObject from '../../../class/object/ArrayObject'
 import Frame from '../../../thread/Frame'
@@ -41,9 +43,12 @@ function checkArrayCopy(src: ArrayObject, dest: ArrayObject) {
   const srcClass = src.class
   const destClass = dest.class
 
-  if (!srcClass.isArray || !destClass.isArray) return false
+  if (!(srcClass instanceof ArrayClass) || !(destClass instanceof ArrayClass)) return false
 
-  if (srcClass.componentClass.isPrimitive || destClass.componentClass.isPrimitive) {
+  if (
+    srcClass.componentClass instanceof PrimitiveClass ||
+    destClass.componentClass instanceof PrimitiveClass
+  ) {
     return srcClass === destClass
   }
 
