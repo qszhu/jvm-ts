@@ -22,8 +22,9 @@
   - [ ] monitorenter/monitorexit
   - [ ] breakpoint
 - [ ] implementation: gc
-- [ ] optimization: cache file list in zip
+- [x] optimization: cache file list in zip
 - [ ] optimization: iushr
 - [x] optimization: return same instance for instructions
 - [ ] optimization: vtable in invokevirtual
+- [ ] optimization: arraybuffer allocation
 - [x] debug: instruction debug string
