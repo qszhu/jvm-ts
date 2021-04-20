@@ -3,10 +3,10 @@ import PrimitiveClass from '../../../class/class/PrimitiveClass'
 import { JL_SYSTEM } from '../../../class/names'
 import ArrayObject from '../../../class/object/ArrayObject'
 import Frame from '../../../thread/Frame'
-import { register } from '../../registry'
+import Registry from '../../Registry'
 
-export function init(): void {
-  register(JL_SYSTEM, 'arraycopy', '(Ljava/lang/Object;ILjava/lang/Object;II)V', arraycopy)
+export function init(registry: Registry): void {
+  registry.register(JL_SYSTEM, 'arraycopy', '(Ljava/lang/Object;ILjava/lang/Object;II)V', arraycopy)
 }
 
 function arraycopy(frame: Frame) {

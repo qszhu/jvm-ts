@@ -3,17 +3,22 @@ import { JL_CLASS } from '../../../class/names'
 import InstanceObject from '../../../class/object/InstanceObject'
 import StringPool from '../../../class/StringPool'
 import Frame from '../../../thread/Frame'
-import { register } from '../../registry'
+import Registry from '../../Registry'
 
-export function init(): void {
-  register(
+export function init(registry: Registry): void {
+  registry.register(
     JL_CLASS,
     'getPrimitiveClass',
     '(Ljava/lang/String;)Ljava/lang/Class;',
     getPrimitiveClass
   )
-  register(JL_CLASS, 'getName0', '()Ljava/lang/String;', getName0)
-  register(JL_CLASS, 'desiredAssertionStatus0', '(Ljava/lang/Class;)Z', desiredAssertionStatus0)
+  registry.register(JL_CLASS, 'getName0', '()Ljava/lang/String;', getName0)
+  registry.register(
+    JL_CLASS,
+    'desiredAssertionStatus0',
+    '(Ljava/lang/Class;)Z',
+    desiredAssertionStatus0
+  )
 }
 
 function getPrimitiveClass(frame: Frame) {

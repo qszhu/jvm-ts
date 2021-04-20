@@ -3,7 +3,7 @@ import { JL_THROWABLE } from '../../../class/names'
 import BaseObject from '../../../class/object/BaseObject'
 import Frame from '../../../thread/Frame'
 import Thread from '../../../thread/Thread'
-import { register } from '../../registry'
+import Registry from '../../Registry'
 
 function distanceToObject(klass: BaseClass): number {
   let distance = 0
@@ -13,7 +13,7 @@ function distanceToObject(klass: BaseClass): number {
   return distance
 }
 
-export class StackTraceElement {
+class StackTraceElement {
   constructor(
     private _fileName: string,
     private _className: string,
@@ -31,7 +31,7 @@ export class StackTraceElement {
     return frames.map((f: Frame) => StackTraceElement.createStackTraceElement(f))
   }
 
-  static createStackTraceElement(frame: Frame): StackTraceElement {
+  private static createStackTraceElement(frame: Frame): StackTraceElement {
     const method = frame.method
     const klass = method.class
     return new StackTraceElement(
@@ -43,8 +43,8 @@ export class StackTraceElement {
   }
 }
 
-export function init(): void {
-  register(JL_THROWABLE, 'fillInStackTrace', `(I)L${JL_THROWABLE};`, fillInStackTrace)
+export function init(registry: Registry): void {
+  registry.register(JL_THROWABLE, 'fillInStackTrace', `(I)L${JL_THROWABLE};`, fillInStackTrace)
 }
 
 function fillInStackTrace(frame: Frame) {

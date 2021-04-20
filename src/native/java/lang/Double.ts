@@ -1,11 +1,11 @@
 import Bits from '../../../bits'
 import { JL_DOUBLE } from '../../../class/names'
 import Frame from '../../../thread/Frame'
-import { register } from '../../registry'
+import Registry from '../../Registry'
 
-export function init(): void {
-  register(JL_DOUBLE, 'doubleToRawLongBits', '(D)J', doubleToRawLongBits)
-  register(JL_DOUBLE, 'longBitsToDouble', '(J)D', longBitsToDouble)
+export function init(registry: Registry): void {
+  registry.register(JL_DOUBLE, 'doubleToRawLongBits', '(D)J', doubleToRawLongBits)
+  registry.register(JL_DOUBLE, 'longBitsToDouble', '(J)D', longBitsToDouble)
 }
 
 function doubleToRawLongBits(frame: Frame) {

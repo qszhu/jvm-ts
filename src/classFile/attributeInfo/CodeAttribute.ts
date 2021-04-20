@@ -1,4 +1,3 @@
-import { codeToString } from '../../classViewer'
 import AttributesHolder from '../AttributesHolder'
 import ClassReader from '../ClassReader'
 import ConstantPool from '../ConstantPool'
@@ -48,8 +47,7 @@ export default class CodeAttribute extends AttributesHolder {
     return `
 max stack: ${this.maxStack}
 max locals: ${this.maxLocals}
-code:
-${codeToString(this.code)}
+code: ${this.code}
 exception table:
 ${this._exceptionTable.map((e) => e.toString()).join('\n')}
 attributes:

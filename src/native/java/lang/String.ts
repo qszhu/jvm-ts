@@ -2,10 +2,10 @@ import { JL_STRING } from '../../../class/names'
 import InstanceObject from '../../../class/object/InstanceObject'
 import StringPool from '../../../class/StringPool'
 import Frame from '../../../thread/Frame'
-import { register } from '../../registry'
+import Registry from '../../Registry'
 
-export function init(): void {
-  register(JL_STRING, 'intern', '()Ljava/lang/String;', intern)
+export function init(registry: Registry): void {
+  registry.register(JL_STRING, 'intern', '()Ljava/lang/String;', intern)
 }
 
 function intern(frame: Frame) {

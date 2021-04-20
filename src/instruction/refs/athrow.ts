@@ -1,6 +1,5 @@
 import InstanceObject from '../../class/object/InstanceObject'
 import StringPool from '../../class/StringPool'
-import { StackTraceElement } from '../../native/java/lang/Throwable'
 import Frame from '../../thread/Frame'
 import Thread from '../../thread/Thread'
 import NoOperandsInstruction from '../base/NoOperandsInstruction'
@@ -48,7 +47,7 @@ function handleUncaughtException(thread: Thread, ex: InstanceObject): void {
   const jsMsg = StringPool.jsString(jMsg)
   console.log(`${ex.class.javaName}: ${jsMsg}`)
 
-  const stes = ex.extra as StackTraceElement[]
+  const stes = ex.extra as unknown[]
   for (const ste of stes) {
     console.log(`\tat ${ste.toString()}`)
   }

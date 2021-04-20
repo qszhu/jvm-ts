@@ -7,7 +7,7 @@
   },
   "bin": {
     "tsjava": "./dist/index.js",
-    "classviewer": "./dist/classViewer.js"
+    "classviewer": "./dist/tools/classViewer.js"
   },
   "scripts": {
     "dev": "node -r ts-node/register src/index.ts",

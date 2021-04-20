@@ -1,9 +1,8 @@
-import * as jl from '../../native'
-import { findNativeMethod } from '../../native/registry'
+import * as native from '../../native'
 import Frame from '../../thread/Frame'
 import NoOperandsInstruction from '../base/NoOperandsInstruction'
 
-jl.init()
+const registry = native.init()
 
 export class InvokeNative extends NoOperandsInstruction {
   execute(frame: Frame): void {
@@ -11,7 +10,7 @@ export class InvokeNative extends NoOperandsInstruction {
     const className = method.class.name
     const methodName = method.name
     const methodDescriptor = method.descriptor
-    const nativeMethod = findNativeMethod(className, methodName, methodDescriptor)
+    const nativeMethod = registry.findNativeMethod(className, methodName, methodDescriptor)
     if (!nativeMethod) {
       const methodInfo = `${className}.${methodName}${methodDescriptor}`
       throw new Error(`java.lang.UnsatisfiedLinkError: ${methodInfo}`)

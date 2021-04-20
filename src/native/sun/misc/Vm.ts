@@ -2,10 +2,10 @@ import Class from '../../../class/class/Class'
 import StringPool from '../../../class/StringPool'
 import { invokeMethod } from '../../../instruction/utils'
 import Frame from '../../../thread/Frame'
-import { register } from '../../registry'
+import Registry from '../../Registry'
 
-export function init(): void {
-  register('sun/misc/VM', 'initialize', '()V', initialize)
+export function init(registry: Registry): void {
+  registry.register('sun/misc/VM', 'initialize', '()V', initialize)
 }
 
 function initialize(frame: Frame) {
