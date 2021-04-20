@@ -1,6 +1,6 @@
-import { Index16Instruction } from '..'
 import BaseObject from '../../class/object/BaseObject'
 import Frame from '../../thread/Frame'
+import Index16Instruction from '../base/Index16Instruction'
 
 function instanceOf(frame: Frame, idx: number) {
   const stack = frame.operandStack

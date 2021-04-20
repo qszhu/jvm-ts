@@ -1,10 +1,13 @@
-import { BytecodeReader, Index16Instruction, initClass, Instruction, invokeMethod } from '..'
 import ClassReflection from '../../class/class/ClassReflection'
 import BaseObject from '../../class/object/BaseObject'
 import InstanceObject from '../../class/object/InstanceObject'
 import StringPool from '../../class/StringPool'
 import Frame from '../../thread/Frame'
 import OperandStack from '../../thread/OperandStack'
+import Index16Instruction from '../base/Index16Instruction'
+import Instruction from '../base/Instruction'
+import BytecodeReader from '../BytecodeReader'
+import { initClass, invokeMethod } from '../utils'
 
 export class InvokeStatic extends Index16Instruction {
   execute(frame: Frame): void {

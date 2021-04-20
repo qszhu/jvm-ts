@@ -1,5 +1,6 @@
-import { Instruction, BytecodeReader } from '..'
 import Frame from '../../thread/Frame'
+import Instruction from '../base/Instruction'
+import BytecodeReader from '../BytecodeReader'
 
 export class BiPush implements Instruction {
   constructor(private _val?: number) {}

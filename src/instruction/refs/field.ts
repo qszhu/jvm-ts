@@ -1,6 +1,6 @@
-import { Index16Instruction } from '..'
 import InstanceObject from '../../class/object/InstanceObject'
 import Frame from '../../thread/Frame'
+import Index16Instruction from '../base/Index16Instruction'
 
 export class PutField extends Index16Instruction {
   execute(frame: Frame): void {

@@ -1,5 +1,6 @@
-import { Index8Instruction, NoOperandsInstruction } from '..'
 import Frame from '../../thread/Frame'
+import Index8Instruction from '../base/Index8Instruction'
+import NoOperandsInstruction from '../base/NoOperandsInstruction'
 
 function lLoad(frame: Frame, idx: number) {
   const val = frame.localVars.getLong(idx)

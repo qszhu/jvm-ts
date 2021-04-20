@@ -1,5 +1,6 @@
-import { BytecodeReader, Instruction } from '..'
 import Frame from '../../thread/Frame'
+import Instruction from '../base/Instruction'
+import BytecodeReader from '../BytecodeReader'
 
 export class IInc implements Instruction {
   constructor(private _idx?: number, private _const?: number) {}

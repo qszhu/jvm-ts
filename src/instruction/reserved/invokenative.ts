@@ -1,7 +1,7 @@
-import { NoOperandsInstruction } from '..'
 import * as jl from '../../native'
 import { findNativeMethod } from '../../native/registry'
 import Frame from '../../thread/Frame'
+import NoOperandsInstruction from '../base/NoOperandsInstruction'
 
 jl.init()
 

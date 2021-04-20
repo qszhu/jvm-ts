@@ -1,5 +1,6 @@
-import { Index16Instruction, initClass } from '..'
 import Frame from '../../thread/Frame'
+import Index16Instruction from '../base/Index16Instruction'
+import { initClass } from '../utils'
 
 export class New extends Index16Instruction {
   execute(frame: Frame): void {

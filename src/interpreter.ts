@@ -7,8 +7,9 @@ import Breakpoints, {
 } from './Breakpoint'
 import BaseClass from './class/class/BaseClass'
 import InstanceObject from './class/object/InstanceObject'
-import { BytecodeReader, Instruction } from './instruction'
-import { getInstruction } from './instruction/factory'
+import Instruction from './instruction/base/Instruction'
+import BytecodeReader from './instruction/BytecodeReader'
+import InstructionFactory from './instruction/InstructionFactory'
 import Frame from './thread/Frame'
 import Thread from './thread/Thread'
 
@@ -34,7 +35,7 @@ async function loop(thread: Thread, logInst: boolean, debug: boolean): Promise<v
     reader.reset(frame.method.code, pc)
 
     const opcode = reader.readUint8()
-    const inst = getInstruction(opcode)
+    const inst = InstructionFactory.getInstruction(opcode)
     inst.fetchOperands(reader)
     frame.nextPc = reader.pc
 

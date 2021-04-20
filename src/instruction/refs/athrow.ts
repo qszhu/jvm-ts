@@ -1,9 +1,9 @@
-import { NoOperandsInstruction } from '..'
 import InstanceObject from '../../class/object/InstanceObject'
 import StringPool from '../../class/StringPool'
 import { StackTraceElement } from '../../native/java/lang/Throwable'
 import Frame from '../../thread/Frame'
 import Thread from '../../thread/Thread'
+import NoOperandsInstruction from '../base/NoOperandsInstruction'
 
 export class AThrow extends NoOperandsInstruction {
   execute(frame: Frame): void {

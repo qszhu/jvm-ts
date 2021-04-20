@@ -1,6 +1,6 @@
 import Class from '../../../class/class/Class'
 import StringPool from '../../../class/StringPool'
-import { invokeMethod } from '../../../instruction'
+import { invokeMethod } from '../../../instruction/utils'
 import Frame from '../../../thread/Frame'
 import { register } from '../../registry'
 

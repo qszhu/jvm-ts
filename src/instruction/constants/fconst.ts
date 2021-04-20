@@ -1,5 +1,5 @@
-import { NoOperandsInstruction } from '..'
 import Frame from '../../thread/Frame'
+import NoOperandsInstruction from '../base/NoOperandsInstruction'
 
 export class FConst0 extends NoOperandsInstruction {
   execute(frame: Frame): void {

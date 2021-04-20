@@ -1,4 +1,5 @@
-import { Instruction, UnimplementedInstruction } from '.'
+import Instruction from './base/Instruction'
+import UnimplementedInstruction from './base/UnimplementedInstruction'
 import { IAnd, LAnd } from './bits/and'
 import { IOr, LOr } from './bits/or'
 import { IShl, IShr, IUShr, LShl, LShr, LUShr } from './bits/shift'
@@ -36,7 +37,8 @@ import { DMul, FMul, IMul, LMul } from './maths/mul'
 import { DNeg, FNeg, INeg, LNeg } from './maths/neg'
 import { DRem, FRem, IRem, LRem } from './maths/rem'
 import { DSub, FSub, ISub, LSub } from './maths/sub'
-import { Nop } from './nop'
+import { Nop } from './misc/nop'
+import { Wide } from './misc/wide'
 import { ANewArray, ArrayLength, MultiANewArray, NewArray } from './refs/array'
 import { AThrow } from './refs/athrow'
 import { GetField, PutField } from './refs/field'
@@ -63,7 +65,6 @@ import {
   LAStore,
   SAStore,
 } from './stores/xastore'
-import { Wide } from './wide'
 
 const INSTRUCTIONS = [
   // 0x00:
@@ -476,7 +477,9 @@ const INSTRUCTIONS = [
 
 const ImpDep1 = new InvokeNative()
 
-export function getInstruction(opCode: number): Instruction {
-  if (opCode === 0xfe) return ImpDep1
-  return INSTRUCTIONS[opCode]
+export default class InstructionFactory {
+  static getInstruction(opCode: number): Instruction {
+    if (opCode === 0xfe) return ImpDep1
+    return INSTRUCTIONS[opCode]
+  }
 }

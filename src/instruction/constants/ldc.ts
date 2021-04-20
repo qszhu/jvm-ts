@@ -1,4 +1,3 @@
-import { Index16Instruction, Index8Instruction } from '..'
 import {
   ClassConstant,
   DoubleConstant,
@@ -9,6 +8,8 @@ import {
 } from '../../class/constantPool/RuntimeConstant'
 import StringPool from '../../class/StringPool'
 import Frame from '../../thread/Frame'
+import Index16Instruction from '../base/Index16Instruction'
+import Index8Instruction from '../base/Index8Instruction'
 
 function ldc(frame: Frame, idx: number) {
   const stack = frame.operandStack

@@ -2,7 +2,7 @@ import ClassLoader from './class/class/ClassLoader'
 import ArrayObject from './class/object/ArrayObject'
 import StringPool from './class/StringPool'
 import ClassPath from './classPath/ClassPath'
-import { initClass } from './instruction'
+import { initClass } from './instruction/utils'
 import { interpret } from './interpreter'
 import Thread from './thread/Thread'
 

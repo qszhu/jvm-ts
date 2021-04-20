@@ -1,5 +1,6 @@
-import { BranchInstruction, BytecodeReader } from '..'
 import Frame from '../../thread/Frame'
+import BranchInstruction from '../base/BranchInstruction'
+import BytecodeReader from '../BytecodeReader'
 
 export class Goto extends BranchInstruction {
   execute(frame: Frame): void {

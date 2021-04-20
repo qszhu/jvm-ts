@@ -1,6 +1,7 @@
-import { checkIndex, checkNotNil, NoOperandsInstruction } from '..'
 import ArrayObject from '../../class/object/ArrayObject'
 import Frame from '../../thread/Frame'
+import NoOperandsInstruction from '../base/NoOperandsInstruction'
+import { checkIndex, checkNotNil } from '../utils'
 
 export class AAStore extends NoOperandsInstruction {
   execute(frame: Frame): void {

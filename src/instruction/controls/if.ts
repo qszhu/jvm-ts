@@ -1,5 +1,5 @@
-import { BranchInstruction } from '..'
 import Frame from '../../thread/Frame'
+import BranchInstruction from '../base/BranchInstruction'
 
 export class IfEq extends BranchInstruction {
   execute(frame: Frame): void {

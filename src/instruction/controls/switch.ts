@@ -1,5 +1,6 @@
-import { BranchInstruction, BytecodeReader } from '..'
 import Frame from '../../thread/Frame'
+import BranchInstruction from '../base/BranchInstruction'
+import BytecodeReader from '../BytecodeReader'
 
 export class TableSwitch extends BranchInstruction {
   private _defaultOffset: number

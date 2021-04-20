@@ -1,9 +1,12 @@
-import { BytecodeReader, Index16Instruction, Instruction, NoOperandsInstruction } from '..'
 import ArrayClass from '../../class/class/ArrayClass'
 import ClassLoader from '../../class/class/ClassLoader'
 import ArrayObject from '../../class/object/ArrayObject'
 import Frame from '../../thread/Frame'
 import OperandStack from '../../thread/OperandStack'
+import Index16Instruction from '../base/Index16Instruction'
+import Instruction from '../base/Instruction'
+import NoOperandsInstruction from '../base/NoOperandsInstruction'
+import BytecodeReader from '../BytecodeReader'
 
 enum AType {
   Boolean = 4,

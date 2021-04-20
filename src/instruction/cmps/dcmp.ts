@@ -1,5 +1,5 @@
-import { NoOperandsInstruction } from '..'
 import Frame from '../../thread/Frame'
+import NoOperandsInstruction from '../base/NoOperandsInstruction'
 
 function dcmp(frame: Frame, gFlag: boolean) {
   const stack = frame.operandStack
