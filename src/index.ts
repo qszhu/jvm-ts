@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import yargs from 'yargs'
-import Jvm from './jvm'
+import Jvm from './Jvm'
 
 const argv = yargs(process.argv.slice(2))
   .usage('Usage: $0 [--options] class [args...]')

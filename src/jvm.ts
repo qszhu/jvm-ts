@@ -3,7 +3,7 @@ import ArrayObject from './class/object/ArrayObject'
 import StringPool from './class/StringPool'
 import ClassPath from './classPath/ClassPath'
 import { initClass } from './instruction/utils'
-import { interpret } from './interpreter'
+import Interpreter from './Interpreter'
 import Thread from './thread/Thread'
 
 export default class Jvm {
@@ -35,7 +35,8 @@ export default class Jvm {
     const vmClass = this._classLoader.loadClass('sun/misc/VM')
     initClass(this._mainThread, vmClass)
 
-    interpret(this._mainThread, this._verboseInstFlag, this._debugFlag)
+    const interpreter = new Interpreter(this._mainThread, this._verboseInstFlag, this._debugFlag)
+    interpreter.interpret()
   }
 
   private execMain() {
@@ -52,7 +53,8 @@ export default class Jvm {
     frame.localVars.setRef(0, argsArr)
 
     this._mainThread.pushFrame(frame)
-    interpret(this._mainThread, this._verboseInstFlag, this._debugFlag)
+    const interpreter = new Interpreter(this._mainThread, this._verboseInstFlag, this._debugFlag)
+    interpreter.interpret()
   }
 
   private createArgsArray(): ArrayObject {
