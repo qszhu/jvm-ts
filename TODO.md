@@ -28,5 +28,6 @@
 - [ ] optimization: vtable in invokevirtual
 - [x] optimization: arraybuffer allocation
 - [ ] optimization: bigint
-- [ ] optimization: zip libray
+  - [ ] jsbi? buffer read/write
+- [x] optimization: zip
 - [x] debug: instruction debug string

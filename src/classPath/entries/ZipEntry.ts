@@ -3,29 +3,29 @@ import path from 'path'
 import { ClassNotFoundError } from '../errors'
 import Entry from './Entry'
 
+const entriesCache = new Map<string, Set<string>>()
+
 export default class ZipEntry implements Entry {
   private _absPath: string
-  private _cache: Map<string, Buffer>
 
   constructor(pathStr: string) {
     this._absPath = path.resolve(pathStr)
-    this._cache = new Map()
   }
 
   readClass(className: string): { data: Buffer; entry: Entry } {
-    if (this._cache.has(className)) {
-      return { data: this._cache.get(className), entry: this }
+    if (entriesCache.has(this._absPath)) {
+      const entries = entriesCache.get(this._absPath)
+      if (!entries.has(className)) throw new ClassNotFoundError()
     }
 
     const zip = new AdmZip(this._absPath)
-    for (const entry of zip.getEntries()) {
-      if (entry.entryName !== className) continue
-      const data = entry.getData()
-      this._cache.set(className, data)
-      return { data, entry: this }
-    }
 
-    throw new ClassNotFoundError()
+    const entries = new Set(zip.getEntries().map((e) => e.entryName))
+    entriesCache.set(this._absPath, entries)
+    if (!entries.has(className)) throw new ClassNotFoundError()
+
+    const data = zip.getEntry(className).getData()
+    return { data, entry: this }
   }
 
   toString(): string {
