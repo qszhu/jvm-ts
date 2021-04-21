@@ -32,14 +32,14 @@ export default class Slot {
   }
 
   static setLong(slot1: Slot, slot2: Slot, val: bigint): void {
-    const buf = Buffer.alloc(8)
+    const buf = Buffer.allocUnsafe(8)
     buf.writeBigInt64BE(val)
     slot1.num = buf.readInt32BE()
     slot2.num = buf.readInt32BE(4)
   }
 
   static getLong(slot1: Slot, slot2: Slot): bigint {
-    const buf = Buffer.alloc(8)
+    const buf = Buffer.allocUnsafe(8)
     buf.writeInt32BE(slot1.num)
     buf.writeInt32BE(slot2.num, 4)
     return buf.readBigInt64BE()

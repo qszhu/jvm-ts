@@ -26,5 +26,5 @@
 - [ ] optimization: iushr
 - [x] optimization: return same instance for instructions
 - [ ] optimization: vtable in invokevirtual
-- [ ] optimization: arraybuffer allocation
+- [x] optimization: arraybuffer allocation
 - [x] debug: instruction debug string
