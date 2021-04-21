@@ -27,4 +27,6 @@
 - [x] optimization: return same instance for instructions
 - [ ] optimization: vtable in invokevirtual
 - [x] optimization: arraybuffer allocation
+- [ ] optimization: bigint
+- [ ] optimization: zip libray
 - [x] debug: instruction debug string
