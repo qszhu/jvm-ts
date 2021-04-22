@@ -1,5 +1,4 @@
 import Bits from '../bits'
-import BufferPool from '../BufferPool'
 
 export default class Slot {
   constructor(public num = 0, public ref: any = undefined) {}
@@ -33,16 +32,10 @@ export default class Slot {
   }
 
   static setLong(slot1: Slot, slot2: Slot, val: bigint): void {
-    const idx = BufferPool.alloc(8)
-    BufferPool.buffer.writeBigInt64BE(val, idx)
-    slot1.num = BufferPool.buffer.readInt32BE(idx)
-    slot2.num = BufferPool.buffer.readInt32BE(idx + 4)
+    [slot1.num, slot2.num] = Bits.longToBits(val)
   }
 
   static getLong(slot1: Slot, slot2: Slot): bigint {
-    const idx = BufferPool.alloc(8)
-    BufferPool.buffer.writeInt32BE(slot1.num, idx)
-    BufferPool.buffer.writeInt32BE(slot2.num, idx + 4)
-    return BufferPool.buffer.readBigInt64BE(idx)
+    return Bits.longFromBits(slot1.num, slot2.num)
   }
 }
