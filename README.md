@@ -3,6 +3,8 @@
 ### Setup
 
 ```bash
+$ node --version
+v14.16.1
 $ npm i
 $ npm link
 ```
