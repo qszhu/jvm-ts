@@ -1,5 +1,7 @@
 ## JVM in TypeScript
 
+Blog post: [用Typescript实现JVM | 打杂日志](https://qszhu.github.io/2021/04/24/jvm-ts.html)
+
 ### Setup
 
 ```bash
