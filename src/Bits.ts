@@ -1,5 +1,5 @@
 export default class Bits {
-  private static _buffer = new Uint8Array(8).buffer
+  private static _buffer = new ArrayBuffer(8)
   private static _int32s = new Int32Array(Bits._buffer)
   private static _int64s = new BigInt64Array(Bits._buffer)
   private static _floats = new Float32Array(Bits._buffer)
